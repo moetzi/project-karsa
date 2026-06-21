@@ -100,6 +100,8 @@ function Feed() {
 
 function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const [boosted, setBoosted] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+  const shares = c.shares + (shareOpen ? 0 : 0);
   const boosts = c.boosts + (boosted ? 1 : 0);
   return (
     <article className="bg-surface rounded-2xl overflow-hidden border border-border/60">
