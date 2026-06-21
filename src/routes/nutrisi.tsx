@@ -342,6 +342,16 @@ function BuatKampanye() {
           />
         </FormField>
 
+        <FormField label="Jurnal Guru (Pembuka)" required>
+          <textarea
+            value={journal}
+            onChange={(e) => setJournal(e.target.value)}
+            rows={3}
+            placeholder="Tuliskan catatan pertama Anda untuk para donatur..."
+            className="w-full bg-primary-soft/30 rounded-xl px-4 py-3 text-sm text-foreground border border-primary/20 focus:border-primary outline-none resize-none font-serif italic placeholder:text-muted-foreground/70 placeholder:not-italic placeholder:font-sans"
+          />
+        </FormField>
+
         <button
           disabled={!valid}
           className="w-full bg-accent text-accent-foreground rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-50 hover:opacity-95 transition"
