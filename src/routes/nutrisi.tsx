@@ -235,7 +235,7 @@ function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) 
       >
         <div className="flex items-start justify-between">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold">Bagikan Kampanye</p>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold">{t("Bagikan Kampanye", "Share Campaign")}</p>
             <h3 className="mt-1 text-[15px] font-bold text-foreground leading-snug pr-6">{title}</h3>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full bg-muted grid place-items-center text-muted-foreground shrink-0">
