@@ -1,6 +1,33 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
-import { PartyPopper, Upload, MapPin, TrendingUp } from "lucide-react";
+import { PartyPopper, Upload, MapPin, TrendingUp, Clock, ArrowRight } from "lucide-react";
+
+const INSPIRASI = [
+  {
+    id: "1",
+    tag: "Kesehatan",
+    title: "Dampak Stunting pada Fokus Belajar Anak",
+    read: "6 menit",
+    hero: "linear-gradient(135deg, #0D7377 0%, #2d5016 100%)",
+    emoji: "🧠",
+  },
+  {
+    id: "2",
+    tag: "Gizi Lokal",
+    title: "Inovasi Gizi Lokal: Pangan Desa untuk Nutrisi Sekolah",
+    read: "8 menit",
+    hero: "linear-gradient(135deg, #F47B20 0%, #c4654a 100%)",
+    emoji: "🌽",
+  },
+  {
+    id: "3",
+    tag: "Kolaborasi",
+    title: "Peran BUMDes & Kelompok Tani dalam Mendukung Gizi Anak",
+    read: "5 menit",
+    hero: "linear-gradient(135deg, #6b4423 0%, #c9614a 100%)",
+    emoji: "🤝",
+  },
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({
