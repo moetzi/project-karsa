@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as CopilotRouteImport } from './routes/copilot'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as FlashcardIdRouteImport } from './routes/flashcard.$id'
 
 const CopilotRoute = CopilotRouteImport.update({
   id: '/copilot',
@@ -22,31 +23,40 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FlashcardIdRoute = FlashcardIdRouteImport.update({
+  id: '/flashcard/$id',
+  path: '/flashcard/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/copilot': typeof CopilotRoute
+  '/flashcard/$id': typeof FlashcardIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/copilot': typeof CopilotRoute
+  '/flashcard/$id': typeof FlashcardIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/copilot': typeof CopilotRoute
+  '/flashcard/$id': typeof FlashcardIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/copilot'
+  fullPaths: '/' | '/copilot' | '/flashcard/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/copilot'
-  id: '__root__' | '/' | '/copilot'
+  to: '/' | '/copilot' | '/flashcard/$id'
+  id: '__root__' | '/' | '/copilot' | '/flashcard/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CopilotRoute: typeof CopilotRoute
+  FlashcardIdRoute: typeof FlashcardIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +75,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/flashcard/$id': {
+      id: '/flashcard/$id'
+      path: '/flashcard/$id'
+      fullPath: '/flashcard/$id'
+      preLoaderRoute: typeof FlashcardIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CopilotRoute: CopilotRoute,
+  FlashcardIdRoute: FlashcardIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

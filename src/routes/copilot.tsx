@@ -169,7 +169,7 @@ function MateriSaya() {
         meta="26 kartu · Kelas 1 SD · Bahasa Indonesia"
         time="Hari ini, 10:30"
         desc="Kartu bergambar A-Z dengan hewan lokal Indonesia. Cocok untuk belajar alfabet Kelas 1 SD."
-        cta={{ label: "Mulai Belajar", to: "/copilot/flashcard" }}
+        cta={{ label: "Mulai Belajar", to: "/flashcard/alfabet-hewan" }}
       />
 
       <MateriCard
