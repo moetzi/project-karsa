@@ -225,6 +225,7 @@ function MateriCard({
 }) {
   const [saved, setSaved] = useState(true);
   const t = tone[type];
+  const tt = useT();
 
   return (
     <div className={"bg-surface rounded-2xl p-4 border " + t.ring}>
