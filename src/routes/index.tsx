@@ -1,6 +1,33 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
-import { PartyPopper, Upload, MapPin, TrendingUp } from "lucide-react";
+import { PartyPopper, Upload, MapPin, TrendingUp, Clock, ArrowRight } from "lucide-react";
+
+const INSPIRASI = [
+  {
+    id: "1",
+    tag: "Kesehatan",
+    title: "Dampak Stunting pada Fokus Belajar Anak",
+    read: "6 menit",
+    hero: "linear-gradient(135deg, #0D7377 0%, #2d5016 100%)",
+    emoji: "🧠",
+  },
+  {
+    id: "2",
+    tag: "Gizi Lokal",
+    title: "Inovasi Gizi Lokal: Pangan Desa untuk Nutrisi Sekolah",
+    read: "8 menit",
+    hero: "linear-gradient(135deg, #F47B20 0%, #c4654a 100%)",
+    emoji: "🌽",
+  },
+  {
+    id: "3",
+    tag: "Kolaborasi",
+    title: "Peran BUMDes & Kelompok Tani dalam Mendukung Gizi Anak",
+    read: "5 menit",
+    hero: "linear-gradient(135deg, #6b4423 0%, #c9614a 100%)",
+    emoji: "🤝",
+  },
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -55,6 +82,55 @@ function Beranda() {
             <Upload className="w-4 h-4" />
             Unggah Laporan
           </button>
+        </section>
+
+        {/* Pojok Inspirasi Guru */}
+        <section className="-mx-6">
+          <div className="px-6 flex items-end justify-between mb-3">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold">
+                Pojok Inspirasi Guru
+              </p>
+              <h2 className="mt-0.5 text-[18px] font-extrabold text-foreground">Bacaan Pilihan</h2>
+            </div>
+            <span className="text-[11px] text-muted-foreground font-mono">3 artikel</span>
+          </div>
+          <div className="overflow-x-auto no-scrollbar">
+            <ul className="flex gap-3 px-6 pb-1 snap-x snap-mandatory">
+              {INSPIRASI.map((a) => (
+                <li key={a.id} className="shrink-0 w-[230px] snap-start">
+                  <Link
+                    to="/inspirasi/$id"
+                    params={{ id: a.id }}
+                    className="block bg-surface rounded-2xl border border-border/60 overflow-hidden hover:shadow-md transition-shadow"
+                  >
+                    <div
+                      className="relative h-28 flex items-end p-3"
+                      style={{ background: a.hero }}
+                    >
+                      <span className="absolute top-2.5 right-2.5 text-2xl drop-shadow">{a.emoji}</span>
+                      <span className="bg-surface/90 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                        {a.tag}
+                      </span>
+                    </div>
+                    <div className="p-3">
+                      <h3 className="font-serif text-[14px] leading-snug text-foreground line-clamp-3 min-h-[3.6em]">
+                        {a.title}
+                      </h3>
+                      <div className="mt-2.5 flex items-center justify-between text-[11px]">
+                        <span className="font-mono text-muted-foreground inline-flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> {a.read}
+                        </span>
+                        <span className="text-accent font-semibold inline-flex items-center gap-0.5">
+                          Baca <ArrowRight className="w-3 h-3" />
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </section>
 
         {/* Active campaign widget */}
