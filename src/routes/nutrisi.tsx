@@ -66,6 +66,8 @@ const campaigns = [
     teacher: "Ibu Sari Dewi",
     journal: "Minggu lalu anak-anak sudah mulai mendapat asupan protein tambahan dari telur lokal. Senyum mereka adalah motivasi kami.",
     boosts: 132,
+    views: "1.2k",
+    shares: 450,
   },
   {
     title: "Pangan Bergizi Kampung Baru",
