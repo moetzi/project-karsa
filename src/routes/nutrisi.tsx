@@ -289,6 +289,7 @@ const REGIONS = [
 ];
 
 function BuatKampanye() {
+  const t = useT();
   const [supplier, setSupplier] = useState("");
   const [npsn, setNpsn] = useState("");
   const [nama, setNama] = useState("");
@@ -305,6 +306,14 @@ function BuatKampanye() {
     npsn && nama && sekolah && region && recipients && guru &&
     supplier && target && desc && journal && (!showLainnya || lainnya);
 
+  const supplierLabels: Record<string, string> = {
+    "BUMDes": t("BUMDes (Badan Usaha Milik Desa)", "BUMDes (Village-Owned Enterprise)"),
+    "Kelompok Tani Lokal": t("Kelompok Tani Lokal", "Local Farmer Group"),
+    "Kelompok Ternak Lokal": t("Kelompok Ternak Lokal", "Local Livestock Group"),
+    "Kelompok Nelayan Lokal": t("Kelompok Nelayan Lokal", "Local Fisher Group"),
+    "Lainnya (Kios/UMKM)": t("Lainnya (Kios/UMKM)", "Other (Shop/MSME)"),
+  };
+
   return (
     <div className="space-y-4">
       <div
@@ -313,98 +322,100 @@ function BuatKampanye() {
       >
         <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
         <p className="text-foreground/85">
-          Kampanye akan diverifikasi menggunakan <span className="font-semibold">NPSN resmi sekolah</span>. Dana hanya dapat dicairkan ke rekening pemasok lokal yang terdaftar.
+          {t("Kampanye akan diverifikasi menggunakan ", "Campaigns are verified using the ")}
+          <span className="font-semibold">{t("NPSN resmi sekolah", "school's official NPSN")}</span>
+          {t(". Dana hanya dapat dicairkan ke rekening pemasok lokal yang terdaftar.", ". Funds can only be disbursed to registered local supplier accounts.")}
         </p>
       </div>
 
       <div className="bg-surface rounded-2xl p-5 border border-border/60 space-y-4">
-        <FormField label="NPSN (ID Sekolah)" required>
+        <FormField label={t("NPSN (ID Sekolah)", "NPSN (School ID)")} required>
           <div className="relative">
             <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               value={npsn}
               onChange={(e) => setNpsn(e.target.value)}
-              placeholder="cth. 10200101"
+              placeholder={t("cth. 10200101", "e.g. 10200101")}
               className="w-full bg-muted/60 rounded-xl pl-10 pr-4 py-3 text-sm font-mono text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
             />
           </div>
         </FormField>
 
-        <FormField label="Nama Kampanye" required>
+        <FormField label={t("Nama Kampanye", "Campaign Name")} required>
           <input
             value={nama}
             onChange={(e) => setNama(e.target.value)}
-            placeholder="cth. Gizi Sehat Desa Kolaka 2025"
+            placeholder={t("cth. Gizi Sehat Desa Kolaka 2025", "e.g. Healthy Nutrition Kolaka Village 2025")}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
           />
         </FormField>
 
-        <FormField label="Nama Sekolah" required>
+        <FormField label={t("Nama Sekolah", "School Name")} required>
           <input
             value={sekolah}
             onChange={(e) => setSekolah(e.target.value)}
-            placeholder="cth. SDN 047 Kolaka Utara"
+            placeholder={t("cth. SDN 047 Kolaka Utara", "e.g. SDN 047 Kolaka Utara")}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
           />
         </FormField>
 
-        <FormField label="Provinsi" required>
+        <FormField label={t("Provinsi", "Province")} required>
           <select
             value={region}
             onChange={(e) => setRegion(e.target.value)}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground appearance-none border border-transparent focus:border-primary outline-none"
           >
-            <option value="">Pilih provinsi...</option>
+            <option value="">{t("Pilih provinsi...", "Select province...")}</option>
             {REGIONS.map((r) => (
               <option key={r} value={r}>{r}</option>
             ))}
           </select>
         </FormField>
 
-        <FormField label="Jumlah Penerima (Siswa)" required>
+        <FormField label={t("Jumlah Penerima (Siswa)", "Number of Recipients (Students)")} required>
           <input
             value={recipients}
             onChange={(e) => setRecipients(e.target.value.replace(/\D/g, ""))}
             inputMode="numeric"
-            placeholder="cth. 47"
+            placeholder={t("cth. 47", "e.g. 47")}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm font-mono text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
           />
         </FormField>
 
-        <FormField label="Nama Guru Penanggung Jawab" required>
+        <FormField label={t("Nama Guru Penanggung Jawab", "Responsible Teacher's Name")} required>
           <input
             value={guru}
             onChange={(e) => setGuru(e.target.value)}
-            placeholder="cth. Ibu Sari Dewi"
+            placeholder={t("cth. Ibu Sari Dewi", "e.g. Ms. Sari Dewi")}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
           />
         </FormField>
 
-        <FormField label="Pilih Pemasok/Merchant Lokal" required>
+        <FormField label={t("Pilih Pemasok Lokal", "Select Local Supplier")} required>
           <select
             value={supplier}
             onChange={(e) => setSupplier(e.target.value)}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground appearance-none border border-transparent focus:border-primary outline-none"
           >
-            <option value="">Pilih pemasok lokal...</option>
+            <option value="">{t("Pilih pemasok lokal...", "Select local supplier...")}</option>
             {SUPPLIERS.map((s) => (
-              <option key={s} value={s}>{s}</option>
+              <option key={s} value={s}>{supplierLabels[s]}</option>
             ))}
           </select>
         </FormField>
 
         {showLainnya && (
-          <FormField label="Sebutkan nama merchant" required>
+          <FormField label={t("Sebutkan nama merchant", "Specify merchant name")} required>
             <input
               value={lainnya}
               onChange={(e) => setLainnya(e.target.value)}
-              placeholder="cth. Kios Bu Tini, Warung Berkah..."
+              placeholder={t("cth. Kios Bu Tini, Warung Berkah...", "e.g. Bu Tini's Shop, Warung Berkah...")}
               className="w-full bg-accent-soft/40 rounded-xl px-4 py-3 text-sm text-foreground border border-accent/40 focus:border-accent outline-none placeholder:text-muted-foreground/70"
             />
           </FormField>
         )}
 
-        <FormField label="Target Dana (IDR)" required>
+        <FormField label={t("Target Dana (IDR)", "Funding Target (IDR)")} required>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-mono font-semibold text-foreground">Rp</span>
             <input
@@ -417,22 +428,25 @@ function BuatKampanye() {
           </div>
         </FormField>
 
-        <FormField label="Deskripsi Kampanye" required>
+        <FormField label={t("Deskripsi Kampanye", "Campaign Description")} required>
           <textarea
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
             rows={4}
-            placeholder="Ceritakan kondisi anak-anak di sekolah Anda dan bagaimana dana ini akan digunakan untuk mencegah stunting..."
+            placeholder={t(
+              "Ceritakan kondisi anak-anak di sekolah Anda dan bagaimana dana ini akan digunakan untuk mencegah stunting...",
+              "Describe the condition of children at your school and how the funds will be used to prevent stunting...",
+            )}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none resize-none placeholder:text-muted-foreground/70"
           />
         </FormField>
 
-        <FormField label="Jurnal Guru (Pembuka)" required>
+        <FormField label={t("Jurnal Guru (Pembuka)", "Teacher's Journal (Opening)")} required>
           <textarea
             value={journal}
             onChange={(e) => setJournal(e.target.value)}
             rows={3}
-            placeholder="Tuliskan catatan pertama Anda untuk para donatur..."
+            placeholder={t("Tuliskan catatan pertama Anda untuk para donatur...", "Write your first note to donors...")}
             className="w-full bg-primary-soft/30 rounded-xl px-4 py-3 text-sm text-foreground border border-primary/20 focus:border-primary outline-none resize-none font-serif italic placeholder:text-muted-foreground/70 placeholder:not-italic placeholder:font-sans"
           />
         </FormField>
@@ -441,7 +455,7 @@ function BuatKampanye() {
           disabled={!valid}
           className="w-full bg-accent text-accent-foreground rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-50 hover:opacity-95 transition"
         >
-          <Send className="w-4 h-4" /> Ajukan Kampanye
+          <Send className="w-4 h-4" /> {t("Ajukan Kampanye", "Submit Campaign")}
         </button>
       </div>
     </div>
