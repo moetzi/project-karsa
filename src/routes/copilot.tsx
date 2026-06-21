@@ -280,7 +280,7 @@ function MateriCard({
           </Link>
         ) : (
           <button className="bg-primary-soft text-primary rounded-xl py-2.5 text-sm font-semibold flex items-center justify-center gap-2">
-            <BookOpen className="w-4 h-4" /> Buka Materi <ChevronRight className="w-3 h-3" />
+            <BookOpen className="w-4 h-4" /> {tt("Buka Materi", "Open Material")} <ChevronRight className="w-3 h-3" />
           </button>
         )}
         <button
@@ -292,7 +292,7 @@ function MateriCard({
               : "bg-surface border-border text-muted-foreground")
           }
         >
-          {saved ? <><Check className="w-3.5 h-3.5" /> Tersimpan</> : <><Download className="w-3.5 h-3.5" /> Unduh Offline</>}
+          {saved ? <><Check className="w-3.5 h-3.5" /> {tt("Tersimpan", "Saved")}</> : <><Download className="w-3.5 h-3.5" /> {tt("Unduh Offline", "Download Offline")}</>}
         </button>
       </div>
     </div>
