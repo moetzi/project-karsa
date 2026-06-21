@@ -68,6 +68,7 @@ function SegBtn({ active, onClick, children }: { active: boolean; onClick: () =>
 }
 
 function Generator() {
+  const t = useT();
   const [loading, setLoading] = useState(false);
   const [kelas, setKelas] = useState("");
   const [mapel, setMapel] = useState("");
@@ -77,43 +78,46 @@ function Generator() {
   return (
     <div className="space-y-5">
       <div className="bg-surface rounded-2xl p-5 border border-border/60 space-y-5">
-        <Field label="Tingkat Kelas">
+        <Field label={t("Tingkat Kelas", "Grade Level")}>
           <select
             value={kelas}
             onChange={(e) => setKelas(e.target.value)}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground appearance-none border border-transparent focus:border-primary outline-none"
           >
-            <option value="">Pilih kelas...</option>
-            <option>Kelas 1 SD</option>
-            <option>Kelas 2 SD</option>
-            <option>Kelas 3 SD</option>
-            <option>Kelas 4 SD</option>
-            <option>Kelas 5 SD</option>
-            <option>Kelas 6 SD</option>
+            <option value="">{t("Pilih kelas...", "Select grade...")}</option>
+            <option>{t("Kelas 1 SD", "Grade 1 (Elementary)")}</option>
+            <option>{t("Kelas 2 SD", "Grade 2 (Elementary)")}</option>
+            <option>{t("Kelas 3 SD", "Grade 3 (Elementary)")}</option>
+            <option>{t("Kelas 4 SD", "Grade 4 (Elementary)")}</option>
+            <option>{t("Kelas 5 SD", "Grade 5 (Elementary)")}</option>
+            <option>{t("Kelas 6 SD", "Grade 6 (Elementary)")}</option>
           </select>
         </Field>
 
-        <Field label="Mata Pelajaran">
+        <Field label={t("Mata Pelajaran", "Subject")}>
           <select
             value={mapel}
             onChange={(e) => setMapel(e.target.value)}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground appearance-none border border-transparent focus:border-primary outline-none"
           >
-            <option value="">Pilih mata pelajaran...</option>
-            <option>Bahasa Indonesia</option>
-            <option>Matematika</option>
-            <option>IPA</option>
-            <option>IPS</option>
-            <option>PPKn</option>
+            <option value="">{t("Pilih mata pelajaran...", "Select subject...")}</option>
+            <option>{t("Bahasa Indonesia", "Indonesian Language")}</option>
+            <option>{t("Matematika", "Mathematics")}</option>
+            <option>{t("IPA", "Science")}</option>
+            <option>{t("IPS", "Social Studies")}</option>
+            <option>{t("PPKn", "Civics")}</option>
           </select>
         </Field>
 
-        <Field label="Tujuan Pembelajaran">
+        <Field label={t("Tujuan Pembelajaran", "Learning Objective")}>
           <textarea
             value={tujuan}
             onChange={(e) => setTujuan(e.target.value)}
             rows={4}
-            placeholder="Contoh: Siswa mampu memahami konsep rantai makanan dalam ekosistem sawah dan menjelaskan peran produsen, konsumen, dan pengurai."
+            placeholder={t(
+              "Contoh: Siswa mampu memahami konsep rantai makanan dalam ekosistem sawah dan menjelaskan peran produsen, konsumen, dan pengurai.",
+              "Example: Students can understand food chains in rice-field ecosystems and explain the roles of producers, consumers, and decomposers.",
+            )}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none resize-none placeholder:text-muted-foreground/70"
           />
         </Field>
@@ -127,9 +131,9 @@ function Generator() {
           className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-50 hover:opacity-95 transition"
         >
           {loading ? (
-            <><Loader2 className="w-4 h-4 animate-spin" /> Membuat materi...</>
+            <><Loader2 className="w-4 h-4 animate-spin" /> {t("Membuat materi...", "Generating materials...")}</>
           ) : (
-            <><Sparkles className="w-4 h-4" /> Buat Rencana & Materi</>
+            <><Sparkles className="w-4 h-4" /> {t("Buat Rencana & Materi", "Generate Plan & Materials")}</>
           )}
         </button>
       </div>
@@ -138,7 +142,7 @@ function Generator() {
         <div className="text-center py-6">
           <BookOpen className="w-10 h-10 text-muted-foreground/50 mx-auto mb-3" />
           <p className="text-sm text-muted-foreground">
-            Isi form di atas untuk membuat RPP dan materi interaktif.
+            {t("Isi form di atas untuk membuat RPP dan materi interaktif.", "Fill the form above to generate lesson plans and interactive materials.")}
           </p>
         </div>
       )}
