@@ -101,16 +101,17 @@ function Feed() {
 }
 
 function CampaignCard({ c }: { c: typeof campaigns[number] }) {
+  const t = useT();
   const [boosted, setBoosted] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
-  const shares = c.shares + (shareOpen ? 0 : 0);
+  const shares = c.shares;
   const boosts = c.boosts + (boosted ? 1 : 0);
   return (
     <article className="relative bg-surface rounded-2xl overflow-hidden border border-border/60">
       {/* Hero */}
       <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
         <span className="self-start inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
-          <ShieldCheck className="w-3 h-3" /> Terverifikasi
+          <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
         </span>
         <div className="text-primary-foreground">
           <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
@@ -125,10 +126,10 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
         <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs items-center pb-3 border-b border-border/60">
           <div className="text-center">
             <p className="font-bold text-lg text-foreground leading-none">{c.recipients}</p>
-            <p className="text-[10px] text-muted-foreground">Penerima</p>
+            <p className="text-[10px] text-muted-foreground">{t("Penerima", "Recipients")}</p>
           </div>
           <div className="text-[11px] space-y-0.5">
-            <p className="flex items-center gap-1.5"><Truck className="w-3 h-3 text-primary" /><span className="text-muted-foreground">Pemasok:</span> <span className="font-semibold text-foreground">{c.supplier}</span></p>
+            <p className="flex items-center gap-1.5"><Truck className="w-3 h-3 text-primary" /><span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span> <span className="font-semibold text-foreground">{c.supplier}</span></p>
             <p className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-primary" /><span className="text-foreground">{c.region}</span></p>
           </div>
         </div>
@@ -137,22 +138,22 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
         <div className="pt-3">
           <div className="flex justify-between text-xs mb-1.5">
             <span className="font-mono font-bold text-foreground">Rp {c.raised}jt</span>
-            <span className="font-mono text-muted-foreground">dari Rp {c.target}jt</span>
+            <span className="font-mono text-muted-foreground">{t(`dari Rp ${c.target}jt`, `of Rp ${c.target}M`)}</span>
           </div>
           <div className="h-2 rounded-full bg-muted overflow-hidden">
             <div className="h-full progress-gradient rounded-full" style={{ width: `${c.pct}%` }} />
           </div>
-          <p className="text-[11px] text-muted-foreground mt-1.5">{c.pct}% terkumpul</p>
+          <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${c.pct}% terkumpul`, `${c.pct}% raised`)}</p>
         </div>
 
         {/* Transparency report */}
         <div className="mt-4 pt-4 border-t border-border/60">
           <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold flex items-center gap-1.5">
-            <ShieldCheck className="w-3 h-3" /> Laporan Transparansi
+            <ShieldCheck className="w-3 h-3" /> {t("Laporan Transparansi", "Transparency Report")}
           </p>
           <div className="mt-2 relative rounded-xl overflow-hidden h-32" style={{ background: c.report }}>
             <span className="absolute top-2 right-2 bg-foreground/70 text-background text-[10px] font-semibold px-2 py-1 rounded-full">
-              Ketuk untuk lanjut
+              {t("Ketuk untuk lanjut", "Tap to continue")}
             </span>
             <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
               {[0, 1, 2, 3].map((d) => (
@@ -165,7 +166,7 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
         {/* Teacher journal */}
         <div className="mt-4 bg-primary-soft/40 rounded-xl p-3">
           <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
-            Jurnal Guru — {c.teacher.toUpperCase()}
+            {t("Jurnal Guru", "Teacher's Journal")} — {c.teacher.toUpperCase()}
           </p>
           <p className="font-serif italic text-[13px] text-foreground mt-2 leading-relaxed">
             "{c.journal}"
@@ -176,12 +177,12 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
         <div className="mt-4 flex items-center gap-4 text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <Eye className="w-3.5 h-3.5" />
-            <span><span className="font-mono font-semibold text-foreground">{c.views}</span> Views</span>
+            <span><span className="font-mono font-semibold text-foreground">{c.views}</span> {t("Views", "Views")}</span>
           </span>
           <span className="w-px h-3 bg-border" />
           <span className="inline-flex items-center gap-1.5">
             <Repeat2 className="w-3.5 h-3.5" />
-            <span><span className="font-mono font-semibold text-foreground">{shares}</span> Shares</span>
+            <span><span className="font-mono font-semibold text-foreground">{shares}</span> {t("Shares", "Shares")}</span>
           </span>
         </div>
 
@@ -196,16 +197,16 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
                 : "bg-muted/60 text-foreground border-border")
             }
           >
-            <ThumbsUp className="w-4 h-4" /> Boost <span className="font-mono">{boosts}</span>
+            <ThumbsUp className="w-4 h-4" /> {t("Boost", "Boost")} <span className="font-mono">{boosts}</span>
           </button>
           <button
             onClick={() => setShareOpen(true)}
             className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border border-primary/30 bg-primary-soft/60 text-primary hover:bg-primary-soft transition-colors"
           >
-            <Share2 className="w-4 h-4" /> Bagikan
+            <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
           </button>
           <button className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1">
-            Donasi <ChevronRight className="w-4 h-4" />
+            {t("Donasi", "Donate")} <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
