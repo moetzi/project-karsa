@@ -194,15 +194,31 @@ const SUPPLIERS = [
   "Lainnya (Kios/UMKM)",
 ];
 
+const REGIONS = [
+  "Aceh","Sumatera Utara","Sumatera Barat","Riau","Kepulauan Riau","Jambi","Bengkulu","Sumatera Selatan","Bangka Belitung","Lampung",
+  "DKI Jakarta","Banten","Jawa Barat","Jawa Tengah","DI Yogyakarta","Jawa Timur",
+  "Bali","Nusa Tenggara Barat","Nusa Tenggara Timur",
+  "Kalimantan Barat","Kalimantan Tengah","Kalimantan Selatan","Kalimantan Timur","Kalimantan Utara",
+  "Sulawesi Utara","Gorontalo","Sulawesi Tengah","Sulawesi Barat","Sulawesi Selatan","Sulawesi Tenggara",
+  "Maluku","Maluku Utara","Papua","Papua Barat","Papua Selatan","Papua Tengah","Papua Pegunungan","Papua Barat Daya",
+];
+
 function BuatKampanye() {
   const [supplier, setSupplier] = useState("");
   const [npsn, setNpsn] = useState("");
   const [nama, setNama] = useState("");
+  const [sekolah, setSekolah] = useState("");
+  const [region, setRegion] = useState("");
+  const [recipients, setRecipients] = useState("");
+  const [guru, setGuru] = useState("");
   const [target, setTarget] = useState("");
   const [desc, setDesc] = useState("");
+  const [journal, setJournal] = useState("");
   const [lainnya, setLainnya] = useState("");
   const showLainnya = supplier === "Lainnya (Kios/UMKM)";
-  const valid = npsn && nama && supplier && target && desc && (!showLainnya || lainnya);
+  const valid =
+    npsn && nama && sekolah && region && recipients && guru &&
+    supplier && target && desc && journal && (!showLainnya || lainnya);
 
   return (
     <div className="space-y-4">
@@ -234,6 +250,47 @@ function BuatKampanye() {
             value={nama}
             onChange={(e) => setNama(e.target.value)}
             placeholder="cth. Gizi Sehat Desa Kolaka 2025"
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
+          />
+        </FormField>
+
+        <FormField label="Nama Sekolah" required>
+          <input
+            value={sekolah}
+            onChange={(e) => setSekolah(e.target.value)}
+            placeholder="cth. SDN 047 Kolaka Utara"
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
+          />
+        </FormField>
+
+        <FormField label="Provinsi" required>
+          <select
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground appearance-none border border-transparent focus:border-primary outline-none"
+          >
+            <option value="">Pilih provinsi...</option>
+            {REGIONS.map((r) => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </select>
+        </FormField>
+
+        <FormField label="Jumlah Penerima (Siswa)" required>
+          <input
+            value={recipients}
+            onChange={(e) => setRecipients(e.target.value.replace(/\D/g, ""))}
+            inputMode="numeric"
+            placeholder="cth. 47"
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm font-mono text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
+          />
+        </FormField>
+
+        <FormField label="Nama Guru Penanggung Jawab" required>
+          <input
+            value={guru}
+            onChange={(e) => setGuru(e.target.value)}
+            placeholder="cth. Ibu Sari Dewi"
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
           />
         </FormField>
@@ -282,6 +339,16 @@ function BuatKampanye() {
             rows={4}
             placeholder="Ceritakan kondisi anak-anak di sekolah Anda dan bagaimana dana ini akan digunakan untuk mencegah stunting..."
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none resize-none placeholder:text-muted-foreground/70"
+          />
+        </FormField>
+
+        <FormField label="Jurnal Guru (Pembuka)" required>
+          <textarea
+            value={journal}
+            onChange={(e) => setJournal(e.target.value)}
+            rows={3}
+            placeholder="Tuliskan catatan pertama Anda untuk para donatur..."
+            className="w-full bg-primary-soft/30 rounded-xl px-4 py-3 text-sm text-foreground border border-primary/20 focus:border-primary outline-none resize-none font-serif italic placeholder:text-muted-foreground/70 placeholder:not-italic placeholder:font-sans"
           />
         </FormField>
 
