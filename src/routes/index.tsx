@@ -41,17 +41,20 @@ export const Route = createFileRoute("/")({
 });
 
 function Beranda() {
+  const t = useT();
   return (
     <PhoneShell>
       <div className="px-6 pt-4 pb-6 space-y-6">
         <header>
-          <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-widest">Senin, 21 Juni</p>
+          <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-widest">
+            {t("Senin, 21 Juni", "Monday, June 21")}
+          </p>
           <h1 className="mt-1 text-[28px] leading-tight font-extrabold text-foreground">
-            Selamat pagi,<br />
-            <span className="text-primary">Bu Sari</span> 🌱
+            {t("Selamat pagi,", "Good morning,")}<br />
+            <span className="text-primary">{t("Bu Sari", "Ms. Sari")}</span> 🌱
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Mari lanjutkan misi gizi & literasi hari ini.
+            {t("Mari lanjutkan misi gizi & literasi hari ini.", "Let's continue today's nutrition & literacy mission.")}
           </p>
         </header>
 
@@ -69,19 +72,20 @@ function Beranda() {
             </div>
             <div className="flex-1">
               <p className="font-mono text-[10px] uppercase tracking-widest text-accent font-semibold">
-                Aksi Hari Ini
+                {t("Aksi Hari Ini", "Today's Action")}
               </p>
               <h2 className="mt-1 text-[15px] font-bold text-foreground leading-snug">
-                🎉 Target Terpenuhi!
+                {t("🎉 Target Terpenuhi!", "🎉 Target Reached!")}
               </h2>
               <p className="mt-1 text-[13px] text-foreground/80 leading-relaxed">
-                Unggah foto makan bersama dan tulis jurnal hari ini untuk <span className="font-semibold">Desa Kolaka</span>.
+                {t("Unggah foto makan bersama dan tulis jurnal hari ini untuk ", "Upload a group meal photo and write today's journal for ")}
+                <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>.
               </p>
             </div>
           </div>
           <button className="mt-4 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
             <Upload className="w-4 h-4" />
-            Unggah Laporan
+            {t("Unggah Laporan", "Upload Report")}
           </button>
         </section>
 
@@ -90,11 +94,15 @@ function Beranda() {
           <div className="px-6 flex items-end justify-between mb-3">
             <div>
               <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold">
-                Pojok Inspirasi Guru
+                {t("Pojok Inspirasi Guru", "Teacher's Inspiration Corner")}
               </p>
-              <h2 className="mt-0.5 text-[18px] font-extrabold text-foreground">Bacaan Pilihan</h2>
+              <h2 className="mt-0.5 text-[18px] font-extrabold text-foreground">
+                {t("Bacaan Pilihan", "Featured Reads")}
+              </h2>
             </div>
-            <span className="text-[11px] text-muted-foreground font-mono">3 artikel</span>
+            <span className="text-[11px] text-muted-foreground font-mono">
+              {t("3 artikel", "3 articles")}
+            </span>
           </div>
           <div className="overflow-x-auto no-scrollbar">
             <ul className="flex gap-3 px-6 pb-1 snap-x snap-mandatory">
@@ -111,19 +119,19 @@ function Beranda() {
                     >
                       <span className="absolute top-2.5 right-2.5 text-2xl drop-shadow">{a.emoji}</span>
                       <span className="bg-surface/90 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
-                        {a.tag}
+                        {t(a.tag.id, a.tag.en)}
                       </span>
                     </div>
                     <div className="p-3">
                       <h3 className="font-serif text-[14px] leading-snug text-foreground line-clamp-3 min-h-[3.6em]">
-                        {a.title}
+                        {t(a.title.id, a.title.en)}
                       </h3>
                       <div className="mt-2.5 flex items-center justify-between text-[11px]">
                         <span className="font-mono text-muted-foreground inline-flex items-center gap-1">
-                          <Clock className="w-3 h-3" /> {a.read}
+                          <Clock className="w-3 h-3" /> {t(a.read.id, a.read.en)}
                         </span>
                         <span className="text-accent font-semibold inline-flex items-center gap-0.5">
-                          Baca <ArrowRight className="w-3 h-3" />
+                          {t("Baca", "Read")} <ArrowRight className="w-3 h-3" />
                         </span>
                       </div>
                     </div>
@@ -138,13 +146,15 @@ function Beranda() {
         <section className="bg-surface rounded-2xl p-5 border border-border/60">
           <div className="flex items-center justify-between mb-3">
             <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold">
-              Kampanye Aktif
+              {t("Kampanye Aktif", "Active Campaign")}
             </p>
             <span className="text-[10px] font-semibold text-primary bg-primary-soft px-2 py-0.5 rounded-full">
-              56% terkumpul
+              {t("56% terkumpul", "56% raised")}
             </span>
           </div>
-          <h3 className="text-lg font-bold text-foreground">Gizi Sehat Desa Kolaka</h3>
+          <h3 className="text-lg font-bold text-foreground">
+            {t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")}
+          </h3>
           <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
             <MapPin className="w-3 h-3" /> SDN 047 Kolaka Utara
           </p>
@@ -154,15 +164,15 @@ function Beranda() {
           </div>
           <div className="mt-2 flex justify-between text-xs">
             <span className="font-mono font-semibold text-foreground">Rp 8.4jt</span>
-            <span className="font-mono text-muted-foreground">dari Rp 15.0jt</span>
+            <span className="font-mono text-muted-foreground">{t("dari Rp 15.0jt", "of Rp 15.0M")}</span>
           </div>
 
           <div className="mt-4 pt-4 border-t border-border/60 flex items-center justify-between">
             <div className="flex items-center gap-2 text-xs text-muted-foreground">
               <TrendingUp className="w-3.5 h-3.5 text-primary" />
-              <span>+12 donatur minggu ini</span>
+              <span>{t("+12 donatur minggu ini", "+12 donors this week")}</span>
             </div>
-            <span className="text-xs font-semibold text-primary">Lihat detail →</span>
+            <span className="text-xs font-semibold text-primary">{t("Lihat detail →", "View details →")}</span>
           </div>
         </section>
       </div>
