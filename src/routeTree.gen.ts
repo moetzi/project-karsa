@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as NutrisiRouteImport } from './routes/nutrisi'
 import { Route as CopilotRouteImport } from './routes/copilot'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as InspirasiIdRouteImport } from './routes/inspirasi.$id'
 import { Route as FlashcardIdRouteImport } from './routes/flashcard.$id'
 
 const NutrisiRoute = NutrisiRouteImport.update({
@@ -29,6 +30,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InspirasiIdRoute = InspirasiIdRouteImport.update({
+  id: '/inspirasi/$id',
+  path: '/inspirasi/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FlashcardIdRoute = FlashcardIdRouteImport.update({
   id: '/flashcard/$id',
   path: '/flashcard/$id',
@@ -40,12 +46,14 @@ export interface FileRoutesByFullPath {
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/flashcard/$id': typeof FlashcardIdRoute
+  '/inspirasi/$id': typeof InspirasiIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/flashcard/$id': typeof FlashcardIdRoute
+  '/inspirasi/$id': typeof InspirasiIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -53,13 +61,20 @@ export interface FileRoutesById {
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/flashcard/$id': typeof FlashcardIdRoute
+  '/inspirasi/$id': typeof InspirasiIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/copilot' | '/nutrisi' | '/flashcard/$id'
+  fullPaths: '/' | '/copilot' | '/nutrisi' | '/flashcard/$id' | '/inspirasi/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/copilot' | '/nutrisi' | '/flashcard/$id'
-  id: '__root__' | '/' | '/copilot' | '/nutrisi' | '/flashcard/$id'
+  to: '/' | '/copilot' | '/nutrisi' | '/flashcard/$id' | '/inspirasi/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/copilot'
+    | '/nutrisi'
+    | '/flashcard/$id'
+    | '/inspirasi/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -67,6 +82,7 @@ export interface RootRouteChildren {
   CopilotRoute: typeof CopilotRoute
   NutrisiRoute: typeof NutrisiRoute
   FlashcardIdRoute: typeof FlashcardIdRoute
+  InspirasiIdRoute: typeof InspirasiIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,6 +108,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/inspirasi/$id': {
+      id: '/inspirasi/$id'
+      path: '/inspirasi/$id'
+      fullPath: '/inspirasi/$id'
+      preLoaderRoute: typeof InspirasiIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/flashcard/$id': {
       id: '/flashcard/$id'
       path: '/flashcard/$id'
@@ -107,17 +130,8 @@ const rootRouteChildren: RootRouteChildren = {
   CopilotRoute: CopilotRoute,
   NutrisiRoute: NutrisiRoute,
   FlashcardIdRoute: FlashcardIdRoute,
+  InspirasiIdRoute: InspirasiIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
