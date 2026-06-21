@@ -17,29 +17,30 @@ export const Route = createFileRoute("/copilot")({
 type Tab = "generator" | "materi";
 
 function Copilot() {
+  const t = useT();
   const [tab, setTab] = useState<Tab>("generator");
   return (
     <PhoneShell>
       <div className="px-6 pt-4 pb-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-[28px] font-extrabold text-foreground">AI Copilot</h1>
+            <h1 className="text-[28px] font-extrabold text-foreground">{t("AI Copilot", "AI Copilot")}</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              Buat RPP & materi interaktif siap offline.
+              {t("Buat RPP & materi interaktif siap offline.", "Build lesson plans & interactive materials, offline-ready.")}
             </p>
           </div>
           <span className="inline-flex items-center gap-1.5 bg-primary-soft text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
-            <Wifi className="w-3 h-3" /> Online
+            <Wifi className="w-3 h-3" /> {t("Online", "Online")}
           </span>
         </div>
 
         {/* Segmented control */}
         <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-2 gap-1">
           <SegBtn active={tab === "generator"} onClick={() => setTab("generator")}>
-            <Sparkles className="w-4 h-4" /> Generator
+            <Sparkles className="w-4 h-4" /> {t("Generator", "Generator")}
           </SegBtn>
           <SegBtn active={tab === "materi"} onClick={() => setTab("materi")}>
-            <Layers className="w-4 h-4" /> Materi Saya
+            <Layers className="w-4 h-4" /> {t("Materi Saya", "My Materials")}
             <span className="ml-1 bg-accent text-accent-foreground text-[10px] font-bold w-5 h-5 grid place-items-center rounded-full">3</span>
           </SegBtn>
         </div>
