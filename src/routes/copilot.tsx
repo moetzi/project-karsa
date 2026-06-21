@@ -237,7 +237,7 @@ function MateriCard({
           <div className="flex items-start justify-between gap-2">
             <h3 className="font-bold text-[15px] text-foreground">{title}</h3>
             <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-primary bg-primary-soft px-2 py-0.5 rounded-full whitespace-nowrap">
-              <Download className="w-2.5 h-2.5" /> Offline
+              <Download className="w-2.5 h-2.5" /> {tt("Offline", "Offline")}
             </span>
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5">{meta}</p>
