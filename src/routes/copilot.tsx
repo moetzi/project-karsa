@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
 import { Sparkles, Layers, Wifi, Download, Check, BookOpen, HelpCircle, Presentation, ChevronRight, Loader2, Clock } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/copilot")({
   head: () => ({
