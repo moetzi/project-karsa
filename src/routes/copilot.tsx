@@ -162,39 +162,43 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 function MateriSaya() {
+  const t = useT();
   return (
     <div className="space-y-4">
       <p className="text-xs text-muted-foreground">
-        3 materi tersimpan · Semua bisa digunakan tanpa internet
+        {t("3 materi tersimpan · Semua bisa digunakan tanpa internet", "3 saved materials · All usable offline")}
       </p>
 
       <MateriCard
         type="flashcard"
         icon={<Layers className="w-5 h-5" />}
-        title="Alfabet Hewan"
-        meta="26 kartu · Kelas 1 SD · Bahasa Indonesia"
-        time="Hari ini, 10:30"
-        desc="Kartu bergambar A-Z dengan hewan lokal Indonesia. Cocok untuk belajar alfabet Kelas 1 SD."
-        cta={{ label: "Mulai Belajar", to: "/flashcard/alfabet-hewan" }}
+        title={t("Alfabet Hewan", "Animal Alphabet")}
+        meta={t("26 kartu · Kelas 1 SD · Bahasa Indonesia", "26 cards · Grade 1 · Indonesian")}
+        time={t("Hari ini, 10:30", "Today, 10:30")}
+        desc={t(
+          "Kartu bergambar A-Z dengan hewan lokal Indonesia. Cocok untuk belajar alfabet Kelas 1 SD.",
+          "A-Z illustrated cards featuring Indonesian wildlife. Perfect for Grade 1 alphabet learning.",
+        )}
+        cta={{ label: t("Mulai Belajar", "Start Learning"), to: "/flashcard/alfabet-hewan" }}
       />
 
       <MateriCard
         type="quiz"
         icon={<HelpCircle className="w-5 h-5" />}
-        title="Berhitung Ceria"
-        meta="10 soal · Kelas 2 SD · Matematika"
-        time="Kemarin, 14:15"
-        desc="Berapa hasil dari 7 + 5?"
+        title={t("Berhitung Ceria", "Happy Counting")}
+        meta={t("10 soal · Kelas 2 SD · Matematika", "10 questions · Grade 2 · Mathematics")}
+        time={t("Kemarin, 14:15", "Yesterday, 14:15")}
+        desc={t("Berapa hasil dari 7 + 5?", "What is 7 + 5?")}
         quiz
       />
 
       <MateriCard
         type="slides"
         icon={<Presentation className="w-5 h-5" />}
-        title="Struktur Tanaman"
-        meta="12 slide · Kelas 4 SD · IPA"
-        time="2 hari lalu"
-        desc="Slide interaktif tentang bagian-bagian tanaman dan fungsinya."
+        title={t("Struktur Tanaman", "Plant Structure")}
+        meta={t("12 slide · Kelas 4 SD · IPA", "12 slides · Grade 4 · Science")}
+        time={t("2 hari lalu", "2 days ago")}
+        desc={t("Slide interaktif tentang bagian-bagian tanaman dan fungsinya.", "Interactive slides about plant parts and their functions.")}
       />
     </div>
   );
