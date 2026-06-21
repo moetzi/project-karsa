@@ -217,6 +217,7 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
 }
 
 function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) {
+  const t = useT();
   const [copied, setCopied] = useState(false);
   const channels = [
     { id: "wa", label: "WhatsApp", emoji: "💬", bg: "linear-gradient(135deg,#25D366,#128C7E)" },
