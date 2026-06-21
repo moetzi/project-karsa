@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
-import { ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash } from "lucide-react";
+import { ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash, Eye, Repeat2, Share2, X, Link2, Check } from "lucide-react";
 
 export const Route = createFileRoute("/nutrisi")({
   head: () => ({
