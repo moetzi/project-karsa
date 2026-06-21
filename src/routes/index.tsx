@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { PartyPopper, Upload, MapPin, TrendingUp, Clock, ArrowRight } from "lucide-react";
+import { useT } from "@/lib/i18n";
 
 const INSPIRASI = [
   {
