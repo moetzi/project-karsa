@@ -170,12 +170,25 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </p>
         </div>
 
+        {/* Reach stats */}
+        <div className="mt-4 flex items-center gap-4 text-[11px] text-muted-foreground">
+          <span className="inline-flex items-center gap-1.5">
+            <Eye className="w-3.5 h-3.5" />
+            <span><span className="font-mono font-semibold text-foreground">{c.views}</span> Views</span>
+          </span>
+          <span className="w-px h-3 bg-border" />
+          <span className="inline-flex items-center gap-1.5">
+            <Repeat2 className="w-3.5 h-3.5" />
+            <span><span className="font-mono font-semibold text-foreground">{shares}</span> Shares</span>
+          </span>
+        </div>
+
         {/* Actions */}
-        <div className="mt-4 flex items-center justify-between">
+        <div className="mt-3 flex items-center gap-2">
           <button
             onClick={() => setBoosted((b) => !b)}
             className={
-              "inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold border transition-colors " +
+              "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border transition-colors " +
               (boosted
                 ? "bg-accent text-accent-foreground border-accent"
                 : "bg-muted/60 text-foreground border-border")
@@ -183,12 +196,74 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           >
             <ThumbsUp className="w-4 h-4" /> Boost <span className="font-mono">{boosts}</span>
           </button>
-          <button className="text-primary font-semibold text-sm inline-flex items-center gap-1">
+          <button
+            onClick={() => setShareOpen(true)}
+            className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border border-primary/30 bg-primary-soft/60 text-primary hover:bg-primary-soft transition-colors"
+          >
+            <Share2 className="w-4 h-4" /> Bagikan
+          </button>
+          <button className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1">
             Donasi <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
+
+      {shareOpen && <ShareSheet title={c.title} onClose={() => setShareOpen(false)} />}
     </article>
+  );
+}
+
+function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) {
+  const [copied, setCopied] = useState(false);
+  const channels = [
+    { id: "wa", label: "WhatsApp", emoji: "💬", bg: "linear-gradient(135deg,#25D366,#128C7E)" },
+    { id: "ig", label: "Instagram Story", emoji: "📸", bg: "linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)" },
+    { id: "tw", label: "Twitter / X", emoji: "𝕏", bg: "linear-gradient(135deg,#0f1419,#1d9bf0)" },
+  ];
+  return (
+    <div
+      className="absolute inset-0 z-20 flex items-end bg-foreground/40 backdrop-blur-sm animate-in fade-in duration-200"
+      onClick={onClose}
+    >
+      <div
+        className="w-full bg-surface rounded-t-3xl p-5 pb-7 animate-in slide-in-from-bottom duration-300"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold">Bagikan Kampanye</p>
+            <h3 className="mt-1 text-[15px] font-bold text-foreground leading-snug pr-6">{title}</h3>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-muted grid place-items-center text-muted-foreground shrink-0">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="mt-5 grid grid-cols-3 gap-3">
+          {channels.map((ch) => (
+            <button key={ch.id} className="flex flex-col items-center gap-2 group">
+              <span
+                className="w-14 h-14 rounded-2xl grid place-items-center text-2xl text-white shadow-md group-active:scale-95 transition"
+                style={{ background: ch.bg }}
+              >
+                {ch.emoji}
+              </span>
+              <span className="text-[11px] font-semibold text-foreground text-center leading-tight">{ch.label}</span>
+            </button>
+          ))}
+        </div>
+
+        <button
+          onClick={() => { setCopied(true); setTimeout(() => setCopied(false), 1500); }}
+          className="mt-5 w-full flex items-center justify-between bg-muted/70 rounded-xl px-4 py-3 text-sm hover:bg-muted transition"
+        >
+          <span className="font-mono text-xs text-muted-foreground truncate">karsa.id/k/{title.split(" ")[1]?.toLowerCase() ?? "kampanye"}</span>
+          <span className={"inline-flex items-center gap-1 font-semibold text-xs " + (copied ? "text-primary" : "text-foreground")}>
+            {copied ? (<><Check className="w-3.5 h-3.5" /> Tersalin</>) : (<><Link2 className="w-3.5 h-3.5" /> Salin</>)}
+          </span>
+        </button>
+      </div>
+    </div>
   );
 }
 
