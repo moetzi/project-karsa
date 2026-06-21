@@ -16,11 +16,11 @@ function StatusBar() {
 
 function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const items = [
-    { to: "/", label: "Beranda", icon: Home, match: (p: string) => p === "/" },
-    { to: "/copilot", label: "Copilot", icon: BookOpen, match: (p: string) => p.startsWith("/copilot") },
-    { to: "/nutrisi", label: "Nutrisi", icon: Leaf, match: (p: string) => p.startsWith("/nutrisi"), dot: true },
-  ] as const;
+  const items: Array<{ to: string; label: string; icon: typeof Home; match: (p: string) => boolean; dot?: boolean }> = [
+    { to: "/", label: "Beranda", icon: Home, match: (p) => p === "/" },
+    { to: "/copilot", label: "Copilot", icon: BookOpen, match: (p) => p.startsWith("/copilot") },
+    { to: "/nutrisi", label: "Nutrisi", icon: Leaf, match: (p) => p.startsWith("/nutrisi"), dot: true },
+  ];
   return (
     <nav className="absolute bottom-0 left-0 right-0 bg-surface border-t border-border/60 px-4 pt-2 pb-5">
       <ul className="flex justify-around items-center">
