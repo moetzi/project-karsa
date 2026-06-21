@@ -17,11 +17,12 @@ export const Route = createFileRoute("/nutrisi")({
 type Tab = "feed" | "buat";
 
 function Nutrisi() {
+  const t = useT();
   const [tab, setTab] = useState<Tab>("feed");
   return (
     <PhoneShell>
       <div className="px-6 pt-4 pb-6">
-        <h1 className="text-[28px] font-extrabold text-foreground">Gizi & Kampanye</h1>
+        <h1 className="text-[28px] font-extrabold text-foreground">{t("Gizi & Kampanye", "Nutrition & Campaigns")}</h1>
 
         <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-2 gap-1">
           <button
@@ -31,7 +32,7 @@ function Nutrisi() {
               (tab === "feed" ? "bg-surface text-primary shadow-sm" : "text-muted-foreground")
             }
           >
-            Feed Publik
+            {t("Feed Publik", "Public Feed")}
           </button>
           <button
             onClick={() => setTab("buat")}
@@ -40,7 +41,7 @@ function Nutrisi() {
               (tab === "buat" ? "bg-surface text-primary shadow-sm" : "text-muted-foreground")
             }
           >
-            + Buat Kampanye
+            {t("+ Buat Kampanye", "+ Create Campaign")}
           </button>
         </div>
 
