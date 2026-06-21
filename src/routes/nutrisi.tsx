@@ -254,6 +254,47 @@ function BuatKampanye() {
           />
         </FormField>
 
+        <FormField label="Nama Sekolah" required>
+          <input
+            value={sekolah}
+            onChange={(e) => setSekolah(e.target.value)}
+            placeholder="cth. SDN 047 Kolaka Utara"
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
+          />
+        </FormField>
+
+        <FormField label="Provinsi" required>
+          <select
+            value={region}
+            onChange={(e) => setRegion(e.target.value)}
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground appearance-none border border-transparent focus:border-primary outline-none"
+          >
+            <option value="">Pilih provinsi...</option>
+            {REGIONS.map((r) => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </select>
+        </FormField>
+
+        <FormField label="Jumlah Penerima (Siswa)" required>
+          <input
+            value={recipients}
+            onChange={(e) => setRecipients(e.target.value.replace(/\D/g, ""))}
+            inputMode="numeric"
+            placeholder="cth. 47"
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm font-mono text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
+          />
+        </FormField>
+
+        <FormField label="Nama Guru Penanggung Jawab" required>
+          <input
+            value={guru}
+            onChange={(e) => setGuru(e.target.value)}
+            placeholder="cth. Ibu Sari Dewi"
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
+          />
+        </FormField>
+
         <FormField label="Pilih Pemasok/Merchant Lokal" required>
           <select
             value={supplier}
