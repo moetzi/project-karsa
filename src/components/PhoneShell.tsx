@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, BookOpen, Leaf } from "lucide-react";
+import { Home, BookOpen, Leaf, User } from "lucide-react";
 import type { ReactNode } from "react";
+import { useT } from "@/lib/i18n";
 
 function StatusBar() {
   return (
@@ -15,14 +16,16 @@ function StatusBar() {
 }
 
 function BottomNav() {
+  const t = useT();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const items: Array<{ to: string; label: string; icon: typeof Home; match: (p: string) => boolean; dot?: boolean }> = [
-    { to: "/", label: "Beranda", icon: Home, match: (p) => p === "/" },
-    { to: "/copilot", label: "Copilot", icon: BookOpen, match: (p) => p.startsWith("/copilot") },
-    { to: "/nutrisi", label: "Nutrisi", icon: Leaf, match: (p) => p.startsWith("/nutrisi"), dot: true },
+    { to: "/", label: t("Beranda", "Home"), icon: Home, match: (p) => p === "/" },
+    { to: "/copilot", label: t("Copilot", "Copilot"), icon: BookOpen, match: (p) => p.startsWith("/copilot") },
+    { to: "/nutrisi", label: t("Nutrisi", "Nutrition"), icon: Leaf, match: (p) => p.startsWith("/nutrisi"), dot: true },
+    { to: "/profil", label: t("Profil", "Profile"), icon: User, match: (p) => p.startsWith("/profil") },
   ];
   return (
-    <nav className="absolute bottom-0 left-0 right-0 bg-surface border-t border-border/60 px-4 pt-2 pb-5">
+    <nav className="absolute bottom-0 left-0 right-0 bg-surface border-t border-border/60 px-2 pt-2 pb-5">
       <ul className="flex justify-around items-center">
         {items.map((it) => {
           const active = it.match(pathname);
@@ -31,7 +34,7 @@ function BottomNav() {
             <li key={it.to}>
               <Link
                 to={it.to as "/"}
-                className="flex flex-col items-center gap-1 px-3 py-1 relative"
+                className="flex flex-col items-center gap-1 px-2 py-1 relative"
               >
                 <span
                   className={
