@@ -104,7 +104,7 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const shares = c.shares + (shareOpen ? 0 : 0);
   const boosts = c.boosts + (boosted ? 1 : 0);
   return (
-    <article className="bg-surface rounded-2xl overflow-hidden border border-border/60">
+    <article className="relative bg-surface rounded-2xl overflow-hidden border border-border/60">
       {/* Hero */}
       <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
         <span className="self-start inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
