@@ -194,15 +194,31 @@ const SUPPLIERS = [
   "Lainnya (Kios/UMKM)",
 ];
 
+const REGIONS = [
+  "Aceh","Sumatera Utara","Sumatera Barat","Riau","Kepulauan Riau","Jambi","Bengkulu","Sumatera Selatan","Bangka Belitung","Lampung",
+  "DKI Jakarta","Banten","Jawa Barat","Jawa Tengah","DI Yogyakarta","Jawa Timur",
+  "Bali","Nusa Tenggara Barat","Nusa Tenggara Timur",
+  "Kalimantan Barat","Kalimantan Tengah","Kalimantan Selatan","Kalimantan Timur","Kalimantan Utara",
+  "Sulawesi Utara","Gorontalo","Sulawesi Tengah","Sulawesi Barat","Sulawesi Selatan","Sulawesi Tenggara",
+  "Maluku","Maluku Utara","Papua","Papua Barat","Papua Selatan","Papua Tengah","Papua Pegunungan","Papua Barat Daya",
+];
+
 function BuatKampanye() {
   const [supplier, setSupplier] = useState("");
   const [npsn, setNpsn] = useState("");
   const [nama, setNama] = useState("");
+  const [sekolah, setSekolah] = useState("");
+  const [region, setRegion] = useState("");
+  const [recipients, setRecipients] = useState("");
+  const [guru, setGuru] = useState("");
   const [target, setTarget] = useState("");
   const [desc, setDesc] = useState("");
+  const [journal, setJournal] = useState("");
   const [lainnya, setLainnya] = useState("");
   const showLainnya = supplier === "Lainnya (Kios/UMKM)";
-  const valid = npsn && nama && supplier && target && desc && (!showLainnya || lainnya);
+  const valid =
+    npsn && nama && sekolah && region && recipients && guru &&
+    supplier && target && desc && journal && (!showLainnya || lainnya);
 
   return (
     <div className="space-y-4">
