@@ -263,7 +263,7 @@ function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) 
         >
           <span className="font-mono text-xs text-muted-foreground truncate">karsa.id/k/{title.split(" ")[1]?.toLowerCase() ?? "kampanye"}</span>
           <span className={"inline-flex items-center gap-1 font-semibold text-xs " + (copied ? "text-primary" : "text-foreground")}>
-            {copied ? (<><Check className="w-3.5 h-3.5" /> Tersalin</>) : (<><Link2 className="w-3.5 h-3.5" /> Salin</>)}
+            {copied ? (<><Check className="w-3.5 h-3.5" /> {t("Tersalin", "Copied")}</>) : (<><Link2 className="w-3.5 h-3.5" /> {t("Salin", "Copy")}</>)}
           </span>
         </button>
       </div>
