@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as NutrisiRouteImport } from './routes/nutrisi'
 import { Route as CopilotRouteImport } from './routes/copilot'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InspirasiIdRouteImport } from './routes/inspirasi.$id'
 import { Route as FlashcardIdRouteImport } from './routes/flashcard.$id'
 
+const ProfilRoute = ProfilRouteImport.update({
+  id: '/profil',
+  path: '/profil',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NutrisiRoute = NutrisiRouteImport.update({
   id: '/nutrisi',
   path: '/nutrisi',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
+  '/profil': typeof ProfilRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
+  '/profil': typeof ProfilRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
 }
@@ -60,19 +68,33 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
+  '/profil': typeof ProfilRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/copilot' | '/nutrisi' | '/flashcard/$id' | '/inspirasi/$id'
+  fullPaths:
+    | '/'
+    | '/copilot'
+    | '/nutrisi'
+    | '/profil'
+    | '/flashcard/$id'
+    | '/inspirasi/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/copilot' | '/nutrisi' | '/flashcard/$id' | '/inspirasi/$id'
+  to:
+    | '/'
+    | '/copilot'
+    | '/nutrisi'
+    | '/profil'
+    | '/flashcard/$id'
+    | '/inspirasi/$id'
   id:
     | '__root__'
     | '/'
     | '/copilot'
     | '/nutrisi'
+    | '/profil'
     | '/flashcard/$id'
     | '/inspirasi/$id'
   fileRoutesById: FileRoutesById
@@ -81,12 +103,20 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CopilotRoute: typeof CopilotRoute
   NutrisiRoute: typeof NutrisiRoute
+  ProfilRoute: typeof ProfilRoute
   FlashcardIdRoute: typeof FlashcardIdRoute
   InspirasiIdRoute: typeof InspirasiIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profil': {
+      id: '/profil'
+      path: '/profil'
+      fullPath: '/profil'
+      preLoaderRoute: typeof ProfilRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/nutrisi': {
       id: '/nutrisi'
       path: '/nutrisi'
@@ -129,6 +159,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CopilotRoute: CopilotRoute,
   NutrisiRoute: NutrisiRoute,
+  ProfilRoute: ProfilRoute,
   FlashcardIdRoute: FlashcardIdRoute,
   InspirasiIdRoute: InspirasiIdRoute,
 }
