@@ -83,6 +83,8 @@ const campaigns = [
     teacher: "Pak Ridwan Saputra",
     journal: "Dengan dukungan petani lokal, kami kini bisa menyediakan sayuran segar setiap hari Senin dan Rabu untuk makan siang anak-anak.",
     boosts: 84,
+    views: "836",
+    shares: 211,
   },
 ];
 
