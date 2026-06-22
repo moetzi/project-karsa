@@ -642,10 +642,85 @@ function BuatKampanye() {
   const valid = missing.length === 0 && journalCommit;
   const [submitted, setSubmitted] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
+
+  // Auth + active-campaign gate (server-enforced "one active campaign per teacher").
+  const [userId, setUserId] = useState<string | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUserId(data.session?.user.id ?? null);
+      setAuthReady(true);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUserId(session?.user.id ?? null);
+      setAuthReady(true);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const queryClient = useQueryClient();
+  const getActive = useServerFn(getMyActiveCampaign);
+  const createFn = useServerFn(createCampaign);
+
+  const activeQuery = useQuery({
+    queryKey: ["my-active-campaign", userId],
+    queryFn: () => getActive(),
+    enabled: !!userId,
+    staleTime: 30_000,
+  });
+  const hasActiveCampaign = !!activeQuery.data;
+
+  const createMutation = useMutation({
+    mutationFn: (input: { title: string; description: string; school: string; target_amount: number }) =>
+      createFn({ data: input }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-active-campaign", userId] });
+      setSubmitted(true);
+      toast.success(t("Kampanye diajukan!", "Campaign submitted!"));
+    },
+    onError: (err: Error) => {
+      const msg = err.message ?? "";
+      if (msg.includes("ACTIVE_CAMPAIGN_EXISTS")) {
+        toast.error(
+          t(
+            "Anda masih punya kampanye aktif. Tutup dulu sebelum membuat yang baru.",
+            "You still have an active campaign. Close it before creating a new one.",
+          ),
+        );
+        queryClient.invalidateQueries({ queryKey: ["my-active-campaign", userId] });
+      } else if (msg.startsWith("Unauthorized")) {
+        toast.error(t("Masuk dulu untuk membuat kampanye.", "Sign in first to create a campaign."));
+      } else {
+        toast.error(msg || t("Gagal mengajukan kampanye.", "Failed to submit campaign."));
+      }
+    },
+  });
+
+  const locked = !userId || hasActiveCampaign || createMutation.isPending;
+
   const handleSubmit = () => {
     if (!valid) { setShowErrors(true); return; }
-    setSubmitted(true);
+    if (!userId) {
+      toast.error(t("Masuk dulu untuk membuat kampanye.", "Sign in first to create a campaign."));
+      return;
+    }
+    if (hasActiveCampaign) {
+      toast.error(
+        t(
+          "Anda masih punya kampanye aktif. Tutup dulu sebelum membuat yang baru.",
+          "You still have an active campaign. Close it before creating a new one.",
+        ),
+      );
+      return;
+    }
+    createMutation.mutate({
+      title: nama,
+      description: desc,
+      school: sekolah,
+      target_amount: Number(target),
+    });
   };
+
 
   return (
     <div className="space-y-4">
