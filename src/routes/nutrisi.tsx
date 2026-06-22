@@ -1066,19 +1066,55 @@ function BuatKampanye() {
           </p>
         </div>
       </button>
+      {authReady && !userId && (
+        <div className="rounded-xl border border-accent/40 bg-accent/10 px-4 py-3 text-xs flex items-start gap-2">
+          <LogIn className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+          <p className="text-foreground/85">
+            {t(
+              "Masuk dulu untuk mengajukan kampanye. Validasi 1 kampanye aktif per guru dilakukan di server.",
+              "Sign in to submit a campaign. The one-active-campaign-per-teacher rule is enforced on the server.",
+            )}
+          </p>
+        </div>
+      )}
+      {hasActiveCampaign && (
+        <div className="rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 text-xs flex items-start gap-2">
+          <Lock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+          <p className="text-foreground/85">
+            {t(
+              "Anda masih punya kampanye aktif: ",
+              "You still have an active campaign: ",
+            )}
+            <span className="font-semibold">{activeQuery.data?.title}</span>
+            {t(
+              ". Tutup dulu sebelum membuat kampanye baru.",
+              ". Close it before creating a new one.",
+            )}
+          </p>
+        </div>
+      )}
       <button
         type="button"
         onClick={handleSubmit}
-        aria-disabled={!valid}
+        aria-disabled={!valid || locked}
+        disabled={locked}
         className={
           "w-full rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 transition " +
-          (valid
+          (valid && !locked
             ? "bg-primary text-primary-foreground hover:opacity-95"
-            : "bg-primary/50 text-primary-foreground hover:bg-primary/60")
+            : "bg-primary/50 text-primary-foreground hover:bg-primary/60 cursor-not-allowed")
         }
       >
-        <Send className="w-4 h-4" /> {t("Ajukan Kampanye", "Submit Campaign")}
+        {locked ? <Lock className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+        {createMutation.isPending
+          ? t("Mengirim...", "Submitting...")
+          : hasActiveCampaign
+            ? t("Kampanye Aktif Masih Berjalan", "Active Campaign In Progress")
+            : !userId
+              ? t("Masuk untuk Mengajukan", "Sign In to Submit")
+              : t("Ajukan Kampanye", "Submit Campaign")}
       </button>
+
     </div>
   );
 }
