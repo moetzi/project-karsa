@@ -1,12 +1,18 @@
 import { useRef, useState } from "react";
-import { X, Camera, ImagePlus, Check, MapPin, Trash2, Sparkles, Send } from "lucide-react";
+import { X, Camera, ImagePlus, Check, MapPin, Trash2, Sparkles, Send, Loader2 } from "lucide-react";
 import { useT } from "@/lib/i18n";
-import { addJournal } from "@/lib/journalStore";
+import { supabase } from "@/integrations/supabase/client";
+import { useServerFn } from "@tanstack/react-start";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createJournal } from "@/lib/journals.functions";
+import { toast } from "sonner";
 
 type Props = {
   campaign: { id: string; title: string; titleEn: string; school: string };
   onClose: () => void;
 };
+
+type LocalPhoto = { file: File; previewUrl: string };
 
 const MOOD = [
   { emoji: "😍", id: "Antusias", en: "Excited" },
@@ -18,37 +24,76 @@ const MOOD = [
 export function JournalSheet({ campaign, onClose }: Props) {
   const t = useT();
   const fileRef = useRef<HTMLInputElement | null>(null);
-  const [photos, setPhotos] = useState<string[]>([]);
+  const [photos, setPhotos] = useState<LocalPhoto[]>([]);
   const [menu, setMenu] = useState("");
   const [story, setStory] = useState("");
   const [mood, setMood] = useState<string | null>(null);
   const [attendance, setAttendance] = useState("");
   const [sent, setSent] = useState(false);
+  const qc = useQueryClient();
+  const createJournalFn = useServerFn(createJournal);
+
+  const submitMutation = useMutation({
+    mutationFn: async () => {
+      const { data: userRes, error: userErr } = await supabase.auth.getUser();
+      if (userErr || !userRes.user) throw new Error("Not signed in");
+      const userId = userRes.user.id;
+
+      // Upload each file to storage and collect public URLs.
+      const urls: string[] = [];
+      for (const p of photos) {
+        const ext = p.file.name.split(".").pop()?.toLowerCase() || "jpg";
+        const path = `${userId}/${campaign.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const { error: upErr } = await supabase.storage
+          .from("journal-photos")
+          .upload(path, p.file, { contentType: p.file.type, upsert: false });
+        if (upErr) throw new Error(upErr.message);
+        const { data: signed, error: sErr } = await supabase.storage
+          .from("journal-photos")
+          .createSignedUrl(path, 60 * 60 * 24 * 365); // 1 year
+        if (sErr) throw new Error(sErr.message);
+        urls.push(signed.signedUrl);
+      }
+
+      await createJournalFn({
+        data: {
+          campaign_id: campaign.id,
+          menu: menu.trim(),
+          story: story.trim(),
+          mood,
+          attendance: attendance ? Number(attendance) : null,
+          photos: urls,
+        },
+      });
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["journals", campaign.id] });
+      setSent(true);
+      setTimeout(onClose, 1400);
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : "Gagal mengirim jurnal");
+    },
+  });
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
-    const urls = Array.from(files).slice(0, 4 - photos.length).map((f) => URL.createObjectURL(f));
-    setPhotos((p) => [...p, ...urls].slice(0, 4));
+    const next = Array.from(files)
+      .slice(0, 4 - photos.length)
+      .map((file) => ({ file, previewUrl: URL.createObjectURL(file) }));
+    setPhotos((p) => [...p, ...next].slice(0, 4));
+  };
+
+  const removePhoto = (idx: number) => {
+    setPhotos((p) => {
+      const removed = p[idx];
+      if (removed) URL.revokeObjectURL(removed.previewUrl);
+      return p.filter((_, i) => i !== idx);
+    });
   };
 
   const valid = photos.length > 0 && story.trim().length >= 10 && menu.trim().length > 0;
-
-  const submit = () => {
-    if (!valid) return;
-    addJournal({
-      campaignId: campaign.id,
-      campaignTitle: campaign.title,
-      campaignTitleEn: campaign.titleEn,
-      school: campaign.school,
-      photos,
-      menu: menu.trim(),
-      story: story.trim(),
-      mood,
-      attendance,
-    });
-    setSent(true);
-    setTimeout(onClose, 1400);
-  };
+  const submitting = submitMutation.isPending;
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
@@ -56,7 +101,6 @@ export function JournalSheet({ campaign, onClose }: Props) {
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-md bg-background rounded-t-3xl max-h-[92vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom duration-300"
       >
-        {/* Handle */}
         <div className="sticky top-0 bg-background z-10 pt-2 pb-3 px-5 border-b border-border/60">
           <div className="mx-auto w-10 h-1 rounded-full bg-muted-foreground/30 mb-3" />
           <div className="flex items-center justify-between">
@@ -84,7 +128,6 @@ export function JournalSheet({ campaign, onClose }: Props) {
           </div>
         ) : (
           <div className="px-5 py-5 space-y-5">
-            {/* Linked campaign */}
             <div className="rounded-2xl border border-border/60 bg-primary-soft/40 p-3 flex items-start gap-3">
               <div className="w-9 h-9 rounded-lg bg-primary text-primary-foreground grid place-items-center text-xs font-bold shrink-0">
                 {t("KMP", "CMP")}
@@ -100,18 +143,18 @@ export function JournalSheet({ campaign, onClose }: Props) {
               </div>
             </div>
 
-            {/* Photos */}
             <div>
               <label className="text-xs font-semibold text-foreground flex items-center justify-between mb-2">
                 <span>{t("Foto Makan Bersama", "Group Meal Photo")} <span className="text-accent">*</span></span>
                 <span className="font-mono text-[10px] text-muted-foreground">{photos.length}/4</span>
               </label>
               <div className="grid grid-cols-4 gap-2">
-                {photos.map((src, i) => (
+                {photos.map((p, i) => (
                   <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-muted">
-                    <img src={src} alt="" className="w-full h-full object-cover" />
+                    <img src={p.previewUrl} alt="" className="w-full h-full object-cover" />
                     <button
-                      onClick={() => setPhotos((p) => p.filter((_, idx) => idx !== i))}
+                      onClick={() => removePhoto(i)}
+                      disabled={submitting}
                       className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white grid place-items-center"
                     >
                       <Trash2 className="w-3 h-3" />
@@ -121,7 +164,8 @@ export function JournalSheet({ campaign, onClose }: Props) {
                 {photos.length < 4 && (
                   <button
                     onClick={() => fileRef.current?.click()}
-                    className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary-soft/30 transition flex flex-col items-center justify-center gap-1 text-muted-foreground"
+                    disabled={submitting}
+                    className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary-soft/30 transition flex flex-col items-center justify-center gap-1 text-muted-foreground disabled:opacity-50"
                   >
                     <ImagePlus className="w-5 h-5" />
                     <span className="text-[9px] font-mono uppercase">{t("Tambah", "Add")}</span>
@@ -135,17 +179,17 @@ export function JournalSheet({ campaign, onClose }: Props) {
                 multiple
                 capture="environment"
                 className="hidden"
-                onChange={(e) => handleFiles(e.target.files)}
+                onChange={(e) => { handleFiles(e.target.files); e.target.value = ""; }}
               />
               <button
                 onClick={() => fileRef.current?.click()}
-                className="mt-2 w-full border border-border rounded-xl py-2.5 text-xs font-semibold text-foreground inline-flex items-center justify-center gap-2 hover:bg-muted/50"
+                disabled={submitting}
+                className="mt-2 w-full border border-border rounded-xl py-2.5 text-xs font-semibold text-foreground inline-flex items-center justify-center gap-2 hover:bg-muted/50 disabled:opacity-50"
               >
                 <Camera className="w-4 h-4" /> {t("Ambil Foto / Pilih dari Galeri", "Take Photo / Pick from Gallery")}
               </button>
             </div>
 
-            {/* Menu */}
             <div>
               <label className="text-xs font-semibold text-foreground mb-2 block">
                 {t("Menu Hari Ini", "Today's Menu")} <span className="text-accent">*</span>
@@ -153,12 +197,12 @@ export function JournalSheet({ campaign, onClose }: Props) {
               <input
                 value={menu}
                 onChange={(e) => setMenu(e.target.value)}
+                disabled={submitting}
                 placeholder={t("cth: Nasi, ayam suwir, tumis kangkung, pisang", "e.g. Rice, shredded chicken, sautéed greens, banana")}
                 className="w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary"
               />
             </div>
 
-            {/* Attendance */}
             <div>
               <label className="text-xs font-semibold text-foreground mb-2 block">
                 {t("Jumlah Anak Hadir", "Children Attending")}
@@ -168,12 +212,12 @@ export function JournalSheet({ campaign, onClose }: Props) {
                 inputMode="numeric"
                 value={attendance}
                 onChange={(e) => setAttendance(e.target.value)}
+                disabled={submitting}
                 placeholder="28"
                 className="w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
               />
             </div>
 
-            {/* Mood */}
             <div>
               <label className="text-xs font-semibold text-foreground mb-2 block">
                 {t("Suasana Anak", "Children's Mood")}
@@ -183,6 +227,7 @@ export function JournalSheet({ campaign, onClose }: Props) {
                   <button
                     key={m.id}
                     onClick={() => setMood(m.id)}
+                    disabled={submitting}
                     className={
                       "rounded-xl border py-2 flex flex-col items-center gap-0.5 transition " +
                       (mood === m.id
@@ -199,7 +244,6 @@ export function JournalSheet({ campaign, onClose }: Props) {
               </div>
             </div>
 
-            {/* Story */}
             <div>
               <label className="text-xs font-semibold text-foreground flex items-center justify-between mb-2">
                 <span>{t("Cerita Hari Ini", "Today's Story")} <span className="text-accent">*</span></span>
@@ -208,6 +252,7 @@ export function JournalSheet({ campaign, onClose }: Props) {
               <textarea
                 value={story}
                 onChange={(e) => setStory(e.target.value.slice(0, 280))}
+                disabled={submitting}
                 rows={4}
                 placeholder={t(
                   "Tulis momen hangat hari ini — bagaimana anak-anak menikmati makanannya?",
@@ -224,24 +269,25 @@ export function JournalSheet({ campaign, onClose }: Props) {
                     )
                   )
                 }
+                disabled={submitting}
                 className="mt-1.5 text-[11px] text-accent font-semibold inline-flex items-center gap-1"
               >
                 <Sparkles className="w-3 h-3" /> {t("Bantu tulis dengan AI", "Help me write with AI")}
               </button>
             </div>
 
-            {/* Submit */}
             <button
-              onClick={submit}
-              disabled={!valid}
+              onClick={() => submitMutation.mutate()}
+              disabled={!valid || submitting}
               className={
                 "w-full rounded-xl py-3.5 font-semibold text-sm inline-flex items-center justify-center gap-2 transition " +
-                (valid
+                (valid && !submitting
                   ? "bg-primary text-primary-foreground hover:opacity-95"
                   : "bg-muted text-muted-foreground cursor-not-allowed")
               }
             >
-              <Send className="w-4 h-4" /> {t("Kirim Jurnal", "Submit Journal")}
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              {submitting ? t("Mengirim…", "Sending…") : t("Kirim Jurnal", "Submit Journal")}
             </button>
             <p className="text-[10px] text-center text-muted-foreground font-mono">
               {t("Jurnal akan dibagikan ke donatur kampanye ini.", "This journal will be shared with the campaign's donors.")}
