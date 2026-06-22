@@ -952,19 +952,6 @@ function BuatKampanye() {
       )}
       <button
         type="button"
-        onClick={handleSubmit}
-        aria-disabled={!valid}
-        className={
-          "w-full rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 transition " +
-          (valid
-            ? "bg-primary text-primary-foreground hover:opacity-95"
-            : "bg-primary/50 text-primary-foreground hover:bg-primary/60")
-        }
-      >
-        <Send className="w-4 h-4" /> {t("Ajukan Kampanye", "Submit Campaign")}
-      </button>
-      <button
-        type="button"
         onClick={() => setJournalCommit((v) => !v)}
         className={
           "w-full flex items-start gap-3 rounded-xl border px-4 py-3 text-left transition " +
@@ -997,6 +984,19 @@ function BuatKampanye() {
             )}
           </p>
         </div>
+      </button>
+      <button
+        type="button"
+        onClick={handleSubmit}
+        aria-disabled={!valid}
+        className={
+          "w-full rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 transition " +
+          (valid
+            ? "bg-primary text-primary-foreground hover:opacity-95"
+            : "bg-primary/50 text-primary-foreground hover:bg-primary/60")
+        }
+      >
+        <Send className="w-4 h-4" /> {t("Ajukan Kampanye", "Submit Campaign")}
       </button>
     </div>
   );
