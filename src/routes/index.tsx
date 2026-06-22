@@ -135,6 +135,110 @@ function Landing() {
         </div>
       </section>
 
+      {/* Kampanye Aktif */}
+      <section id="kampanye" className="max-w-6xl mx-auto px-6 py-20 border-t border-border/60">
+        <div className="flex items-end justify-between gap-4 mb-8">
+          <div>
+            <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">Kampanye Aktif</p>
+            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Pilih kampanye yang ingin kamu dukung</h2>
+          </div>
+          <Link to="/nutrisi" className="hidden md:inline-flex items-center gap-1 text-sm font-semibold text-primary hover:opacity-80">
+            Lihat semua <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {campaigns.map((c) => {
+            const pct = Math.min(100, Math.round((c.raised / c.target) * 100));
+            const cd = getCountdown("deadline" in c ? (c as { deadline?: string }).deadline : undefined);
+            return (
+              <Link
+                key={c.id}
+                to="/nutrisi"
+                className="group bg-surface rounded-2xl border border-border/60 overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
+              >
+                <div className="relative h-44 overflow-hidden">
+                  <img src={c.hero} alt={c.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
+                    <ShieldIcon className="w-3 h-3" /> Terverifikasi
+                  </span>
+                  <div className="absolute bottom-3 left-3 right-3 text-white">
+                    <h3 className="text-lg font-extrabold leading-tight drop-shadow">{c.title}</h3>
+                    <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
+                      <MapPin className="w-3 h-3" /> {c.school}
+                    </p>
+                  </div>
+                </div>
+                <div className="p-4 flex-1 flex flex-col">
+                  <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{c.description}</p>
+                  <div className="mt-auto">
+                    <div className="flex justify-between text-xs mb-1.5">
+                      <span className="font-mono font-bold">Rp {c.raised}jt</span>
+                      <span className="font-mono text-muted-foreground">dari Rp {c.target}jt</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-muted overflow-hidden">
+                      <div className="h-full bg-accent rounded-full" style={{ width: `${pct}%` }} />
+                    </div>
+                    <div className="flex items-center justify-between mt-2 text-[11px]">
+                      <span className="text-muted-foreground">{pct}% terkumpul · {c.recipients} anak</span>
+                      {cd && pct < 100 && (
+                        <span className={"inline-flex items-center gap-1 font-mono font-semibold " + (cd.urgent ? "text-accent" : "text-foreground")}>
+                          <Clock className="w-3 h-3" /> {cd.id}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+        <div className="mt-8 text-center md:hidden">
+          <Link to="/nutrisi" className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
+            Lihat semua kampanye <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+      </section>
+
+      {/* Pojok Inspirasi */}
+      <section id="inspirasi" className="max-w-6xl mx-auto px-6 py-20 border-t border-border/60">
+        <div className="flex items-end justify-between gap-4 mb-8">
+          <div>
+            <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">Pojok Inspirasi Guru</p>
+            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Bacaan pilihan untuk donatur</h2>
+            <p className="mt-2 text-sm text-muted-foreground max-w-xl">Pahami konteks gizi anak Indonesia & dampak nyata dari donasi Anda.</p>
+          </div>
+        </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {INSPIRASI.map((a) => (
+            <Link
+              key={a.id}
+              to="/inspirasi/$id"
+              params={{ id: a.id }}
+              className="group bg-surface rounded-2xl border border-border/60 overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
+            >
+              <div className="relative h-36 flex items-end p-4" style={{ background: a.hero }}>
+                <span className="absolute top-3 right-3 text-3xl drop-shadow">{a.emoji}</span>
+                <span className="bg-surface/95 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                  {a.tag.id}
+                </span>
+              </div>
+              <div className="p-4 flex-1 flex flex-col">
+                <h3 className="font-serif text-base leading-snug text-foreground line-clamp-3">{a.title.id}</h3>
+                <div className="mt-4 flex items-center justify-between text-[11px]">
+                  <span className="font-mono text-muted-foreground inline-flex items-center gap-1">
+                    <Clock className="w-3 h-3" /> {a.read.id}
+                  </span>
+                  <span className="text-accent font-semibold inline-flex items-center gap-0.5 group-hover:gap-1.5 transition-all">
+                    <BookOpen className="w-3 h-3" /> Baca
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       <footer className="border-t border-border/60 py-10 text-center text-xs text-muted-foreground">
         © 2026 Karsa · Untuk anak-anak Indonesia
       </footer>
