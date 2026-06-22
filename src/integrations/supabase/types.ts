@@ -14,7 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      campaigns: {
+        Row: {
+          closed_at: string | null
+          created_at: string
+          description: string
+          id: string
+          school: string
+          status: Database["public"]["Enums"]["campaign_status"]
+          target_amount: number
+          teacher_id: string
+          title: string
+        }
+        Insert: {
+          closed_at?: string | null
+          created_at?: string
+          description: string
+          id?: string
+          school: string
+          status?: Database["public"]["Enums"]["campaign_status"]
+          target_amount: number
+          teacher_id: string
+          title: string
+        }
+        Update: {
+          closed_at?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          school?: string
+          status?: Database["public"]["Enums"]["campaign_status"]
+          target_amount?: number
+          teacher_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          school: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          school?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          school?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +82,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      campaign_status: "active" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +209,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      campaign_status: ["active", "closed"],
+    },
   },
 } as const
