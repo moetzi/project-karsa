@@ -162,34 +162,29 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
       </div>
 
       <div className="p-4">
-        <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs items-center pb-3 border-b border-border/60">
-          <div className="text-center">
+        <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs items-start pb-3 border-b border-border/60">
+          <div className="text-center pt-0.5">
             <p className="font-bold text-lg text-foreground leading-none">{c.recipients}</p>
             <p className="text-[10px] text-muted-foreground">{t("Penerima", "Recipients")}</p>
           </div>
           <div className="text-[11px] space-y-0.5">
-            <p className="flex items-center gap-1.5"><Truck className="w-3 h-3 text-primary" /><span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span> <span className="font-semibold text-foreground">{c.supplier}</span></p>
-            <p className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-primary" /><span className="text-foreground">{c.region}</span></p>
+            {c.supplier.split(" & ").filter(Boolean).map((s, i) => (
+              <p key={i} className="flex items-center gap-1.5">
+                <Truck className="w-3 h-3 text-primary shrink-0" />
+                {i === 0 && <span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span>}
+                <span className="font-semibold text-foreground">{s}</span>
+              </p>
+            ))}
+            {c.tmp && (
+              <p className="flex items-center gap-1.5">
+                <ShieldCheck className="w-3 h-3 text-primary shrink-0" />
+                <span className="text-muted-foreground">{t("Dimasak oleh:", "Cooked by:")}</span>
+                <span className="font-semibold text-foreground">{c.tmp}</span>
+              </p>
+            )}
+            <p className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-primary shrink-0" /><span className="text-foreground">{c.region}</span></p>
           </div>
         </div>
-
-        {/* Dynamic Transparency Badge */}
-        {(c.tmp || c.supplier) && (
-          <div
-            className="mt-3 rounded-xl px-3 py-2.5 flex items-start gap-2 text-[11px] leading-snug"
-            style={{ background: "oklch(0.96 0.03 175)", border: "1px solid oklch(0.85 0.06 175)" }}
-          >
-            <ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
-            <div className="space-y-0.5">
-              {c.tmp && (
-                <p><span className="text-muted-foreground">{t("Dimasak oleh:", "Cooked by:")}</span> <span className="font-semibold text-foreground">{c.tmp}</span></p>
-              )}
-              {c.supplier && (
-                <p><span className="text-muted-foreground">{t("Pangan dari:", "Sourced from:")}</span> <span className="font-semibold text-foreground">{c.supplier}</span></p>
-              )}
-            </div>
-          </div>
-        )}
 
         <div className="pt-3">
           <div className="flex justify-between text-xs mb-1.5">
