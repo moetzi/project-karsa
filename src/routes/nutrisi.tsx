@@ -3,7 +3,7 @@ import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
 import {
   ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash,
-  Eye, Repeat2, Share2, X, Link2, Check, Plus, Trash2, Landmark,
+  Eye, Repeat2, Share2, X, Link2, Check, Landmark,
   CalendarDays, Calendar, Wallet, Users, Phone, Sparkles,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
