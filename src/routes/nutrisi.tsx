@@ -74,6 +74,7 @@ const campaigns = [
     hero: "linear-gradient(135deg, #8a2a1a 0%, #d4842a 100%)",
     report: "linear-gradient(135deg, #2d5016 0%, #5a8a3d 100%)",
     teacher: "Pak Budi",
+    description: "Robinson, salah satu siswa kelas 3 saya, kemarin pingsan di tengah pelajaran. Setelah saya datangi rumahnya, ternyata sudah dua hari ia hanya makan singkong rebus. Ini bukan kasus tunggal — ada 11 anak lain di kelas saya dengan kondisi serupa. Saya butuh bantuan untuk menyediakan makanan bergizi setiap hari Senin–Jumat selama dua minggu ke depan: nasi, protein hewani (ikan/telur), dan sayur segar dari KWT Tuamese. Total kebutuhan Rp 250.000 untuk 12 anak × 10 hari. Dimasak oleh Posyandu Tuamese, diantar pagi sebelum jam pelajaran dimulai.",
     journal: "Pagi tadi Robinson pingsan di kelas karena kelaparan. Bantuan Anda akan memberinya — dan teman-temannya — makanan bergizi yang sangat dibutuhkan.",
     boosts: 218,
     views: "3.4k",
