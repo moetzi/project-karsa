@@ -592,6 +592,7 @@ function BuatKampanye() {
 
   const [menu, setMenu] = useState<Record<string, string>>({});
   const [aiLoading, setAiLoading] = useState(false);
+  const [journalCommit, setJournalCommit] = useState(false);
 
   const handlePhotos = (files: FileList | null) => {
     if (!files) return;
