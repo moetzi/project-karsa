@@ -12,6 +12,9 @@ import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations } from "@/lib/donationStore";
 import robinsonMakan1 from "@/assets/robinson-makan-1.jpg";
 import robinsonMakan2 from "@/assets/robinson-makan-2.jpg";
+import heroRobinson from "@/assets/campaign-hero-robinson.jpg";
+import heroKolaka from "@/assets/campaign-hero-kolaka.jpg";
+import heroMahakam from "@/assets/campaign-hero-mahakam.jpg";
 
 export const Route = createFileRoute("/nutrisi")({
   head: () => ({
@@ -73,7 +76,7 @@ const campaigns = [
     target: 0.25,
     pct: 100,
     
-    hero: "linear-gradient(135deg, #8a2a1a 0%, #d4842a 100%)",
+    hero: heroRobinson,
     report: "linear-gradient(135deg, #2d5016 0%, #5a8a3d 100%)",
     teacher: "Pak Budi",
     description: "Robinson, salah satu siswa kelas 3 saya, kemarin pingsan di tengah pelajaran. Setelah saya datangi rumahnya, ternyata sudah dua hari ia hanya makan singkong rebus. Ini bukan kasus tunggal — ada 11 anak lain di kelas saya dengan kondisi serupa. Saya butuh bantuan untuk menyediakan makanan bergizi setiap hari Senin–Jumat selama dua minggu ke depan: nasi, protein hewani (ikan/telur), dan sayur segar dari KWT Tuamese. Total kebutuhan Rp 250.000 untuk 12 anak × 10 hari. Dimasak oleh Posyandu Tuamese, diantar pagi sebelum jam pelajaran dimulai.",
@@ -95,7 +98,7 @@ const campaigns = [
     raised: 8.4,
     target: 15,
     pct: 56,
-    hero: "linear-gradient(135deg, #2d5016 0%, #5a8a3d 100%)",
+    hero: heroKolaka,
     report: "linear-gradient(135deg, #d4842a 0%, #c9614a 100%)",
     teacher: "Ibu Sari Dewi",
     description: "SDN 047 Kolaka Utara memiliki 47 siswa, mayoritas anak nelayan dengan asupan protein yang fluktuatif. Bersama BUMDes Maju Bersama dan PKK desa, kami menjalankan program makan siang bergizi seimbang setiap hari sekolah selama satu semester. Menu disusun bersama ahli gizi puskesmas: nasi, ikan/telur lokal, sayur, dan buah. Dana digunakan untuk bahan baku (70%), insentif tim masak PKK (20%), dan logistik (10%).",
@@ -116,7 +119,7 @@ const campaigns = [
     raised: 5.2,
     target: 12,
     pct: 43,
-    hero: "linear-gradient(135deg, #6b4423 0%, #c4654a 100%)",
+    hero: heroMahakam,
     report: "linear-gradient(135deg, #2d5a3d 0%, #5a8a5c 100%)",
     teacher: "Pak Ridwan Saputra",
     description: "Kampung Baru di hulu Sungai Mahakam jauh dari pasar; harga sayur tinggi dan stok protein terbatas. Kami bermitra dengan Kelompok Tani Harapan Jaya untuk pasokan sayur segar dua kali seminggu, dan Posyandu untuk pengolahan. Program berjalan 12 minggu untuk 63 siswa, fokus pada perbaikan tinggi-badan-per-usia yang akan diukur ulang oleh kader Posyandu di akhir program.",
@@ -176,17 +179,21 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
         className="block w-full text-left hover:bg-muted/20 transition-colors"
         aria-label={t(`Lihat detail ${c.title}`, `View ${c.title} details`)}
       >
-        <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
-          <div className="flex items-start justify-between gap-2">
-            <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
-              <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
-            </span>
-          </div>
-          <div className="text-primary-foreground">
-            <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
-            <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
-              <MapPin className="w-3 h-3" /> {c.school}
-            </p>
+        <div className="relative h-44 overflow-hidden">
+          <img src={c.hero} alt={c.title} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/20" />
+          <div className="relative z-10 h-full p-4 flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2">
+              <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
+                <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
+              </span>
+            </div>
+            <div className="text-white">
+              <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
+              <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
+                <MapPin className="w-3 h-3" /> {c.school}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -336,12 +343,16 @@ function CampaignDetailSheet({
           </div>
         </div>
 
-        <div className="relative h-40 p-4 flex items-end" style={{ background: c.hero }}>
-          <div className="text-primary-foreground">
-            <h2 className="text-2xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
-            <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
-              <MapPin className="w-3 h-3" /> {c.school} • {c.region}
-            </p>
+        <div className="relative h-40 overflow-hidden">
+          <img src={c.hero} alt={c.title} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/20" />
+          <div className="relative z-10 h-full p-4 flex items-end">
+            <div className="text-white">
+              <h2 className="text-2xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
+              <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
+                <MapPin className="w-3 h-3" /> {c.school} • {c.region}
+              </p>
+            </div>
           </div>
         </div>
 
