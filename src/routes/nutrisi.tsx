@@ -148,9 +148,19 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   return (
     <article className="relative bg-surface rounded-2xl overflow-hidden border border-border/60">
       <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
-        <span className="self-start inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
-          <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
-        </span>
+        <div className="flex items-start justify-between gap-2">
+          <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
+            <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
+          </span>
+          {c.urgent && (
+            <span
+              className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full text-white animate-pulse"
+              style={{ background: "linear-gradient(135deg, oklch(0.62 0.2 25), oklch(0.55 0.22 15))" }}
+            >
+              ⚡ {t("DARURAT • AKHIR PEKAN", "URGENT • WEEKEND")}
+            </span>
+          )}
+        </div>
         <div className="text-primary-foreground">
           <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
           <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
