@@ -72,8 +72,10 @@ function Generator() {
   const [loading, setLoading] = useState(false);
   const [kelas, setKelas] = useState("");
   const [mapel, setMapel] = useState("");
+  const [format, setFormat] = useState("");
   const [tujuan, setTujuan] = useState("");
-  const canSubmit = kelas && mapel && tujuan.length > 5;
+  const [konteks, setKonteks] = useState("");
+  const canSubmit = kelas && mapel && format && tujuan.length > 5;
 
   return (
     <div className="space-y-5">
@@ -109,6 +111,31 @@ function Generator() {
           </select>
         </Field>
 
+        <Field label={t("Format Materi", "Material Format")}>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { key: "quiz", label: t("Quiz", "Quiz"), icon: <HelpCircle className="w-4 h-4" /> },
+              { key: "flashcard", label: t("Flashcard", "Flashcard"), icon: <Layers className="w-4 h-4" /> },
+              { key: "slides", label: t("Slide PPT", "PPT Slide"), icon: <Presentation className="w-4 h-4" /> },
+            ].map((opt) => (
+              <button
+                key={opt.key}
+                type="button"
+                onClick={() => setFormat(opt.key)}
+                className={
+                  "flex flex-col items-center justify-center gap-1.5 rounded-xl px-2 py-3 text-xs font-semibold transition border " +
+                  (format === opt.key
+                    ? "bg-primary text-primary-foreground border-primary"
+                    : "bg-muted/60 text-foreground border-transparent hover:border-primary/30")
+                }
+              >
+                {opt.icon}
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </Field>
+
         <Field label={t("Tujuan Pembelajaran", "Learning Objective")}>
           <textarea
             value={tujuan}
@@ -117,6 +144,19 @@ function Generator() {
             placeholder={t(
               "Contoh: Siswa mampu memahami konsep rantai makanan dalam ekosistem sawah dan menjelaskan peran produsen, konsumen, dan pengurai.",
               "Example: Students can understand food chains in rice-field ecosystems and explain the roles of producers, consumers, and decomposers.",
+            )}
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none resize-none placeholder:text-muted-foreground/70"
+          />
+        </Field>
+
+        <Field label={t("Konteks Lokal (Opsional)", "Local Context (Optional)")}>
+          <textarea
+            value={konteks}
+            onChange={(e) => setKonteks(e.target.value)}
+            rows={3}
+            placeholder={t(
+              "Contoh: Mayoritas anak nelayan, sedang musim ikan tongkol...",
+              "Example: Most children are from fishing families, currently tuna season...",
             )}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none resize-none placeholder:text-muted-foreground/70"
           />
