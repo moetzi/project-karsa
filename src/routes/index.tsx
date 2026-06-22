@@ -144,19 +144,6 @@ function Landing() {
 
 function TeacherPortalModal({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate();
-  const [idType, setIdType] = useState<"NUPTK" | "PegID Kemenag">("NUPTK");
-  const [idNumber, setIdNumber] = useState("");
-  const [npsn, setNpsn] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      navigate({ to: "/beranda" });
-    }, 2000);
-  }
-
   return (
     <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true">
       <div className="w-full max-w-md bg-surface rounded-2xl border border-border shadow-2xl overflow-hidden">
@@ -165,72 +152,26 @@ function TeacherPortalModal({ onClose }: { onClose: () => void }) {
             <GraduationCap className="w-5 h-5 text-primary" />
             <h2 className="font-bold">Portal Guru</h2>
           </div>
-          <button onClick={onClose} disabled={loading} className="text-muted-foreground hover:text-foreground disabled:opacity-40">
+          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
             <X className="w-5 h-5" />
           </button>
         </div>
-
-        {loading ? (
-          <div className="p-10 text-center">
-            <Loader2 className="w-10 h-10 mx-auto text-primary animate-spin" />
-            <p className="mt-4 font-semibold">Memvalidasi data NUPTK & NPSN...</p>
-            <p className="mt-2 text-xs text-muted-foreground">Menghubungi server Dapodik / Simpatika</p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="p-6 space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Masuk atau daftar dengan data institusional Anda. Hanya guru terverifikasi dapat membuat kampanye.
-            </p>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground/80">Tipe Identitas Guru</label>
-              <select
-                value={idType}
-                onChange={(e) => setIdType(e.target.value as "NUPTK" | "PegID Kemenag")}
-                className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="NUPTK">NUPTK</option>
-                <option value="PegID Kemenag">PegID Kemenag</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground/80">Nomor Identitas</label>
-              <input
-                value={idNumber}
-                onChange={(e) => setIdNumber(e.target.value)}
-                required
-                inputMode="numeric"
-                placeholder={idType === "NUPTK" ? "Contoh: 1234567890123456" : "Contoh: 198501012010012001"}
-                className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-            </div>
-
-            <div>
-              <label className="text-xs font-semibold text-foreground/80">NPSN (Nomor Pokok Sekolah Nasional)</label>
-              <input
-                value={npsn}
-                onChange={(e) => setNpsn(e.target.value)}
-                required
-                inputMode="numeric"
-                maxLength={8}
-                placeholder="Contoh: 40100123"
-                className="mt-1.5 w-full rounded-xl border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <p className="mt-1.5 text-[11px] text-muted-foreground leading-relaxed">
-                Sistem akan memvalidasi kecocokan data Anda dengan sekolah di database Dapodik/Simpatika.
-              </p>
-            </div>
-
-            <button
-              type="submit"
-              className="w-full rounded-xl bg-primary text-primary-foreground py-3 font-bold text-sm hover:opacity-95 transition inline-flex items-center justify-center gap-2"
-            >
-              <ShieldCheck className="w-4 h-4" /> Verifikasi & Daftar
-            </button>
-          </form>
-        )}
+        <div className="p-6 space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Hanya guru terverifikasi (NUPTK / PegID + NPSN) yang dapat membuat kampanye.
+          </p>
+          <button
+            onClick={() => { onClose(); navigate({ to: "/auth" }); }}
+            className="w-full rounded-xl bg-primary text-primary-foreground py-3 font-bold text-sm hover:opacity-95 transition inline-flex items-center justify-center gap-2"
+          >
+            <ShieldCheck className="w-4 h-4" /> Masuk / Daftar
+          </button>
+          <p className="text-[11px] text-center text-muted-foreground">
+            Loader2 placeholder removed — proses verifikasi NUPTK & NPSN ada di halaman pendaftaran.
+          </p>
+        </div>
       </div>
     </div>
   );
 }
+

@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as NutrisiRouteImport } from './routes/nutrisi'
 import { Route as CopilotRouteImport } from './routes/copilot'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InspirasiIdRouteImport } from './routes/inspirasi.$id'
 import { Route as FlashcardIdRouteImport } from './routes/flashcard.$id'
@@ -32,6 +34,15 @@ const CopilotRoute = CopilotRouteImport.update({
   path: '/copilot',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -48,13 +59,14 @@ const FlashcardIdRoute = FlashcardIdRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedBerandaRoute = AuthenticatedBerandaRouteImport.update({
-  id: '/_authenticated/beranda',
+  id: '/beranda',
   path: '/beranda',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
@@ -64,6 +76,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
@@ -74,6 +87,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
@@ -85,6 +100,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/copilot'
     | '/nutrisi'
     | '/profil'
@@ -94,6 +110,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/copilot'
     | '/nutrisi'
     | '/profil'
@@ -103,6 +120,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/copilot'
     | '/nutrisi'
     | '/profil'
@@ -113,10 +132,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   CopilotRoute: typeof CopilotRoute
   NutrisiRoute: typeof NutrisiRoute
   ProfilRoute: typeof ProfilRoute
-  AuthenticatedBerandaRoute: typeof AuthenticatedBerandaRoute
   FlashcardIdRoute: typeof FlashcardIdRoute
   InspirasiIdRoute: typeof InspirasiIdRoute
 }
@@ -142,6 +162,20 @@ declare module '@tanstack/react-router' {
       path: '/copilot'
       fullPath: '/copilot'
       preLoaderRoute: typeof CopilotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -170,17 +204,29 @@ declare module '@tanstack/react-router' {
       path: '/beranda'
       fullPath: '/beranda'
       preLoaderRoute: typeof AuthenticatedBerandaRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedBerandaRoute: typeof AuthenticatedBerandaRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedBerandaRoute: AuthenticatedBerandaRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   CopilotRoute: CopilotRoute,
   NutrisiRoute: NutrisiRoute,
   ProfilRoute: ProfilRoute,
-  AuthenticatedBerandaRoute: AuthenticatedBerandaRoute,
   FlashcardIdRoute: FlashcardIdRoute,
   InspirasiIdRoute: InspirasiIdRoute,
 }
