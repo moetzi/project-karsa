@@ -19,7 +19,7 @@ function BottomNav() {
   const t = useT();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const items: Array<{ to: string; label: string; icon: typeof Home; match: (p: string) => boolean; dot?: boolean }> = [
-    { to: "/", label: t("Beranda", "Home"), icon: Home, match: (p) => p === "/" },
+    { to: "/beranda", label: t("Beranda", "Home"), icon: Home, match: (p) => p.startsWith("/beranda") },
     { to: "/copilot", label: t("Copilot", "Copilot"), icon: BookOpen, match: (p) => p.startsWith("/copilot") },
     { to: "/nutrisi", label: t("Nutrisi", "Nutrition"), icon: Leaf, match: (p) => p.startsWith("/nutrisi"), dot: true },
     { to: "/profil", label: t("Profil", "Profile"), icon: User, match: (p) => p.startsWith("/profil") },
@@ -33,7 +33,7 @@ function BottomNav() {
           return (
             <li key={it.to}>
               <Link
-                to={it.to as "/"}
+                to={it.to as "/beranda"}
                 className="flex flex-col items-center gap-1 px-2 py-1 relative"
               >
                 <span
