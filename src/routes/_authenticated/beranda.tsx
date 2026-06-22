@@ -44,7 +44,7 @@ const INSPIRASI = [
   },
 ];
 
-export const Route = createFileRoute("/beranda")({
+export const Route = createFileRoute("/_authenticated/beranda")({
   head: () => ({
     meta: [
       { title: "Beranda — Karsa" },
