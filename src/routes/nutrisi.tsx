@@ -491,7 +491,8 @@ function BuatKampanye() {
   const [target, setTarget] = useState("");
   const [deadline, setDeadline] = useState("");
   const [desc, setDesc] = useState("");
-  const [journal, setJournal] = useState("");
+  const [photos, setPhotos] = useState<string[]>([]);
+  const photoInputRef = useRef<HTMLInputElement | null>(null);
 
   // Disbursement & Accountability
   const [teacherBank, setTeacherBank] = useState("");
@@ -503,6 +504,12 @@ function BuatKampanye() {
 
   const [menu, setMenu] = useState<Record<string, string>>({});
   const [aiLoading, setAiLoading] = useState(false);
+
+  const handlePhotos = (files: FileList | null) => {
+    if (!files) return;
+    const urls = Array.from(files).slice(0, 4 - photos.length).map((f) => URL.createObjectURL(f));
+    setPhotos((p) => [...p, ...urls].slice(0, 4));
+  };
 
   const autoGenerateMenu = () => {
     setAiLoading(true);
