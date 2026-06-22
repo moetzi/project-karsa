@@ -67,7 +67,7 @@ function Article() {
     <PhoneShell>
       <div>
         <div className="relative h-56 px-6 pt-4 pb-6 flex flex-col justify-between" style={{ background: a.hero }}>
-          <Link to="/" className="w-10 h-10 rounded-full bg-background/90 grid place-items-center text-foreground">
+          <Link to="/beranda" className="w-10 h-10 rounded-full bg-background/90 grid place-items-center text-foreground">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div className="text-primary-foreground">

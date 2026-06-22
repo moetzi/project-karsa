@@ -33,7 +33,7 @@ function BottomNav() {
           return (
             <li key={it.to}>
               <Link
-                to={it.to as "/"}
+                to={it.to as "/beranda"}
                 className="flex flex-col items-center gap-1 px-2 py-1 relative"
               >
                 <span
