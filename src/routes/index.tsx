@@ -218,9 +218,9 @@ function Beranda() {
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2">
               {[
-                { icon: <Eye className="w-3.5 h-3.5" />, value: "1.2k", label: t("Tayangan", "Views") },
-                { icon: <Repeat2 className="w-3.5 h-3.5" />, value: "450", label: t("Bagikan", "Shares") },
-                { icon: <ThumbsUp className="w-3.5 h-3.5" />, value: "132", label: t("Boost", "Boost") },
+                { icon: <Eye className="w-3.5 h-3.5" />, value: ACTIVE_CAMPAIGN_SRC.views, label: t("Tayangan", "Views") },
+                { icon: <Repeat2 className="w-3.5 h-3.5" />, value: String(ACTIVE_CAMPAIGN_SRC.shares), label: t("Bagikan", "Shares") },
+                { icon: <ThumbsUp className="w-3.5 h-3.5" />, value: String(ACTIVE_CAMPAIGN_SRC.boosts), label: t("Boost", "Boost") },
               ].map((s, i) => (
                 <div key={i} className="bg-muted/50 rounded-xl p-2.5 text-center">
                   <div className="w-7 h-7 rounded-full bg-primary-soft text-primary grid place-items-center mx-auto">
