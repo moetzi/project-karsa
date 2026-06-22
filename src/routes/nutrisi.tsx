@@ -69,7 +69,7 @@ function Nutrisi() {
   );
 }
 
-const campaigns = [
+export const campaigns = [
   {
     id: "tuamese-darurat-robinson",
     title: "Darurat Gizi — Robinson & Teman",
