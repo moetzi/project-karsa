@@ -89,7 +89,7 @@ function Beranda() {
           </div>
           <button className="mt-4 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
             <Upload className="w-4 h-4" />
-            {t("Unggah Laporan", "Upload Report")}
+            {t("Buat Jurnal", "Create Journal")}
           </button>
         </section>
 
