@@ -69,7 +69,7 @@ const campaigns = [
     raised: 0.25,
     target: 0.25,
     pct: 100,
-    urgent: true,
+    
     hero: "linear-gradient(135deg, #8a2a1a 0%, #d4842a 100%)",
     report: "linear-gradient(135deg, #2d5016 0%, #5a8a3d 100%)",
     teacher: "Pak Budi",
