@@ -864,7 +864,7 @@ function BuatKampanye() {
           <div className="flex items-center justify-between gap-2 w-full">
             <span className="inline-flex items-center gap-2">
               <CalendarDays className="w-4 h-4 text-primary" />
-              {t("Jadwal Gizi Mingguan", "Weekly Meal Plan")}
+              {t("\u00a0Meal Plan", "\u00a0Meal Plan")}
             </span>
             <button
               type="button"
