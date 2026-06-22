@@ -876,8 +876,8 @@ function BuatKampanye() {
       </button>
       <p className="text-[11px] text-muted-foreground text-center leading-snug -mt-1">
         {t(
-          "Loop Transparansi: setelah disetujui, jurnal & foto kegiatan diunggah dari Beranda dan otomatis dikirim ke donatur.",
-          "Transparency loop: once approved, journals & activity photos are uploaded from Home and auto-sent to donors.",
+          "Loop Transparansi: cukup satu jurnal penutup dengan foto saat kampanye selesai — otomatis dikirim ke donatur.",
+          "Transparency loop: just one closing journal with photos when the campaign ends — auto-sent to donors.",
         )}
       </p>
     </div>
