@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash,
   Eye, Repeat2, Share2, X, Link2, Check, Plus, Trash2, Landmark,
-  CalendarDays, BarChart3, Users, TrendingUp,
+  CalendarDays,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 
@@ -18,7 +18,7 @@ export const Route = createFileRoute("/nutrisi")({
   component: Nutrisi,
 });
 
-type Tab = "feed" | "buat" | "dash";
+type Tab = "feed" | "buat";
 
 function Nutrisi() {
   const t = useT();
@@ -28,11 +28,10 @@ function Nutrisi() {
       <div className="px-6 pt-4 pb-6">
         <h1 className="text-[28px] font-extrabold text-foreground">{t("Gizi & Kampanye", "Nutrition & Campaigns")}</h1>
 
-        <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-3 gap-1">
+        <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-2 gap-1">
           {([
             ["feed", t("Feed", "Feed")],
             ["buat", t("+ Buat", "+ Create")],
-            ["dash", t("Dashboard", "Dashboard")],
           ] as [Tab, string][]).map(([k, label]) => (
             <button
               key={k}
@@ -50,7 +49,6 @@ function Nutrisi() {
         <div className="mt-6">
           {tab === "feed" && <Feed />}
           {tab === "buat" && <BuatKampanye />}
-          {tab === "dash" && <Dashboard />}
         </div>
       </div>
     </PhoneShell>
@@ -531,9 +529,8 @@ function FormField({ label, required, children }: { label: string; required?: bo
   );
 }
 
-/* ------------------------- DASHBOARD ------------------------- */
-
-const donors = [
+/* Dashboard moved to Beranda → Active Campaign card */
+export const donors = [
   { name: "Hamba Allah #12", amount: 250_000, time: "2 mnt lalu", timeEn: "2 min ago" },
   { name: "Andi P.", amount: 100_000, time: "15 mnt lalu", timeEn: "15 min ago" },
   { name: "Hamba Allah #11", amount: 500_000, time: "1 jam lalu", timeEn: "1 hr ago" },
@@ -541,98 +538,4 @@ const donors = [
   { name: "Hamba Allah #10", amount: 75_000, time: "5 jam lalu", timeEn: "5 hr ago" },
   { name: "Komunitas Sahabat Anak", amount: 750_000, time: "Kemarin", timeEn: "Yesterday" },
 ];
-
-function Dashboard() {
-  const t = useT();
-  const [shareOpen, setShareOpen] = useState(false);
-  const c = campaigns[0];
-  const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
-
-  return (
-    <div className="space-y-4">
-      {/* Header */}
-      <div className="bg-surface rounded-2xl p-5 border border-border/60">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
-          <BarChart3 className="w-3 h-3" /> {t("Dashboard Performa", "Performance Dashboard")}
-        </p>
-        <h2 className="mt-1 text-lg font-extrabold text-foreground leading-tight">{c.title}</h2>
-        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
-          <MapPin className="w-3 h-3" /> {c.school}
-        </p>
-      </div>
-
-      {/* Engagement Row */}
-      <div className="grid grid-cols-3 gap-2">
-        <StatTile icon={<Eye className="w-4 h-4" />} value={c.views} label={t("Tayangan", "Views")} />
-        <StatTile icon={<Repeat2 className="w-4 h-4" />} value={c.shares.toString()} label={t("Bagikan", "Shares")} />
-        <StatTile icon={<ThumbsUp className="w-4 h-4" />} value={c.boosts.toString()} label={t("Boost", "Boost")} />
-      </div>
-
-      {/* Fund Tracking */}
-      <div className="bg-surface rounded-2xl p-5 border border-border/60">
-        <div className="flex items-center justify-between">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
-            {t("Dana Terkumpul", "Funds Raised")}
-          </p>
-          <span className="text-[11px] font-mono font-semibold text-accent inline-flex items-center gap-1">
-            <TrendingUp className="w-3 h-3" /> +12% {t("minggu ini", "this week")}
-          </span>
-        </div>
-        <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-2xl font-extrabold text-foreground font-mono">{fmt(c.raised * 1_000_000)}</span>
-          <span className="text-xs text-muted-foreground font-mono">{t(`dari ${fmt(c.target * 1_000_000)}`, `of ${fmt(c.target * 1_000_000)}`)}</span>
-        </div>
-        <div className="mt-3 h-3 rounded-full bg-muted overflow-hidden">
-          <div className="h-full rounded-full" style={{ width: `${c.pct}%`, background: "#F47B20" }} />
-        </div>
-        <p className="text-[11px] text-muted-foreground mt-1.5 font-mono">{c.pct}% • {c.recipients} {t("penerima", "recipients")}</p>
-      </div>
-
-      {/* Share Toolkit */}
-      <button
-        onClick={() => setShareOpen(true)}
-        className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 transition"
-      >
-        <Share2 className="w-4 h-4" /> {t("Bagikan Link Kampanye", "Share Campaign Link")}
-      </button>
-
-      {/* Supporter List */}
-      <div className="bg-surface rounded-2xl border border-border/60 overflow-hidden">
-        <div className="p-4 border-b border-border/60 flex items-center justify-between">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
-            <Users className="w-3 h-3" /> {t("Donatur Terakhir", "Recent Donors")}
-          </p>
-          <span className="text-[10px] text-muted-foreground font-mono">{donors.length} {t("donatur", "donors")}</span>
-        </div>
-        <ul className="divide-y divide-border/60">
-          {donors.map((d, i) => (
-            <li key={i} className="flex items-center gap-3 px-4 py-3">
-              <div className="w-9 h-9 rounded-full bg-primary-soft text-primary grid place-items-center text-xs font-bold shrink-0">
-                {d.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground truncate">{d.name}</p>
-                <p className="text-[11px] text-muted-foreground font-mono">{t(d.time, d.timeEn)}</p>
-              </div>
-              <span className="text-sm font-mono font-bold text-primary">{fmt(d.amount)}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {shareOpen && <ShareSheet title={c.title} onClose={() => setShareOpen(false)} />}
-    </div>
-  );
-}
-
-function StatTile({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
-  return (
-    <div className="bg-surface rounded-2xl p-3 border border-border/60 text-center">
-      <div className="w-8 h-8 rounded-full bg-primary-soft text-primary grid place-items-center mx-auto">
-        {icon}
-      </div>
-      <p className="mt-2 text-lg font-extrabold text-foreground font-mono leading-none">{value}</p>
-      <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground font-mono font-semibold">{label}</p>
-    </div>
-  );
-}
+export { ShareSheet };
