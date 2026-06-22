@@ -12,10 +12,10 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as NutrisiRouteImport } from './routes/nutrisi'
 import { Route as CopilotRouteImport } from './routes/copilot'
-import { Route as BerandaRouteImport } from './routes/beranda'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as InspirasiIdRouteImport } from './routes/inspirasi.$id'
 import { Route as FlashcardIdRouteImport } from './routes/flashcard.$id'
+import { Route as AuthenticatedBerandaRouteImport } from './routes/_authenticated/beranda'
 
 const ProfilRoute = ProfilRouteImport.update({
   id: '/profil',
@@ -30,11 +30,6 @@ const NutrisiRoute = NutrisiRouteImport.update({
 const CopilotRoute = CopilotRouteImport.update({
   id: '/copilot',
   path: '/copilot',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BerandaRoute = BerandaRouteImport.update({
-  id: '/beranda',
-  path: '/beranda',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -52,32 +47,37 @@ const FlashcardIdRoute = FlashcardIdRouteImport.update({
   path: '/flashcard/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedBerandaRoute = AuthenticatedBerandaRouteImport.update({
+  id: '/_authenticated/beranda',
+  path: '/beranda',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/beranda': typeof BerandaRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
+  '/beranda': typeof AuthenticatedBerandaRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/beranda': typeof BerandaRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
+  '/beranda': typeof AuthenticatedBerandaRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/beranda': typeof BerandaRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
+  '/_authenticated/beranda': typeof AuthenticatedBerandaRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
 }
@@ -85,38 +85,38 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/beranda'
     | '/copilot'
     | '/nutrisi'
     | '/profil'
+    | '/beranda'
     | '/flashcard/$id'
     | '/inspirasi/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/beranda'
     | '/copilot'
     | '/nutrisi'
     | '/profil'
+    | '/beranda'
     | '/flashcard/$id'
     | '/inspirasi/$id'
   id:
     | '__root__'
     | '/'
-    | '/beranda'
     | '/copilot'
     | '/nutrisi'
     | '/profil'
+    | '/_authenticated/beranda'
     | '/flashcard/$id'
     | '/inspirasi/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BerandaRoute: typeof BerandaRoute
   CopilotRoute: typeof CopilotRoute
   NutrisiRoute: typeof NutrisiRoute
   ProfilRoute: typeof ProfilRoute
+  AuthenticatedBerandaRoute: typeof AuthenticatedBerandaRoute
   FlashcardIdRoute: typeof FlashcardIdRoute
   InspirasiIdRoute: typeof InspirasiIdRoute
 }
@@ -144,13 +144,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CopilotRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/beranda': {
-      id: '/beranda'
-      path: '/beranda'
-      fullPath: '/beranda'
-      preLoaderRoute: typeof BerandaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/': {
       id: '/'
       path: '/'
@@ -172,15 +165,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FlashcardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/beranda': {
+      id: '/_authenticated/beranda'
+      path: '/beranda'
+      fullPath: '/beranda'
+      preLoaderRoute: typeof AuthenticatedBerandaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BerandaRoute: BerandaRoute,
   CopilotRoute: CopilotRoute,
   NutrisiRoute: NutrisiRoute,
   ProfilRoute: ProfilRoute,
+  AuthenticatedBerandaRoute: AuthenticatedBerandaRoute,
   FlashcardIdRoute: FlashcardIdRoute,
   InspirasiIdRoute: InspirasiIdRoute,
 }
