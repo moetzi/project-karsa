@@ -69,7 +69,7 @@ const campaigns = [
     raised: 0.25,
     target: 0.25,
     pct: 100,
-    urgent: true,
+    
     hero: "linear-gradient(135deg, #8a2a1a 0%, #d4842a 100%)",
     report: "linear-gradient(135deg, #2d5016 0%, #5a8a3d 100%)",
     teacher: "Pak Budi",
@@ -152,14 +152,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
             <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
           </span>
-          {c.urgent && (
-            <span
-              className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full text-white animate-pulse"
-              style={{ background: "linear-gradient(135deg, oklch(0.62 0.2 25), oklch(0.55 0.22 15))" }}
-            >
-              ⚡ {t("DARURAT • AKHIR PEKAN", "URGENT • WEEKEND")}
-            </span>
-          )}
         </div>
         <div className="text-primary-foreground">
           <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
