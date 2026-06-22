@@ -100,6 +100,7 @@ const campaigns = [
     teacher: "Ibu Sari Dewi",
     description: "SDN 047 Kolaka Utara memiliki 47 siswa, mayoritas anak nelayan dengan asupan protein yang fluktuatif. Bersama BUMDes Maju Bersama dan PKK desa, kami menjalankan program makan siang bergizi seimbang setiap hari sekolah selama satu semester. Menu disusun bersama ahli gizi puskesmas: nasi, ikan/telur lokal, sayur, dan buah. Dana digunakan untuk bahan baku (70%), insentif tim masak PKK (20%), dan logistik (10%).",
     journal: "Minggu lalu anak-anak sudah mulai mendapat asupan protein tambahan dari telur lokal. Senyum mereka adalah motivasi kami.",
+    deadline: "2026-07-15T23:59:00+08:00",
     boosts: 132,
     views: "1.2k",
     shares: 450,
