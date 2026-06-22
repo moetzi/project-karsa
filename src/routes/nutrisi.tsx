@@ -643,10 +643,54 @@ function BuatKampanye() {
             )}
             className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none resize-none font-serif placeholder:text-muted-foreground/70 placeholder:font-sans" />
         </FormField>
-        <FormField label={t("Jurnal Guru (Pembuka)", "Teacher's Journal (Opening)")} required>
-          <textarea value={journal} onChange={(e) => setJournal(e.target.value)} rows={3}
-            placeholder={t("Tuliskan catatan pertama Anda untuk para donatur...", "Write your first note to donors...")}
-            className="w-full bg-primary-soft/30 rounded-xl px-4 py-3 text-sm text-foreground border border-primary/20 focus:border-primary outline-none resize-none font-serif italic placeholder:text-muted-foreground/70 placeholder:not-italic placeholder:font-sans" />
+        <FormField label={t("Foto Bukti Kondisi (untuk meningkatkan kepercayaan donatur)", "Proof Photos (boosts donor trust)")} required>
+          <div className="grid grid-cols-4 gap-2">
+            {photos.map((src, i) => (
+              <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-muted border border-border/60">
+                <img src={src} alt="" className="w-full h-full object-cover" />
+                <button
+                  type="button"
+                  onClick={() => setPhotos((p) => p.filter((_, idx) => idx !== i))}
+                  className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white grid place-items-center"
+                  aria-label={t("Hapus foto", "Remove photo")}
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            ))}
+            {photos.length < 4 && (
+              <button
+                type="button"
+                onClick={() => photoInputRef.current?.click()}
+                className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary-soft/30 transition flex flex-col items-center justify-center gap-1 text-muted-foreground"
+              >
+                <ImagePlus className="w-5 h-5" />
+                <span className="text-[9px] font-mono uppercase">{t("Tambah", "Add")}</span>
+              </button>
+            )}
+          </div>
+          <input
+            ref={photoInputRef}
+            type="file"
+            accept="image/*"
+            multiple
+            capture="environment"
+            className="hidden"
+            onChange={(e) => handlePhotos(e.target.files)}
+          />
+          <button
+            type="button"
+            onClick={() => photoInputRef.current?.click()}
+            className="mt-2 w-full border border-border rounded-xl py-2.5 text-xs font-semibold text-foreground inline-flex items-center justify-center gap-2 hover:bg-muted/50"
+          >
+            <Camera className="w-4 h-4" /> {t("Ambil / Pilih Foto (maks. 4)", "Take / Pick Photos (max 4)")}
+          </button>
+          <p className="text-[11px] text-muted-foreground mt-1.5 leading-snug">
+            {t(
+              "Foto kondisi sekolah, ruang masak, atau anak-anak penerima — meningkatkan kepercayaan calon donatur.",
+              "Photos of school, kitchen, or recipient children — boosts trust with prospective donors.",
+            )}
+          </p>
         </FormField>
       </SectionCard>
 
