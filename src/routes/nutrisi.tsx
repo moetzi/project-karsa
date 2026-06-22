@@ -5,7 +5,7 @@ import {
   ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash,
   Eye, Repeat2, Share2, X, Link2, Check, Landmark,
   CalendarDays, Calendar, Wallet, Users, Phone, Sparkles,
-  ImagePlus, Trash2, Camera,
+  ImagePlus, Trash2, Camera, Clock,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { DonateSheet } from "@/components/DonateSheet";
@@ -100,6 +100,7 @@ const campaigns = [
     teacher: "Ibu Sari Dewi",
     description: "SDN 047 Kolaka Utara memiliki 47 siswa, mayoritas anak nelayan dengan asupan protein yang fluktuatif. Bersama BUMDes Maju Bersama dan PKK desa, kami menjalankan program makan siang bergizi seimbang setiap hari sekolah selama satu semester. Menu disusun bersama ahli gizi puskesmas: nasi, ikan/telur lokal, sayur, dan buah. Dana digunakan untuk bahan baku (70%), insentif tim masak PKK (20%), dan logistik (10%).",
     journal: "Minggu lalu anak-anak sudah mulai mendapat asupan protein tambahan dari telur lokal. Senyum mereka adalah motivasi kami.",
+    deadline: "2026-07-15T23:59:00+08:00",
     boosts: 132,
     views: "1.2k",
     shares: 450,
@@ -120,11 +121,24 @@ const campaigns = [
     teacher: "Pak Ridwan Saputra",
     description: "Kampung Baru di hulu Sungai Mahakam jauh dari pasar; harga sayur tinggi dan stok protein terbatas. Kami bermitra dengan Kelompok Tani Harapan Jaya untuk pasokan sayur segar dua kali seminggu, dan Posyandu untuk pengolahan. Program berjalan 12 minggu untuk 63 siswa, fokus pada perbaikan tinggi-badan-per-usia yang akan diukur ulang oleh kader Posyandu di akhir program.",
     journal: "Dengan dukungan petani lokal, kami kini bisa menyediakan sayuran segar setiap hari Senin dan Rabu untuk makan siang anak-anak.",
+    deadline: "2026-08-30T23:59:00+08:00",
     boosts: 84,
     views: "836",
     shares: 211,
   },
 ];
+
+function getCountdown(deadline?: string) {
+  if (!deadline) return null;
+  const ms = new Date(deadline).getTime() - Date.now();
+  if (isNaN(ms)) return null;
+  if (ms <= 0) return { id: "Berakhir", en: "Ended", urgent: true, ended: true };
+  const days = Math.floor(ms / 86_400_000);
+  const hours = Math.floor((ms % 86_400_000) / 3_600_000);
+  const urgent = days < 7;
+  if (days >= 1) return { id: `${days} hari ${hours} jam lagi`, en: `${days}d ${hours}h left`, urgent, ended: false };
+  return { id: `${hours} jam lagi`, en: `${hours}h left`, urgent, ended: false };
+}
 
 function Feed() {
   return (
@@ -209,7 +223,23 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
             <div className="h-2 rounded-full bg-muted overflow-hidden">
               <div className="h-full progress-gradient rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
+            <div className="flex items-center justify-between mt-1.5 text-[11px]">
+              <p className="text-muted-foreground">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
+              {pct < 100 && (() => {
+                const cd = getCountdown(("deadline" in c ? (c as { deadline?: string }).deadline : undefined));
+                if (!cd) return null;
+                return (
+                  <span
+                    className={
+                      "inline-flex items-center gap-1 font-mono font-semibold " +
+                      (cd.urgent ? "text-accent" : "text-foreground")
+                    }
+                  >
+                    <Clock className="w-3 h-3" /> {t(cd.id, cd.en)}
+                  </span>
+                );
+              })()}
+            </div>
           </div>
 
           <div className="mt-3 flex items-center justify-between text-[11px]">
@@ -324,7 +354,23 @@ function CampaignDetailSheet({
             <div className="h-2 rounded-full bg-muted overflow-hidden">
               <div className="h-full progress-gradient rounded-full" style={{ width: `${pct}%` }} />
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
+            <div className="flex items-center justify-between mt-1.5 text-[11px]">
+              <p className="text-muted-foreground">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
+              {pct < 100 && (() => {
+                const cd = getCountdown(("deadline" in c ? (c as { deadline?: string }).deadline : undefined));
+                if (!cd) return null;
+                return (
+                  <span
+                    className={
+                      "inline-flex items-center gap-1 font-mono font-semibold " +
+                      (cd.urgent ? "text-accent" : "text-foreground")
+                    }
+                  >
+                    <Clock className="w-3 h-3" /> {t(cd.id, cd.en)}
+                  </span>
+                );
+              })()}
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-2 text-center">
