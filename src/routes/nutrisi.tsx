@@ -137,6 +137,7 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const [boosted, setBoosted] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [donateOpen, setDonateOpen] = useState(false);
+  const [detailOpen, setDetailOpen] = useState(false);
   const donations = useDonations(c.id);
   const shares = c.shares;
   const boosts = c.boosts + (boosted ? 1 : 0);
