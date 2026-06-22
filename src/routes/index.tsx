@@ -188,22 +188,22 @@ function Beranda() {
               {t("Kampanye Aktif", "Active Campaign")}
             </p>
             <span className="text-[10px] font-semibold text-primary bg-primary-soft px-2 py-0.5 rounded-full">
-              {t("56% terkumpul", "56% raised")}
+              {t(`${pct}% terkumpul`, `${pct}% raised`)}
             </span>
           </div>
           <h3 className="text-lg font-bold text-foreground">
-            {t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")}
+            {t(ACTIVE_CAMPAIGN.title, ACTIVE_CAMPAIGN.titleEn)}
           </h3>
           <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-            <MapPin className="w-3 h-3" /> SDN 047 Kolaka Utara
+            <MapPin className="w-3 h-3" /> {ACTIVE_CAMPAIGN.school}
           </p>
 
           <div className="mt-4 h-2 rounded-full bg-muted overflow-hidden">
-            <div className="h-full rounded-full" style={{ width: "56%", background: "#F47B20" }} />
+            <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: "#F47B20" }} />
           </div>
           <div className="mt-2 flex justify-between text-xs">
-            <span className="font-mono font-semibold text-foreground">Rp 8.4jt</span>
-            <span className="font-mono text-muted-foreground">{t("dari Rp 15.0jt", "of Rp 15.0M")}</span>
+            <span className="font-mono font-semibold text-foreground">Rp {fmtJt(totalRaised)}</span>
+            <span className="font-mono text-muted-foreground">{t(`dari Rp ${targetJt}jt`, `of Rp ${targetJt}M`)}</span>
           </div>
 
           {/* Dashboard Performa */}
