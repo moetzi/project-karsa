@@ -60,10 +60,10 @@ function Nutrisi() {
 const campaigns = [
   {
     id: "tuamese-darurat-robinson",
-    title: "Darurat Gizi Akhir Pekan — Robinson & Teman",
+    title: "Darurat Gizi — Robinson & Teman",
     school: "SDN Tuamese",
     recipients: 12,
-    supplier: "KWT Tuamese & Pasar Nyong Ganteng",
+    supplier: "KWT Tuamese",
     tmp: "Posyandu Tuamese",
     region: "Nusa Tenggara Timur",
     raised: 0.25,
