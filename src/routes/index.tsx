@@ -52,6 +52,7 @@ export const Route = createFileRoute("/")({
 function Beranda() {
   const t = useT();
   const [shareOpen, setShareOpen] = useState(false);
+  const [journalOpen, setJournalOpen] = useState(false);
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
   return (
     <PhoneShell>
