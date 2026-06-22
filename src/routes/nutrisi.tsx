@@ -69,7 +69,7 @@ function Nutrisi() {
   );
 }
 
-const campaigns = [
+export const campaigns = [
   {
     id: "tuamese-darurat-robinson",
     title: "Darurat Gizi — Robinson & Teman",
@@ -137,7 +137,7 @@ const campaigns = [
   },
 ];
 
-function getCountdown(deadline?: string) {
+export function getCountdown(deadline?: string) {
   if (!deadline) return null;
   const ms = new Date(deadline).getTime() - Date.now();
   if (isNaN(ms)) return null;
@@ -319,7 +319,7 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   );
 }
 
-function CampaignDetailSheet({
+export function CampaignDetailSheet({
   c, pct, totalRaised, fmtJt, onClose, onDonate, onShare,
 }: {
   c: typeof campaigns[number];
