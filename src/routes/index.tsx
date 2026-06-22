@@ -62,6 +62,8 @@ function Beranda() {
   const journals = useJournals(ACTIVE_CAMPAIGN.id);
   const donations = useDonations(ACTIVE_CAMPAIGN.id);
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
+  // Constraint: 1 active campaign per teacher. Closing journal unlocks only when campaign is closed (target reached / period ended).
+  const isCampaignClosed = false;
   const allDonors = [
     ...donations.map((d) => ({ name: d.name, amount: d.amount, time: fmtDonRel(d.createdAt, "id"), timeEn: fmtDonRel(d.createdAt, "en") })),
     ...donors,
