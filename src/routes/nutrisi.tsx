@@ -179,17 +179,21 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
         className="block w-full text-left hover:bg-muted/20 transition-colors"
         aria-label={t(`Lihat detail ${c.title}`, `View ${c.title} details`)}
       >
-        <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
-          <div className="flex items-start justify-between gap-2">
-            <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
-              <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
-            </span>
-          </div>
-          <div className="text-primary-foreground">
-            <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
-            <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
-              <MapPin className="w-3 h-3" /> {c.school}
-            </p>
+        <div className="relative h-44 overflow-hidden">
+          <img src={c.hero} alt={c.title} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/20" />
+          <div className="relative z-10 h-full p-4 flex flex-col justify-between">
+            <div className="flex items-start justify-between gap-2">
+              <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
+                <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
+              </span>
+            </div>
+            <div className="text-white">
+              <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
+              <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
+                <MapPin className="w-3 h-3" /> {c.school}
+              </p>
+            </div>
           </div>
         </div>
 
