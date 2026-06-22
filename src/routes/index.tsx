@@ -2,18 +2,20 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
 import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2, Heart } from "lucide-react";
-import { donors, ShareSheet } from "@/routes/nutrisi";
+import { donors, ShareSheet, campaigns } from "@/routes/nutrisi";
 import { JournalSheet } from "@/components/JournalSheet";
 import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations, formatRelative as fmtDonRel } from "@/lib/donationStore";
 import { useT } from "@/lib/i18n";
 
 
+const ACTIVE_CAMPAIGN_ID = "kolaka-gizi-sehat";
+const ACTIVE_CAMPAIGN_SRC = campaigns.find((c) => c.id === ACTIVE_CAMPAIGN_ID)!;
 const ACTIVE_CAMPAIGN = {
-  id: "kolaka-gizi-sehat",
-  title: "Gizi Sehat Desa Kolaka",
+  id: ACTIVE_CAMPAIGN_SRC.id,
+  title: ACTIVE_CAMPAIGN_SRC.title,
   titleEn: "Healthy Nutrition for Kolaka Village",
-  school: "SDN 047 Kolaka Utara",
+  school: ACTIVE_CAMPAIGN_SRC.school,
 };
 
 const INSPIRASI = [
@@ -61,8 +63,17 @@ function Beranda() {
   const donations = useDonations(ACTIVE_CAMPAIGN.id);
 
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
+  // Live totals mirror the Nutrisi feed card (baseline raised in juta + new donations).
+  const baselineRaised = ACTIVE_CAMPAIGN_SRC.raised * 1_000_000;
+  const targetRp = ACTIVE_CAMPAIGN_SRC.target * 1_000_000;
+  const newRaised = donations.reduce((s, d) => s + d.amount, 0);
+  const totalRaised = baselineRaised + newRaised;
+  const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const fmtJt = (n: number) =>
+    (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
+  const targetJt = ACTIVE_CAMPAIGN_SRC.target;
   // Constraint: 1 active campaign per teacher. Closing journal unlocks only when campaign is closed (target reached / period ended).
-  const isCampaignClosed = false;
+  const isCampaignClosed = pct >= 100;
   const allDonors = [
     ...donations.map((d) => ({ name: d.name, amount: d.amount, time: fmtDonRel(d.createdAt, "id"), timeEn: fmtDonRel(d.createdAt, "en") })),
     ...donors,
@@ -177,22 +188,22 @@ function Beranda() {
               {t("Kampanye Aktif", "Active Campaign")}
             </p>
             <span className="text-[10px] font-semibold text-primary bg-primary-soft px-2 py-0.5 rounded-full">
-              {t("56% terkumpul", "56% raised")}
+              {t(`${pct}% terkumpul`, `${pct}% raised`)}
             </span>
           </div>
           <h3 className="text-lg font-bold text-foreground">
-            {t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")}
+            {t(ACTIVE_CAMPAIGN.title, ACTIVE_CAMPAIGN.titleEn)}
           </h3>
           <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-            <MapPin className="w-3 h-3" /> SDN 047 Kolaka Utara
+            <MapPin className="w-3 h-3" /> {ACTIVE_CAMPAIGN.school}
           </p>
 
           <div className="mt-4 h-2 rounded-full bg-muted overflow-hidden">
-            <div className="h-full rounded-full" style={{ width: "56%", background: "#F47B20" }} />
+            <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: "#F47B20" }} />
           </div>
           <div className="mt-2 flex justify-between text-xs">
-            <span className="font-mono font-semibold text-foreground">Rp 8.4jt</span>
-            <span className="font-mono text-muted-foreground">{t("dari Rp 15.0jt", "of Rp 15.0M")}</span>
+            <span className="font-mono font-semibold text-foreground">Rp {fmtJt(totalRaised)}</span>
+            <span className="font-mono text-muted-foreground">{t(`dari Rp ${targetJt}jt`, `of Rp ${targetJt}M`)}</span>
           </div>
 
           {/* Dashboard Performa */}
@@ -207,9 +218,9 @@ function Beranda() {
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2">
               {[
-                { icon: <Eye className="w-3.5 h-3.5" />, value: "1.2k", label: t("Tayangan", "Views") },
-                { icon: <Repeat2 className="w-3.5 h-3.5" />, value: "450", label: t("Bagikan", "Shares") },
-                { icon: <ThumbsUp className="w-3.5 h-3.5" />, value: "132", label: t("Boost", "Boost") },
+                { icon: <Eye className="w-3.5 h-3.5" />, value: ACTIVE_CAMPAIGN_SRC.views, label: t("Tayangan", "Views") },
+                { icon: <Repeat2 className="w-3.5 h-3.5" />, value: String(ACTIVE_CAMPAIGN_SRC.shares), label: t("Bagikan", "Shares") },
+                { icon: <ThumbsUp className="w-3.5 h-3.5" />, value: String(ACTIVE_CAMPAIGN_SRC.boosts), label: t("Boost", "Boost") },
               ].map((s, i) => (
                 <div key={i} className="bg-muted/50 rounded-xl p-2.5 text-center">
                   <div className="w-7 h-7 rounded-full bg-primary-soft text-primary grid place-items-center mx-auto">
