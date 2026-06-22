@@ -13,6 +13,7 @@ import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as NutrisiRouteImport } from './routes/nutrisi'
 import { Route as CopilotRouteImport } from './routes/copilot'
 import { Route as BerandaRouteImport } from './routes/beranda'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as InspirasiIdRouteImport } from './routes/inspirasi.$id'
 import { Route as FlashcardIdRouteImport } from './routes/flashcard.$id'
 
@@ -36,6 +37,11 @@ const BerandaRoute = BerandaRouteImport.update({
   path: '/beranda',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const InspirasiIdRoute = InspirasiIdRouteImport.update({
   id: '/inspirasi/$id',
   path: '/inspirasi/$id',
@@ -48,6 +54,7 @@ const FlashcardIdRoute = FlashcardIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
+  '/': typeof IndexRoute
   '/beranda': typeof BerandaRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
@@ -56,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/inspirasi/$id': typeof InspirasiIdRoute
 }
 export interface FileRoutesByTo {
+  '/': typeof IndexRoute
   '/beranda': typeof BerandaRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
@@ -65,6 +73,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/beranda': typeof BerandaRoute
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
@@ -75,6 +84,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/'
     | '/beranda'
     | '/copilot'
     | '/nutrisi'
@@ -83,6 +93,7 @@ export interface FileRouteTypes {
     | '/inspirasi/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/'
     | '/beranda'
     | '/copilot'
     | '/nutrisi'
@@ -91,6 +102,7 @@ export interface FileRouteTypes {
     | '/inspirasi/$id'
   id:
     | '__root__'
+    | '/'
     | '/beranda'
     | '/copilot'
     | '/nutrisi'
@@ -100,6 +112,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   BerandaRoute: typeof BerandaRoute
   CopilotRoute: typeof CopilotRoute
   NutrisiRoute: typeof NutrisiRoute
@@ -138,6 +151,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BerandaRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/inspirasi/$id': {
       id: '/inspirasi/$id'
       path: '/inspirasi/$id'
@@ -156,6 +176,7 @@ declare module '@tanstack/react-router' {
 }
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   BerandaRoute: BerandaRoute,
   CopilotRoute: CopilotRoute,
   NutrisiRoute: NutrisiRoute,
