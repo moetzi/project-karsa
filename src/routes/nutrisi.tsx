@@ -114,6 +114,7 @@ const campaigns = [
     hero: "linear-gradient(135deg, #6b4423 0%, #c4654a 100%)",
     report: "linear-gradient(135deg, #2d5a3d 0%, #5a8a5c 100%)",
     teacher: "Pak Ridwan Saputra",
+    description: "Kampung Baru di hulu Sungai Mahakam jauh dari pasar; harga sayur tinggi dan stok protein terbatas. Kami bermitra dengan Kelompok Tani Harapan Jaya untuk pasokan sayur segar dua kali seminggu, dan Posyandu untuk pengolahan. Program berjalan 12 minggu untuk 63 siswa, fokus pada perbaikan tinggi-badan-per-usia yang akan diukur ulang oleh kader Posyandu di akhir program.",
     journal: "Dengan dukungan petani lokal, kami kini bisa menyediakan sayuran segar setiap hari Senin dan Rabu untuk makan siang anak-anak.",
     boosts: 84,
     views: "836",
