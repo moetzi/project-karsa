@@ -1144,3 +1144,266 @@ export const donors = [
   { name: "Komunitas Sahabat Anak", amount: 750_000, time: "Kemarin", timeEn: "Yesterday" },
 ];
 export { ShareSheet };
+
+/* =================== Active Campaign Management Panel =================== */
+
+type ActiveCampaign = {
+  id: string;
+  title: string;
+  description: string;
+  school: string;
+  target_amount: number;
+  status: string;
+  created_at: string;
+  closed_at: string | null;
+};
+
+function ActiveCampaignPanel({
+  campaign,
+  onChanged,
+}: {
+  campaign: ActiveCampaign;
+  onChanged: () => void;
+}) {
+  const t = useT();
+  const [editOpen, setEditOpen] = useState(false);
+  const [journalOpen, setJournalOpen] = useState(false);
+  const [logOpen, setLogOpen] = useState(false);
+  const [confirmClose, setConfirmClose] = useState(false);
+
+  const closeFn = useServerFn(closeMyActiveCampaign);
+  const closeMutation = useMutation({
+    mutationFn: () => closeFn(),
+    onSuccess: () => {
+      toast.success(t("Kampanye ditutup.", "Campaign closed."));
+      setConfirmClose(false);
+      onChanged();
+    },
+    onError: (e: Error) => toast.error(e.message || t("Gagal menutup kampanye.", "Failed to close.")),
+  });
+
+  return (
+    <div className="rounded-2xl border border-primary/40 bg-primary/5 p-4 space-y-3">
+      <div className="flex items-start gap-2.5">
+        <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+        <div className="flex-1 min-w-0">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+            {t("Kampanye Aktif Anda", "Your Active Campaign")}
+          </p>
+          <p className="mt-0.5 text-sm font-bold text-foreground truncate">{campaign.title}</p>
+          <p className="text-[11px] text-muted-foreground flex items-center gap-1">
+            <MapPin className="w-3 h-3" /> {campaign.school} · Rp {(campaign.target_amount / 1_000_000).toFixed(1)}jt
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={() => setEditOpen(true)}
+          className="rounded-xl border border-border bg-surface px-3 py-2 text-xs font-semibold inline-flex items-center justify-center gap-1.5 hover:bg-muted/60"
+        >
+          <Sparkles className="w-3.5 h-3.5" /> {t("Edit", "Edit")}
+        </button>
+        <button
+          onClick={() => setConfirmClose(true)}
+          className="rounded-xl border border-accent/50 bg-accent/10 px-3 py-2 text-xs font-semibold text-accent inline-flex items-center justify-center gap-1.5 hover:bg-accent/15"
+        >
+          <Lock className="w-3.5 h-3.5" /> {t("Tutup", "Close")}
+        </button>
+        <button
+          onClick={() => setJournalOpen(true)}
+          className="rounded-xl bg-primary text-primary-foreground px-3 py-2 text-xs font-semibold inline-flex items-center justify-center gap-1.5 hover:opacity-95"
+        >
+          <Camera className="w-3.5 h-3.5" /> {t("Buat Jurnal", "New Journal")}
+        </button>
+        <button
+          onClick={() => setLogOpen(true)}
+          className="rounded-xl border border-border bg-surface px-3 py-2 text-xs font-semibold inline-flex items-center justify-center gap-1.5 hover:bg-muted/60"
+        >
+          <Eye className="w-3.5 h-3.5" /> {t("Lihat Jurnal", "View Journals")}
+        </button>
+      </div>
+
+      {editOpen && (
+        <EditCampaignDialog
+          campaign={campaign}
+          onClose={() => setEditOpen(false)}
+          onSaved={() => { setEditOpen(false); onChanged(); }}
+        />
+      )}
+      {journalOpen && (
+        <JournalSheet
+          campaign={{ id: campaign.id, title: campaign.title, titleEn: campaign.title, school: campaign.school }}
+          onClose={() => setJournalOpen(false)}
+        />
+      )}
+      {logOpen && (
+        <JournalsLogSheet campaignId={campaign.id} onClose={() => setLogOpen(false)} />
+      )}
+      {confirmClose && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/50 backdrop-blur-sm p-4" onClick={() => !closeMutation.isPending && setConfirmClose(false)}>
+          <div className="bg-background rounded-2xl border border-border p-5 max-w-sm w-full" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-bold text-foreground">{t("Tutup kampanye ini?", "Close this campaign?")}</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
+              {t(
+                "Setelah ditutup, donatur tidak bisa berdonasi lagi dan Anda bisa membuat kampanye baru.",
+                "Once closed, donors can't contribute anymore and you can create a new campaign.",
+              )}
+            </p>
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <button
+                onClick={() => setConfirmClose(false)}
+                disabled={closeMutation.isPending}
+                className="rounded-xl border border-border bg-surface py-2.5 text-sm font-semibold"
+              >
+                {t("Batal", "Cancel")}
+              </button>
+              <button
+                onClick={() => closeMutation.mutate()}
+                disabled={closeMutation.isPending}
+                className="rounded-xl bg-accent text-accent-foreground py-2.5 text-sm font-semibold inline-flex items-center justify-center gap-1.5 disabled:opacity-60"
+              >
+                {closeMutation.isPending ? "..." : t("Ya, Tutup", "Yes, Close")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function EditCampaignDialog({
+  campaign, onClose, onSaved,
+}: { campaign: ActiveCampaign; onClose: () => void; onSaved: () => void }) {
+  const t = useT();
+  const [title, setTitle] = useState(campaign.title);
+  const [description, setDescription] = useState(campaign.description);
+  const [school, setSchool] = useState(campaign.school);
+  const [target, setTarget] = useState(String(campaign.target_amount));
+  const updateFn = useServerFn(updateMyCampaign);
+  const mutation = useMutation({
+    mutationFn: () => updateFn({
+      data: {
+        id: campaign.id,
+        title,
+        description,
+        school,
+        target_amount: Number(target),
+      },
+    }),
+    onSuccess: () => { toast.success(t("Kampanye diperbarui.", "Campaign updated.")); onSaved(); },
+    onError: (e: Error) => toast.error(e.message || t("Gagal memperbarui.", "Failed to update.")),
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div className="w-full max-w-md bg-background rounded-t-3xl md:rounded-2xl max-h-[90vh] overflow-y-auto border border-border" onClick={(e) => e.stopPropagation()}>
+        <div className="sticky top-0 bg-background border-b border-border/60 px-5 py-3 flex items-center justify-between">
+          <h3 className="font-extrabold text-foreground">{t("Edit Kampanye", "Edit Campaign")}</h3>
+          <button onClick={onClose} className="w-9 h-9 rounded-full bg-muted grid place-items-center hover:bg-muted/70">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="p-5 space-y-4">
+          <Field label={t("Nama Kampanye", "Campaign Name")}>
+            <input value={title} onChange={(e) => setTitle(e.target.value)} className={editInput} />
+          </Field>
+          <Field label={t("Nama Sekolah", "School Name")}>
+            <input value={school} onChange={(e) => setSchool(e.target.value)} className={editInput} />
+          </Field>
+          <Field label={t("Target Dana (Rp)", "Target (IDR)")}>
+            <input
+              value={target}
+              onChange={(e) => setTarget(e.target.value.replace(/\D/g, ""))}
+              inputMode="numeric"
+              className={editInput + " font-mono"}
+            />
+          </Field>
+          <Field label={t("Deskripsi", "Description")}>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows={5} className={editInput + " resize-none font-serif leading-relaxed"} />
+          </Field>
+          <button
+            onClick={() => mutation.mutate()}
+            disabled={mutation.isPending || !title || !school || !description || !target}
+            className="w-full rounded-xl bg-primary text-primary-foreground py-3 text-sm font-semibold inline-flex items-center justify-center gap-2 disabled:opacity-60"
+          >
+            {mutation.isPending ? "..." : <><Check className="w-4 h-4" /> {t("Simpan Perubahan", "Save Changes")}</>}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div>
+      <label className="text-xs font-semibold text-foreground mb-1.5 block">{label}</label>
+      {children}
+    </div>
+  );
+}
+const editInput = "w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm focus:outline-none focus:border-primary";
+
+function JournalsLogSheet({ campaignId, onClose }: { campaignId: string; onClose: () => void }) {
+  const t = useT();
+  const qc = useQueryClient();
+  const listFn = useServerFn(listJournals);
+  const delFn = useServerFn(deleteJournal);
+  const { data: entries, isLoading } = useQuery({
+    queryKey: ["journals", campaignId],
+    queryFn: () => listFn({ data: { campaign_id: campaignId } }),
+  });
+  const delMutation = useMutation({
+    mutationFn: (id: string) => delFn({ data: { id } }),
+    onSuccess: () => { qc.invalidateQueries({ queryKey: ["journals", campaignId] }); toast.success(t("Jurnal dihapus.", "Journal deleted.")); },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div className="w-full max-w-md bg-background rounded-t-3xl max-h-[90vh] overflow-y-auto border-t border-border" onClick={(e) => e.stopPropagation()}>
+        <div className="sticky top-0 bg-background border-b border-border/60 px-5 py-3 flex items-center justify-between">
+          <h3 className="font-extrabold text-foreground">{t("Jurnal Kampanye", "Campaign Journals")}</h3>
+          <button onClick={onClose} className="w-9 h-9 rounded-full bg-muted grid place-items-center hover:bg-muted/70">
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="p-5 space-y-4">
+          {isLoading && <p className="text-sm text-muted-foreground text-center py-8">{t("Memuat…", "Loading…")}</p>}
+          {!isLoading && entries && entries.length === 0 && (
+            <p className="text-sm text-muted-foreground text-center py-8">{t("Belum ada jurnal.", "No journals yet.")}</p>
+          )}
+          {entries?.map((j) => (
+            <article key={j.id} className="bg-surface rounded-2xl border border-border/60 overflow-hidden">
+              {j.photos.length > 0 && (
+                <div className="grid grid-cols-2 gap-0.5">
+                  {j.photos.slice(0, 4).map((src, i) => (
+                    <img key={i} src={src} alt="" className="aspect-square w-full object-cover" />
+                  ))}
+                </div>
+              )}
+              <div className="p-3 space-y-1.5">
+                <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+                  {new Date(j.created_at).toLocaleString()}
+                </p>
+                <p className="text-xs font-semibold text-foreground">{j.menu}</p>
+                <p className="text-[13px] font-serif text-foreground/80 leading-relaxed">{j.story}</p>
+                <div className="flex items-center justify-between pt-1.5 text-[11px] text-muted-foreground">
+                  <span>{j.attendance ? `${j.attendance} ${t("anak", "kids")}` : ""} {j.mood ? `· ${j.mood}` : ""}</span>
+                  <button
+                    onClick={() => { if (confirm(t("Hapus jurnal ini?", "Delete this journal?"))) delMutation.mutate(j.id); }}
+                    className="text-accent font-semibold inline-flex items-center gap-1 hover:opacity-80"
+                  >
+                    <Trash2 className="w-3 h-3" /> {t("Hapus", "Delete")}
+                  </button>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
