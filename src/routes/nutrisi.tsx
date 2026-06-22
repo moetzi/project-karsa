@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash,
   Eye, Repeat2, Share2, X, Link2, Check, Landmark,
   CalendarDays, Calendar, Wallet, Users, Phone, Sparkles,
-  ImagePlus, Trash2, Camera, Clock,
+  ImagePlus, Trash2, Camera, Clock, Lock, LogIn,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { DonateSheet } from "@/components/DonateSheet";
@@ -15,6 +15,12 @@ import robinsonMakan2 from "@/assets/robinson-makan-2.jpg";
 import heroRobinson from "@/assets/campaign-hero-robinson.jpg";
 import heroKolaka from "@/assets/campaign-hero-kolaka.jpg";
 import heroMahakam from "@/assets/campaign-hero-mahakam.jpg";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { createCampaign, getMyActiveCampaign } from "@/lib/campaigns.functions";
+
 
 export const Route = createFileRoute("/nutrisi")({
   head: () => ({
@@ -636,10 +642,85 @@ function BuatKampanye() {
   const valid = missing.length === 0 && journalCommit;
   const [submitted, setSubmitted] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
+
+  // Auth + active-campaign gate (server-enforced "one active campaign per teacher").
+  const [userId, setUserId] = useState<string | null>(null);
+  const [authReady, setAuthReady] = useState(false);
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUserId(data.session?.user.id ?? null);
+      setAuthReady(true);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
+      setUserId(session?.user.id ?? null);
+      setAuthReady(true);
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  const queryClient = useQueryClient();
+  const getActive = useServerFn(getMyActiveCampaign);
+  const createFn = useServerFn(createCampaign);
+
+  const activeQuery = useQuery({
+    queryKey: ["my-active-campaign", userId],
+    queryFn: () => getActive(),
+    enabled: !!userId,
+    staleTime: 30_000,
+  });
+  const hasActiveCampaign = !!activeQuery.data;
+
+  const createMutation = useMutation({
+    mutationFn: (input: { title: string; description: string; school: string; target_amount: number }) =>
+      createFn({ data: input }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["my-active-campaign", userId] });
+      setSubmitted(true);
+      toast.success(t("Kampanye diajukan!", "Campaign submitted!"));
+    },
+    onError: (err: Error) => {
+      const msg = err.message ?? "";
+      if (msg.includes("ACTIVE_CAMPAIGN_EXISTS")) {
+        toast.error(
+          t(
+            "Anda masih punya kampanye aktif. Tutup dulu sebelum membuat yang baru.",
+            "You still have an active campaign. Close it before creating a new one.",
+          ),
+        );
+        queryClient.invalidateQueries({ queryKey: ["my-active-campaign", userId] });
+      } else if (msg.startsWith("Unauthorized")) {
+        toast.error(t("Masuk dulu untuk membuat kampanye.", "Sign in first to create a campaign."));
+      } else {
+        toast.error(msg || t("Gagal mengajukan kampanye.", "Failed to submit campaign."));
+      }
+    },
+  });
+
+  const locked = !userId || hasActiveCampaign || createMutation.isPending;
+
   const handleSubmit = () => {
     if (!valid) { setShowErrors(true); return; }
-    setSubmitted(true);
+    if (!userId) {
+      toast.error(t("Masuk dulu untuk membuat kampanye.", "Sign in first to create a campaign."));
+      return;
+    }
+    if (hasActiveCampaign) {
+      toast.error(
+        t(
+          "Anda masih punya kampanye aktif. Tutup dulu sebelum membuat yang baru.",
+          "You still have an active campaign. Close it before creating a new one.",
+        ),
+      );
+      return;
+    }
+    createMutation.mutate({
+      title: nama,
+      description: desc,
+      school: sekolah,
+      target_amount: Number(target),
+    });
   };
+
 
   return (
     <div className="space-y-4">
@@ -985,19 +1066,55 @@ function BuatKampanye() {
           </p>
         </div>
       </button>
+      {authReady && !userId && (
+        <div className="rounded-xl border border-accent/40 bg-accent/10 px-4 py-3 text-xs flex items-start gap-2">
+          <LogIn className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+          <p className="text-foreground/85">
+            {t(
+              "Masuk dulu untuk mengajukan kampanye. Validasi 1 kampanye aktif per guru dilakukan di server.",
+              "Sign in to submit a campaign. The one-active-campaign-per-teacher rule is enforced on the server.",
+            )}
+          </p>
+        </div>
+      )}
+      {hasActiveCampaign && (
+        <div className="rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 text-xs flex items-start gap-2">
+          <Lock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+          <p className="text-foreground/85">
+            {t(
+              "Anda masih punya kampanye aktif: ",
+              "You still have an active campaign: ",
+            )}
+            <span className="font-semibold">{activeQuery.data?.title}</span>
+            {t(
+              ". Tutup dulu sebelum membuat kampanye baru.",
+              ". Close it before creating a new one.",
+            )}
+          </p>
+        </div>
+      )}
       <button
         type="button"
         onClick={handleSubmit}
-        aria-disabled={!valid}
+        aria-disabled={!valid || locked}
+        disabled={locked}
         className={
           "w-full rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 transition " +
-          (valid
+          (valid && !locked
             ? "bg-primary text-primary-foreground hover:opacity-95"
-            : "bg-primary/50 text-primary-foreground hover:bg-primary/60")
+            : "bg-primary/50 text-primary-foreground hover:bg-primary/60 cursor-not-allowed")
         }
       >
-        <Send className="w-4 h-4" /> {t("Ajukan Kampanye", "Submit Campaign")}
+        {locked ? <Lock className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+        {createMutation.isPending
+          ? t("Mengirim...", "Submitting...")
+          : hasActiveCampaign
+            ? t("Kampanye Aktif Masih Berjalan", "Active Campaign In Progress")
+            : !userId
+              ? t("Masuk untuk Mengajukan", "Sign In to Submit")
+              : t("Ajukan Kampanye", "Submit Campaign")}
       </button>
+
     </div>
   );
 }
