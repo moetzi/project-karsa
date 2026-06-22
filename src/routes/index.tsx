@@ -1,13 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
-import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2, BookOpen, Heart } from "lucide-react";
+import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2, Heart } from "lucide-react";
 import { donors, ShareSheet } from "@/routes/nutrisi";
 import { JournalSheet } from "@/components/JournalSheet";
 import { DonateSheet } from "@/components/DonateSheet";
-import { useJournals, formatRelative } from "@/lib/journalStore";
 import { useDonations, formatRelative as fmtDonRel } from "@/lib/donationStore";
-import { useT, useLang } from "@/lib/i18n";
+import { useT } from "@/lib/i18n";
+
 
 const ACTIVE_CAMPAIGN = {
   id: "kolaka-gizi-sehat",
@@ -55,13 +55,14 @@ export const Route = createFileRoute("/")({
 
 function Beranda() {
   const t = useT();
-  const { lang } = useLang();
   const [shareOpen, setShareOpen] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
   const [donateOpen, setDonateOpen] = useState(false);
-  const journals = useJournals(ACTIVE_CAMPAIGN.id);
   const donations = useDonations(ACTIVE_CAMPAIGN.id);
+
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
+  // Constraint: 1 active campaign per teacher. Closing journal unlocks only when campaign is closed (target reached / period ended).
+  const isCampaignClosed = false;
   const allDonors = [
     ...donations.map((d) => ({ name: d.name, amount: d.amount, time: fmtDonRel(d.createdAt, "id"), timeEn: fmtDonRel(d.createdAt, "en") })),
     ...donors,
@@ -82,36 +83,39 @@ function Beranda() {
           </p>
         </header>
 
-        {/* Action item alert */}
-        <section
-          className="relative rounded-2xl p-5 overflow-hidden"
-          style={{
-            background: "linear-gradient(135deg, oklch(0.96 0.06 60) 0%, oklch(0.93 0.05 50) 100%)",
-            border: "1px solid oklch(0.85 0.08 55)",
-          }}
-        >
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-accent text-accent-foreground grid place-items-center shrink-0">
-              <PartyPopper className="w-5 h-5" />
+        {/* Action item alert — only when campaign is closed (target reached) */}
+        {isCampaignClosed && (
+          <section
+            className="relative rounded-2xl p-5 overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, oklch(0.96 0.06 60) 0%, oklch(0.93 0.05 50) 100%)",
+              border: "1px solid oklch(0.85 0.08 55)",
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-accent text-accent-foreground grid place-items-center shrink-0">
+                <PartyPopper className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-accent font-semibold">
+                  {t("Aksi Hari Ini", "Today's Action")}
+                </p>
+                <h2 className="mt-1 text-[15px] font-bold text-foreground leading-snug">
+                  {t("🎉 Kampanye Selesai!", "🎉 Campaign Closed!")}
+                </h2>
+                <p className="mt-1 text-[13px] text-foreground/80 leading-relaxed">
+                  {t("Tulis jurnal penutup dengan foto bukti untuk ", "Write the closing journal with proof photos for ")}
+                  <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>.
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-accent font-semibold">
-                {t("Aksi Hari Ini", "Today's Action")}
-              </p>
-              <h2 className="mt-1 text-[15px] font-bold text-foreground leading-snug">
-                {t("🎉 Target Terpenuhi!", "🎉 Target Reached!")}
-              </h2>
-              <p className="mt-1 text-[13px] text-foreground/80 leading-relaxed">
-                {t("Unggah foto makan bersama dan tulis jurnal hari ini untuk ", "Upload a group meal photo and write today's journal for ")}
-                <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>.
-              </p>
-            </div>
-          </div>
-          <button onClick={() => setJournalOpen(true)} className="mt-4 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
-            <NotebookPen className="w-4 h-4" />
-            {t("Buat Jurnal", "Create Journal")}
-          </button>
-        </section>
+            <button onClick={() => setJournalOpen(true)} className="mt-4 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
+              <NotebookPen className="w-4 h-4" />
+              {t("Buat Jurnal Penutup", "Create Closing Journal")}
+            </button>
+          </section>
+        )}
+
 
         {/* Pojok Inspirasi Guru */}
         <section className="-mx-6">
@@ -242,53 +246,8 @@ function Beranda() {
             </ul>
           </div>
 
-          {/* Jurnal Terkini */}
-          <div className="mt-4 bg-muted/40 rounded-xl border border-border/60 overflow-hidden">
-            <div className="px-3 py-2.5 border-b border-border/60 flex items-center justify-between">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
-                <BookOpen className="w-3 h-3" /> {t("Jurnal Terkini", "Recent Journals")}
-              </p>
-              <span className="text-[10px] text-muted-foreground font-mono">
-                {journals.length} {t("entri", "entries")}
-              </span>
-            </div>
-            {journals.length === 0 ? (
-              <div className="px-3 py-5 text-center">
-                <p className="text-[11px] text-muted-foreground">
-                  {t("Belum ada jurnal. Buat jurnal pertama hari ini.", "No journals yet. Create today's first journal.")}
-                </p>
-              </div>
-            ) : (
-              <ul className="divide-y divide-border/60 max-h-80 overflow-y-auto">
-                {journals.map((j) => (
-                  <li key={j.id} className="px-3 py-3 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[11px] font-semibold text-foreground truncate">{j.menu}</p>
-                      <span className="text-[10px] text-muted-foreground font-mono shrink-0 ml-2">
-                        {formatRelative(j.createdAt, lang)}
-                      </span>
-                    </div>
-                    {j.photos.length > 0 && (
-                      <div className="grid grid-cols-4 gap-1">
-                        {j.photos.slice(0, 4).map((src, i) => (
-                          <div key={i} className="aspect-square rounded-md overflow-hidden bg-muted">
-                            <img src={src} alt="" className="w-full h-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <p className="font-serif text-[12px] text-foreground/80 leading-relaxed line-clamp-3">
-                      {j.story}
-                    </p>
-                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
-                      {j.mood && <span className="px-1.5 py-0.5 rounded-full bg-primary-soft text-primary font-semibold">{j.mood}</span>}
-                      {j.attendance && <span>👧 {j.attendance} {t("anak", "kids")}</span>}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {/* Jurnal Terkini — hidden by default; journals are kept private and published after the campaign closes */}
+
 
           <div className="mt-4 flex gap-2">
             <button
