@@ -122,11 +122,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
   const fmtJt = (n: number) => (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
 
-  // Per-method breakdown
-  const byMethod = methods.map((m) => {
-    const sum = donations.filter((d) => d.method === m.id).reduce((s, d) => s + d.amount, 0);
-    return { ...m, sum, share: newRaised > 0 ? sum / newRaised : 0 };
-  });
 
   return (
     <article className="relative bg-surface rounded-2xl overflow-hidden border border-border/60">
