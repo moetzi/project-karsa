@@ -58,8 +58,14 @@ function Beranda() {
   const { lang } = useLang();
   const [shareOpen, setShareOpen] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
+  const [donateOpen, setDonateOpen] = useState(false);
   const journals = useJournals(ACTIVE_CAMPAIGN.id);
+  const donations = useDonations(ACTIVE_CAMPAIGN.id);
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
+  const allDonors = [
+    ...donations.map((d) => ({ name: d.name, amount: d.amount, time: fmtDonRel(d.createdAt, "id"), timeEn: fmtDonRel(d.createdAt, "en") })),
+    ...donors,
+  ];
   return (
     <PhoneShell>
       <div className="px-6 pt-4 pb-6 space-y-6">
