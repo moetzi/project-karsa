@@ -285,16 +285,16 @@ const REGIONS = [
   "Maluku","Maluku Utara","Papua","Papua Barat","Papua Selatan","Papua Tengah","Papua Pegunungan","Papua Barat Daya",
 ];
 
-type Supplier = {
-  id: number;
-  name: string;
-  group: string;
-  account: string;
-  bank: string;
-};
-
 const DAYS_ID = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
 const DAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+const AI_MENU_SAMPLE: Record<string, string> = {
+  Senin: "Nasi Jagung, Ikan Tongkol Bumbu Kuning, Tumis Kangkung",
+  Selasa: "Bubur Kacang Hijau, Telur Rebus, Pisang",
+  Rabu: "Nasi Merah, Ayam Suwir Kemangi, Sup Bayam",
+  Kamis: "Nasi Putih, Tempe Orek, Sayur Asem, Pepaya",
+  Jumat: "Nasi Uduk, Perkedel Tahu, Tumis Buncis Wortel",
+};
 
 function BuatKampanye() {
   const t = useT();
@@ -305,20 +305,28 @@ function BuatKampanye() {
   const [recipients, setRecipients] = useState("");
   const [guru, setGuru] = useState("");
   const [target, setTarget] = useState("");
+  const [deadline, setDeadline] = useState("");
   const [desc, setDesc] = useState("");
   const [journal, setJournal] = useState("");
 
-  const [suppliers, setSuppliers] = useState<Supplier[]>([
-    { id: 1, name: "", group: "", account: "", bank: "" },
-  ]);
-  const addSupplier = () =>
-    setSuppliers((s) => [...s, { id: Date.now(), name: "", group: "", account: "", bank: "" }]);
-  const removeSupplier = (id: number) =>
-    setSuppliers((s) => (s.length > 1 ? s.filter((x) => x.id !== id) : s));
-  const updateSupplier = (id: number, patch: Partial<Supplier>) =>
-    setSuppliers((s) => s.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  // Disbursement & Accountability
+  const [teacherBank, setTeacherBank] = useState("");
+  const [teacherAccount, setTeacherAccount] = useState("");
+  const [tmpGroup, setTmpGroup] = useState("");
+  const [tmpPhone, setTmpPhone] = useState("");
+  const [supplierName, setSupplierName] = useState("");
+  const [supplierGroup, setSupplierGroup] = useState("");
 
   const [menu, setMenu] = useState<Record<string, string>>({});
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const autoGenerateMenu = () => {
+    setAiLoading(true);
+    setTimeout(() => {
+      setMenu({ ...AI_MENU_SAMPLE });
+      setAiLoading(false);
+    }, 700);
+  };
 
   const groupLabels: Record<string, string> = {
     "BUMDes": t("BUMDes (Badan Usaha Milik Desa)", "BUMDes (Village-Owned Enterprise)"),
@@ -328,8 +336,7 @@ function BuatKampanye() {
     "Lainnya (Kios/UMKM)": t("Lainnya (Kios/UMKM)", "Other (Shop/MSME)"),
   };
 
-  const suppliersValid = suppliers.every((s) => s.name && s.group && s.account && s.bank);
-  const valid = npsn && nama && sekolah && region && recipients && guru && target && desc && journal && suppliersValid;
+  const valid = npsn && nama && sekolah && region && recipients && guru && target && deadline && desc && journal && teacherBank && teacherAccount && tmpGroup && tmpPhone;
 
   return (
     <div className="space-y-4">
