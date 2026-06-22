@@ -1079,21 +1079,11 @@ function BuatKampanye() {
           </p>
         </div>
       )}
-      {hasActiveCampaign && (
-        <div className="rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 text-xs flex items-start gap-2">
-          <Lock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-          <p className="text-foreground/85">
-            {t(
-              "Anda masih punya kampanye aktif: ",
-              "You still have an active campaign: ",
-            )}
-            <span className="font-semibold">{activeQuery.data?.title}</span>
-            {t(
-              ". Tutup dulu sebelum membuat kampanye baru.",
-              ". Close it before creating a new one.",
-            )}
-          </p>
-        </div>
+      {hasActiveCampaign && activeQuery.data && (
+        <ActiveCampaignPanel
+          campaign={activeQuery.data}
+          onChanged={() => queryClient.invalidateQueries({ queryKey: ["my-active-campaign", userId] })}
+        />
       )}
       <button
         type="button"
