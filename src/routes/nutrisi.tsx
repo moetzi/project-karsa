@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash,
   Eye, Repeat2, Share2, X, Link2, Check, Plus, Trash2, Landmark,
-  CalendarDays,
+  CalendarDays, Calendar, Wallet, Users, Phone, Sparkles,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { DonateSheet } from "@/components/DonateSheet";
