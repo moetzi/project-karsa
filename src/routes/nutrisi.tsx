@@ -378,7 +378,30 @@ function BuatKampanye() {
     "Lainnya (Kios/UMKM)": t("Lainnya (Kios/UMKM)", "Other (Shop/MSME)"),
   };
 
-  const valid = npsn && nama && sekolah && region && recipients && guru && target && deadline && desc && journal && teacherBank && teacherAccount && tmpGroup && tmpPhone;
+  const fieldChecks: Array<[string, string, boolean]> = [
+    ["npsn", t("NPSN", "NPSN"), !!npsn],
+    ["sekolah", t("Nama Sekolah", "School Name"), !!sekolah],
+    ["region", t("Provinsi", "Province"), !!region],
+    ["guru", t("Nama Guru", "Teacher's Name"), !!guru],
+    ["nama", t("Nama Kampanye", "Campaign Name"), !!nama],
+    ["recipients", t("Jumlah Penerima", "Number of Recipients"), !!recipients],
+    ["target", t("Target Dana", "Funding Target"), !!target],
+    ["deadline", t("Deadline", "Deadline"), !!deadline],
+    ["desc", t("Deskripsi Kampanye", "Campaign Description"), !!desc],
+    ["journal", t("Jurnal Guru", "Teacher's Journal"), !!journal],
+    ["teacherBank", t("Nama Bank", "Bank Name"), !!teacherBank],
+    ["teacherAccount", t("No. Rekening", "Account No."), !!teacherAccount],
+    ["tmpGroup", t("Kelompok TMP", "TMP Group"), !!tmpGroup],
+    ["tmpPhone", t("No. HP TMP", "TMP Phone"), !!tmpPhone],
+  ];
+  const missing = fieldChecks.filter(([, , ok]) => !ok).map(([, label]) => label);
+  const valid = missing.length === 0;
+  const [submitted, setSubmitted] = useState(false);
+  const [showErrors, setShowErrors] = useState(false);
+  const handleSubmit = () => {
+    if (!valid) { setShowErrors(true); return; }
+    setSubmitted(true);
+  };
 
   return (
     <div className="space-y-4">
