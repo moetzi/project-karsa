@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
-import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2 } from "lucide-react";
+import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2, BookOpen } from "lucide-react";
 import { donors, ShareSheet } from "@/routes/nutrisi";
 import { JournalSheet } from "@/components/JournalSheet";
-import { useT } from "@/lib/i18n";
+import { useJournals, formatRelative } from "@/lib/journalStore";
+import { useT, useLang } from "@/lib/i18n";
 
 const ACTIVE_CAMPAIGN = {
   id: "kolaka-gizi-sehat",
