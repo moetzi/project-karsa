@@ -241,6 +241,8 @@ function Beranda() {
             <ShareSheet title={t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")} onClose={() => setShareOpen(false)} />
           )}
         </section>
+
+        {journalOpen && <JournalSheet campaign={ACTIVE_CAMPAIGN} onClose={() => setJournalOpen(false)} />}
       </div>
     </PhoneShell>
   );
