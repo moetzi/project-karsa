@@ -250,9 +250,15 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           >
             <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
           </button>
-          <button onClick={() => setDonateOpen(true)} className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1 hover:opacity-80 transition">
-            {t("Donasi", "Donate")} <ChevronRight className="w-4 h-4" />
-          </button>
+          {pct >= 100 ? (
+            <span className="ml-auto inline-flex items-center gap-1 text-primary font-bold text-sm">
+              {t("Target Terpenuhi 🎉", "Target Met 🎉")}
+            </span>
+          ) : (
+            <button onClick={() => setDonateOpen(true)} className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1 hover:opacity-80 transition">
+              {t("Donasi", "Donate")} <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 
