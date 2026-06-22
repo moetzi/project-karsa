@@ -166,10 +166,8 @@ function TeacherPortalModal({ onClose }: { onClose: () => void }) {
           >
             <ShieldCheck className="w-4 h-4" /> Masuk / Daftar
           </button>
-          <p className="text-[11px] text-center text-muted-foreground">
-            Loader2 placeholder removed — proses verifikasi NUPTK & NPSN ada di halaman pendaftaran.
-          </p>
         </div>
+
       </div>
     </div>
   );
