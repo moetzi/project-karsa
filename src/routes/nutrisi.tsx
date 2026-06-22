@@ -10,6 +10,8 @@ import {
 import { useT } from "@/lib/i18n";
 import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations } from "@/lib/donationStore";
+import robinsonMakan1 from "@/assets/robinson-makan-1.jpg";
+import robinsonMakan2 from "@/assets/robinson-makan-2.jpg";
 
 export const Route = createFileRoute("/nutrisi")({
   head: () => ({
@@ -75,7 +77,9 @@ const campaigns = [
     report: "linear-gradient(135deg, #2d5016 0%, #5a8a3d 100%)",
     teacher: "Pak Budi",
     description: "Robinson, salah satu siswa kelas 3 saya, kemarin pingsan di tengah pelajaran. Setelah saya datangi rumahnya, ternyata sudah dua hari ia hanya makan singkong rebus. Ini bukan kasus tunggal — ada 11 anak lain di kelas saya dengan kondisi serupa. Saya butuh bantuan untuk menyediakan makanan bergizi setiap hari Senin–Jumat selama dua minggu ke depan: nasi, protein hewani (ikan/telur), dan sayur segar dari KWT Tuamese. Total kebutuhan Rp 250.000 untuk 12 anak × 10 hari. Dimasak oleh Posyandu Tuamese, diantar pagi sebelum jam pelajaran dimulai.",
-    journal: "Pagi tadi Robinson pingsan di kelas karena kelaparan. Bantuan Anda akan memberinya — dan teman-temannya — makanan bergizi yang sangat dibutuhkan.",
+    journal: "Alhamdulillah, dana terkumpul Senin pagi langsung saya teruskan ke Ibu Kristi. Tim KWT Tuamese masak sejak subuh — nasi panas, ikan lelusi bumbu kuning, dan tumis sawi segar. Robinson dan 11 temannya makan dengan lahap di kelas hari ini. Robinson bilang ini makanan paling enak yang pernah dia makan. Terima kasih untuk setiap donatur yang telah menyelamatkan anak-anak kami.",
+    journalPhotos: [robinsonMakan1, robinsonMakan2] as string[],
+    journalDate: "Senin, 22 Jun 2026",
     boosts: 218,
     views: "3.4k",
     shares: 612,
@@ -348,12 +352,37 @@ function CampaignDetailSheet({
           </div>
 
           <div className="bg-primary-soft/40 rounded-xl p-3">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
-              {t("Cerita Guru", "Teacher's Story")} — {c.teacher.toUpperCase()}
-            </p>
+            <div className="flex items-center justify-between gap-2">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+                {("journalPhotos" in c && (c as { journalPhotos?: string[] }).journalPhotos?.length)
+                  ? t("Jurnal Penutup", "Closing Journal")
+                  : t("Cerita Guru", "Teacher's Story")} — {c.teacher.toUpperCase()}
+              </p>
+              {"journalDate" in c && (c as { journalDate?: string }).journalDate && (
+                <span className="font-mono text-[9px] text-muted-foreground shrink-0">
+                  {(c as { journalDate?: string }).journalDate}
+                </span>
+              )}
+            </div>
             <p className="font-serif italic text-[13px] text-foreground mt-2 leading-relaxed">
               "{c.journal}"
             </p>
+            {"journalPhotos" in c && (c as { journalPhotos?: string[] }).journalPhotos && (c as { journalPhotos?: string[] }).journalPhotos!.length > 0 && (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {(c as { journalPhotos: string[] }).journalPhotos.map((src, i) => (
+                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-muted border border-border/60">
+                    <img
+                      src={src}
+                      alt={t("Foto anak-anak makan bersama", "Children eating together")}
+                      width={1024}
+                      height={1024}
+                      loading="lazy"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="rounded-xl border border-border/60 p-3 space-y-1.5 text-[12px]">
