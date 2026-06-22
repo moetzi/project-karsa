@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
 import { X, Camera, ImagePlus, Check, MapPin, Trash2, Sparkles, Send } from "lucide-react";
 import { useT } from "@/lib/i18n";
+import { addJournal } from "@/lib/journalStore";
 
 type Props = {
-  campaign: { title: string; titleEn: string; school: string };
+  campaign: { id: string; title: string; titleEn: string; school: string };
   onClose: () => void;
 };
 
@@ -34,6 +35,17 @@ export function JournalSheet({ campaign, onClose }: Props) {
 
   const submit = () => {
     if (!valid) return;
+    addJournal({
+      campaignId: campaign.id,
+      campaignTitle: campaign.title,
+      campaignTitleEn: campaign.titleEn,
+      school: campaign.school,
+      photos,
+      menu: menu.trim(),
+      story: story.trim(),
+      mood,
+      attendance,
+    });
     setSent(true);
     setTimeout(onClose, 1400);
   };
