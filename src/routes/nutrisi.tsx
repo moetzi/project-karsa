@@ -650,7 +650,7 @@ function BuatKampanye() {
         <p className="text-foreground/85">
           {t("Kampanye akan diverifikasi menggunakan ", "Campaigns are verified using the ")}
           <span className="font-semibold">{t("NPSN resmi sekolah", "school's official NPSN")}</span>
-          {t(". Dana hanya dapat dicairkan ke rekening pemasok lokal yang terdaftar.", ". Funds can only be disbursed to registered local supplier accounts.")}
+          {t(". Dana dicairkan langsung ke rekening TMP lokal yang terverifikasi.", ". Funds are disbursed directly to the verified local TMP account.")}
         </p>
       </div>
 

@@ -111,8 +111,8 @@ export function DonateSheet({ campaign, onClose }: { campaign: Campaign; onClose
               <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
               <p>
                 {t(
-                  "Dana hanya dicairkan ke rekening pemasok lokal terdaftar. Setiap transaksi tercatat di laporan transparansi.",
-                  "Funds are only disbursed to registered local supplier accounts. Every transaction appears in the transparency report.",
+                  "Dana dicairkan langsung ke rekening TMP lokal yang terverifikasi. Setiap transaksi tercatat di laporan transparansi.",
+                  "Funds are disbursed directly to the verified local TMP account. Every transaction appears in the transparency report.",
                 )}
               </p>
             </div>
