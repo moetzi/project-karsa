@@ -7,6 +7,7 @@ import { JournalSheet } from "@/components/JournalSheet";
 import { useT } from "@/lib/i18n";
 
 const ACTIVE_CAMPAIGN = {
+  id: "kolaka-gizi-sehat",
   title: "Gizi Sehat Desa Kolaka",
   titleEn: "Healthy Nutrition for Kolaka Village",
   school: "SDN 047 Kolaka Utara",
