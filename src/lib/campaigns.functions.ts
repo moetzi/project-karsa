@@ -9,6 +9,14 @@ const CreateCampaignInput = z.object({
   target_amount: z.number().int().positive().max(1_000_000_000),
 });
 
+const UpdateCampaignInput = z.object({
+  id: z.string().uuid(),
+  title: z.string().min(3).max(120).optional(),
+  description: z.string().min(20).max(4000).optional(),
+  school: z.string().min(2).max(160).optional(),
+  target_amount: z.number().int().positive().max(1_000_000_000).optional(),
+});
+
 export const getMyActiveCampaign = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -82,4 +90,25 @@ export const closeMyActiveCampaign = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     if (!data) throw new Error("NO_ACTIVE_CAMPAIGN: There is no active campaign to close.");
     return data;
+  });
+
+export const updateMyCampaign = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => UpdateCampaignInput.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { id, ...patch } = data;
+    if (Object.keys(patch).length === 0) {
+      throw new Error("NO_CHANGES: Provide at least one field to update.");
+    }
+    const { data: updated, error } = await supabase
+      .from("campaigns")
+      .update(patch)
+      .eq("id", id)
+      .eq("teacher_id", userId)
+      .select()
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!updated) throw new Error("NOT_FOUND: Campaign not found or not yours.");
+    return updated;
   });

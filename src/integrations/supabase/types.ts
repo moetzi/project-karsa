@@ -50,6 +50,50 @@ export type Database = {
         }
         Relationships: []
       }
+      journals: {
+        Row: {
+          attendance: number | null
+          campaign_id: string
+          created_at: string
+          id: string
+          menu: string
+          mood: string | null
+          photos: string[]
+          story: string
+          teacher_id: string
+        }
+        Insert: {
+          attendance?: number | null
+          campaign_id: string
+          created_at?: string
+          id?: string
+          menu: string
+          mood?: string | null
+          photos?: string[]
+          story: string
+          teacher_id: string
+        }
+        Update: {
+          attendance?: number | null
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          menu?: string
+          mood?: string | null
+          photos?: string[]
+          story?: string
+          teacher_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "journals_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
