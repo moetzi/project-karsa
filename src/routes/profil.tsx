@@ -15,8 +15,68 @@ export const Route = createFileRoute("/profil")({
   component: Profil,
 });
 
+type TeacherInfo = {
+  fullName: string;
+  email: string;
+  school: string;
+  npsn: string;
+  idType: string;
+  idNumber: string;
+};
+
 function Profil() {
   const t = useT();
+  const navigate = useNavigate();
+  const [info, setInfo] = useState<TeacherInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        if (!cancelled) setLoading(false);
+        return;
+      }
+      const meta = (user.user_metadata ?? {}) as Record<string, string>;
+      let fullName = meta.full_name ?? "";
+      let school = meta.school ?? "";
+      const { data: prof } = await supabase
+        .from("profiles")
+        .select("full_name, school")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (prof) {
+        fullName = prof.full_name ?? fullName;
+        school = prof.school ?? school;
+      }
+      if (cancelled) return;
+      setInfo({
+        fullName: fullName || (user.email ?? "Guru"),
+        email: user.email ?? "",
+        school: school || "—",
+        npsn: meta.npsn ?? "—",
+        idType: meta.nuptk_type ?? "NUPTK",
+        idNumber: meta.nuptk ?? "—",
+      });
+      setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const initials =
+    (info?.fullName ?? "G")
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase())
+      .join("") || "G";
+
+  async function handleSignOut() {
+    await supabase.auth.signOut();
+    navigate({ to: "/auth" });
+  }
+
   return (
     <PhoneShell>
       <div className="px-6 pt-4 pb-6 space-y-6">
@@ -29,12 +89,20 @@ function Profil() {
               className="w-16 h-16 rounded-full grid place-items-center text-2xl font-extrabold text-primary-foreground shrink-0"
               style={{ background: "linear-gradient(135deg, #0D7377 0%, #F47B20 100%)" }}
             >
-              SD
+              {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <h2 className="text-[17px] font-extrabold text-foreground leading-tight">Ibu Sari Dewi</h2>
-              <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug">SDN 047 Kolaka Utara</p>
-              <p className="text-[11px] font-mono text-primary mt-0.5">NPSN: 10200101</p>
+              <h2 className="text-[17px] font-extrabold text-foreground leading-tight truncate">
+                {loading ? t("Memuat…", "Loading…") : info?.fullName ?? t("Tamu", "Guest")}
+              </h2>
+              <p className="text-[12px] text-muted-foreground mt-0.5 leading-snug truncate">{info?.school ?? "—"}</p>
+              {info?.email && (
+                <p className="text-[11px] text-muted-foreground mt-0.5 truncate">{info.email}</p>
+              )}
+              <p className="text-[11px] font-mono text-primary mt-0.5">NPSN: {info?.npsn ?? "—"}</p>
+              <p className="text-[11px] font-mono text-muted-foreground mt-0.5">
+                {info?.idType ?? "NUPTK"}: {info?.idNumber ?? "—"}
+              </p>
             </div>
           </div>
           <div className="mt-4 pt-4 border-t border-border/60 flex items-center gap-2">
@@ -42,7 +110,7 @@ function Profil() {
               <Award className="w-3 h-3" /> {t("Guru Aktif", "Active Teacher")}
             </span>
             <span className="text-[11px] text-muted-foreground font-mono">
-              {t("3 kampanye · 12 materi", "3 campaigns · 12 materials")}
+              {info ? t("Terverifikasi", "Verified") : t("Belum masuk", "Not signed in")}
             </span>
           </div>
         </section>
@@ -50,7 +118,10 @@ function Profil() {
         <SettingsSection />
         <HelpSection />
 
-        <button className="w-full bg-muted/60 text-foreground rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 border border-border">
+        <button
+          onClick={handleSignOut}
+          className="w-full bg-muted/60 text-foreground rounded-xl py-3 text-sm font-semibold flex items-center justify-center gap-2 border border-border hover:bg-muted transition"
+        >
           <LogOut className="w-4 h-4" /> {t("Keluar", "Sign Out")}
         </button>
 
