@@ -1,9 +1,16 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
-import { PartyPopper, Upload, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2 } from "lucide-react";
+import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2 } from "lucide-react";
 import { donors, ShareSheet } from "@/routes/nutrisi";
+import { JournalSheet } from "@/components/JournalSheet";
 import { useT } from "@/lib/i18n";
+
+const ACTIVE_CAMPAIGN = {
+  title: "Gizi Sehat Desa Kolaka",
+  titleEn: "Healthy Nutrition for Kolaka Village",
+  school: "SDN 047 Kolaka Utara",
+};
 
 const INSPIRASI = [
   {
@@ -45,6 +52,7 @@ export const Route = createFileRoute("/")({
 function Beranda() {
   const t = useT();
   const [shareOpen, setShareOpen] = useState(false);
+  const [journalOpen, setJournalOpen] = useState(false);
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
   return (
     <PhoneShell>
@@ -87,8 +95,8 @@ function Beranda() {
               </p>
             </div>
           </div>
-          <button className="mt-4 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
-            <Upload className="w-4 h-4" />
+          <button onClick={() => setJournalOpen(true)} className="mt-4 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
+            <NotebookPen className="w-4 h-4" />
             {t("Buat Jurnal", "Create Journal")}
           </button>
         </section>
@@ -233,6 +241,8 @@ function Beranda() {
             <ShareSheet title={t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")} onClose={() => setShareOpen(false)} />
           )}
         </section>
+
+        {journalOpen && <JournalSheet campaign={ACTIVE_CAMPAIGN} onClose={() => setJournalOpen(false)} />}
       </div>
     </PhoneShell>
   );
