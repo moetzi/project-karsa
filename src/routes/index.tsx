@@ -160,7 +160,7 @@ function Landing() {
                   <img src={c.hero} alt={c.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
                   <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
-                    <ShieldIcon className="w-3 h-3" /> Terverifikasi
+                    <ShieldCheck className="w-3 h-3" /> Terverifikasi
                   </span>
                   <div className="absolute bottom-3 left-3 right-3 text-white">
                     <h3 className="text-lg font-extrabold leading-tight drop-shadow">{c.title}</h3>
