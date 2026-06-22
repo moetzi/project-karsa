@@ -1,10 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash,
   Eye, Repeat2, Share2, X, Link2, Check, Landmark,
   CalendarDays, Calendar, Wallet, Users, Phone, Sparkles,
+  ImagePlus, Trash2, Camera,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { DonateSheet } from "@/components/DonateSheet";
