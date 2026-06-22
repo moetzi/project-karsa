@@ -354,7 +354,23 @@ function CampaignDetailSheet({
             <div className="h-2 rounded-full bg-muted overflow-hidden">
               <div className="h-full progress-gradient rounded-full" style={{ width: `${pct}%` }} />
             </div>
-            <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
+            <div className="flex items-center justify-between mt-1.5 text-[11px]">
+              <p className="text-muted-foreground">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
+              {pct < 100 && (() => {
+                const cd = getCountdown(("deadline" in c ? (c as { deadline?: string }).deadline : undefined));
+                if (!cd) return null;
+                return (
+                  <span
+                    className={
+                      "inline-flex items-center gap-1 font-mono font-semibold " +
+                      (cd.urgent ? "text-accent" : "text-foreground")
+                    }
+                  >
+                    <Clock className="w-3 h-3" /> {t(cd.id, cd.en)}
+                  </span>
+                );
+              })()}
+            </div>
           </div>
 
           <div className="grid grid-cols-3 gap-2 text-center">
