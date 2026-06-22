@@ -78,6 +78,8 @@ const campaigns = [
     teacher: "Pak Budi",
     description: "Robinson, salah satu siswa kelas 3 saya, kemarin pingsan di tengah pelajaran. Setelah saya datangi rumahnya, ternyata sudah dua hari ia hanya makan singkong rebus. Ini bukan kasus tunggal — ada 11 anak lain di kelas saya dengan kondisi serupa. Saya butuh bantuan untuk menyediakan makanan bergizi setiap hari Senin–Jumat selama dua minggu ke depan: nasi, protein hewani (ikan/telur), dan sayur segar dari KWT Tuamese. Total kebutuhan Rp 250.000 untuk 12 anak × 10 hari. Dimasak oleh Posyandu Tuamese, diantar pagi sebelum jam pelajaran dimulai.",
     journal: "Alhamdulillah, dana terkumpul Senin pagi langsung saya teruskan ke Ibu Kristi. Tim KWT Tuamese masak sejak subuh — nasi panas, ikan lelusi bumbu kuning, dan tumis sawi segar. Robinson dan 11 temannya makan dengan lahap di kelas hari ini. Robinson bilang ini makanan paling enak yang pernah dia makan. Terima kasih untuk setiap donatur yang telah menyelamatkan anak-anak kami.",
+    journalPhotos: [robinsonMakan1, robinsonMakan2] as string[],
+    journalDate: "Senin, 22 Jun 2026",
     boosts: 218,
     views: "3.4k",
     shares: 612,
