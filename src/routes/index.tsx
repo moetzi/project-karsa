@@ -247,53 +247,8 @@ function Beranda() {
             </ul>
           </div>
 
-          {/* Jurnal Terkini */}
-          <div className="mt-4 bg-muted/40 rounded-xl border border-border/60 overflow-hidden">
-            <div className="px-3 py-2.5 border-b border-border/60 flex items-center justify-between">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
-                <BookOpen className="w-3 h-3" /> {t("Jurnal Terkini", "Recent Journals")}
-              </p>
-              <span className="text-[10px] text-muted-foreground font-mono">
-                {journals.length} {t("entri", "entries")}
-              </span>
-            </div>
-            {journals.length === 0 ? (
-              <div className="px-3 py-5 text-center">
-                <p className="text-[11px] text-muted-foreground">
-                  {t("Belum ada jurnal. Buat jurnal pertama hari ini.", "No journals yet. Create today's first journal.")}
-                </p>
-              </div>
-            ) : (
-              <ul className="divide-y divide-border/60 max-h-80 overflow-y-auto">
-                {journals.map((j) => (
-                  <li key={j.id} className="px-3 py-3 space-y-2">
-                    <div className="flex items-center justify-between">
-                      <p className="text-[11px] font-semibold text-foreground truncate">{j.menu}</p>
-                      <span className="text-[10px] text-muted-foreground font-mono shrink-0 ml-2">
-                        {formatRelative(j.createdAt, lang)}
-                      </span>
-                    </div>
-                    {j.photos.length > 0 && (
-                      <div className="grid grid-cols-4 gap-1">
-                        {j.photos.slice(0, 4).map((src, i) => (
-                          <div key={i} className="aspect-square rounded-md overflow-hidden bg-muted">
-                            <img src={src} alt="" className="w-full h-full object-cover" />
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                    <p className="font-serif text-[12px] text-foreground/80 leading-relaxed line-clamp-3">
-                      {j.story}
-                    </p>
-                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground font-mono">
-                      {j.mood && <span className="px-1.5 py-0.5 rounded-full bg-primary-soft text-primary font-semibold">{j.mood}</span>}
-                      {j.attendance && <span>👧 {j.attendance} {t("anak", "kids")}</span>}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          {/* Jurnal Terkini — hidden by default; journals are kept private and published after the campaign closes */}
+
 
           <div className="mt-4 flex gap-2">
             <button
