@@ -60,14 +60,27 @@ export function getJournalsByCampaign(campaignId: string) {
 
 function subscribe(cb: () => void) {
   listeners.add(cb);
-  return () => listeners.delete(cb);
+  return () => {
+    listeners.delete(cb);
+  };
 }
+
+const snapshotCache = new Map<string, { entries: JournalEntry[]; result: JournalEntry[] }>();
+function getCampaignSnapshot(campaignId: string): JournalEntry[] {
+  const cached = snapshotCache.get(campaignId);
+  if (cached && cached.entries === entries) return cached.result;
+  const result = entries.filter((e) => e.campaignId === campaignId);
+  snapshotCache.set(campaignId, { entries, result });
+  return result;
+}
+
+const EMPTY: JournalEntry[] = [];
 
 export function useJournals(campaignId: string) {
   return useSyncExternalStore(
     subscribe,
-    () => entries.filter((e) => e.campaignId === campaignId),
-    () => [] as JournalEntry[],
+    () => getCampaignSnapshot(campaignId),
+    () => EMPTY,
   );
 }
 
