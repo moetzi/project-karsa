@@ -635,12 +635,58 @@ function BuatKampanye() {
         </div>
       </SectionCard>
 
+      {showErrors && !valid && (
+        <div
+          className="rounded-2xl p-3.5 text-xs leading-relaxed flex items-start gap-2.5"
+          style={{ background: "oklch(0.96 0.05 35)", border: "1px solid oklch(0.82 0.12 35)" }}
+        >
+          <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="font-semibold text-foreground">
+              {t("Lengkapi field berikut:", "Please complete:")}
+            </p>
+            <p className="text-foreground/80">{missing.join(" • ")}</p>
+          </div>
+        </div>
+      )}
+      {submitted && (
+        <div
+          className="rounded-2xl p-3.5 text-xs leading-relaxed flex items-start gap-2.5"
+          style={{ background: "oklch(0.94 0.06 165)", border: "1px solid oklch(0.78 0.14 165)" }}
+        >
+          <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="font-semibold text-foreground">
+              {t("Kampanye diajukan!", "Campaign submitted!")}
+            </p>
+            <p className="text-foreground/80">
+              {t(
+                "Setelah disetujui, Anda dapat mengunggah foto & jurnal harian dari tab Beranda → 'Buat Jurnal'.",
+                "Once approved, upload photos & daily journals from Home → 'Create Journal'.",
+              )}
+            </p>
+          </div>
+        </div>
+      )}
       <button
-        disabled={!valid}
-        className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-50 hover:opacity-95 transition"
+        type="button"
+        onClick={handleSubmit}
+        aria-disabled={!valid}
+        className={
+          "w-full rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 transition " +
+          (valid
+            ? "bg-primary text-primary-foreground hover:opacity-95"
+            : "bg-primary/50 text-primary-foreground hover:bg-primary/60")
+        }
       >
         <Send className="w-4 h-4" /> {t("Ajukan Kampanye", "Submit Campaign")}
       </button>
+      <p className="text-[11px] text-muted-foreground text-center leading-snug -mt-1">
+        {t(
+          "Loop Transparansi: setelah disetujui, jurnal & foto kegiatan diunggah dari Beranda dan otomatis dikirim ke donatur.",
+          "Transparency loop: once approved, journals & activity photos are uploaded from Home and auto-sent to donors.",
+        )}
+      </p>
     </div>
   );
 }
