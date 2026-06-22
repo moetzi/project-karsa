@@ -82,36 +82,39 @@ function Beranda() {
           </p>
         </header>
 
-        {/* Action item alert */}
-        <section
-          className="relative rounded-2xl p-5 overflow-hidden"
-          style={{
-            background: "linear-gradient(135deg, oklch(0.96 0.06 60) 0%, oklch(0.93 0.05 50) 100%)",
-            border: "1px solid oklch(0.85 0.08 55)",
-          }}
-        >
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-full bg-accent text-accent-foreground grid place-items-center shrink-0">
-              <PartyPopper className="w-5 h-5" />
+        {/* Action item alert — only when campaign is closed (target reached) */}
+        {isCampaignClosed && (
+          <section
+            className="relative rounded-2xl p-5 overflow-hidden"
+            style={{
+              background: "linear-gradient(135deg, oklch(0.96 0.06 60) 0%, oklch(0.93 0.05 50) 100%)",
+              border: "1px solid oklch(0.85 0.08 55)",
+            }}
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-accent text-accent-foreground grid place-items-center shrink-0">
+                <PartyPopper className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-accent font-semibold">
+                  {t("Aksi Hari Ini", "Today's Action")}
+                </p>
+                <h2 className="mt-1 text-[15px] font-bold text-foreground leading-snug">
+                  {t("🎉 Kampanye Selesai!", "🎉 Campaign Closed!")}
+                </h2>
+                <p className="mt-1 text-[13px] text-foreground/80 leading-relaxed">
+                  {t("Tulis jurnal penutup dengan foto bukti untuk ", "Write the closing journal with proof photos for ")}
+                  <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>.
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-accent font-semibold">
-                {t("Aksi Hari Ini", "Today's Action")}
-              </p>
-              <h2 className="mt-1 text-[15px] font-bold text-foreground leading-snug">
-                {t("🎉 Target Terpenuhi!", "🎉 Target Reached!")}
-              </h2>
-              <p className="mt-1 text-[13px] text-foreground/80 leading-relaxed">
-                {t("Unggah foto makan bersama dan tulis jurnal hari ini untuk ", "Upload a group meal photo and write today's journal for ")}
-                <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>.
-              </p>
-            </div>
-          </div>
-          <button onClick={() => setJournalOpen(true)} className="mt-4 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
-            <NotebookPen className="w-4 h-4" />
-            {t("Buat Jurnal", "Create Journal")}
-          </button>
-        </section>
+            <button onClick={() => setJournalOpen(true)} className="mt-4 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
+              <NotebookPen className="w-4 h-4" />
+              {t("Buat Jurnal Penutup", "Create Closing Journal")}
+            </button>
+          </section>
+        )}
+
 
         {/* Pojok Inspirasi Guru */}
         <section className="-mx-6">
