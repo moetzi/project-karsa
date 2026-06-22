@@ -633,7 +633,7 @@ function BuatKampanye() {
     ["tmpPhone", t("No. HP TMP", "TMP Phone"), !!tmpPhone],
   ];
   const missing = fieldChecks.filter(([, , ok]) => !ok).map(([, label]) => label);
-  const valid = missing.length === 0;
+  const valid = missing.length === 0 && journalCommit;
   const [submitted, setSubmitted] = useState(false);
   const [showErrors, setShowErrors] = useState(false);
   const handleSubmit = () => {
