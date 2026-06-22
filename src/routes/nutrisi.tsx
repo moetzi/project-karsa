@@ -343,12 +343,16 @@ function CampaignDetailSheet({
           </div>
         </div>
 
-        <div className="relative h-40 p-4 flex items-end" style={{ background: c.hero }}>
-          <div className="text-primary-foreground">
-            <h2 className="text-2xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
-            <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
-              <MapPin className="w-3 h-3" /> {c.school} • {c.region}
-            </p>
+        <div className="relative h-40 overflow-hidden">
+          <img src={c.hero} alt={c.title} className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/20" />
+          <div className="relative z-10 h-full p-4 flex items-end">
+            <div className="text-white">
+              <h2 className="text-2xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
+              <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
+                <MapPin className="w-3 h-3" /> {c.school} • {c.region}
+              </p>
+            </div>
           </div>
         </div>
 
