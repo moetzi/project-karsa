@@ -854,8 +854,8 @@ function BuatKampanye() {
             </p>
             <p className="text-foreground/80">
               {t(
-                "Setelah disetujui, Anda dapat mengunggah foto & jurnal harian dari tab Beranda → 'Buat Jurnal'.",
-                "Once approved, upload photos & daily journals from Home → 'Create Journal'.",
+                "Setelah kampanye selesai (target tercapai atau deadline lewat), Anda mengunggah satu jurnal penutup berisi foto bukti dari tab Beranda untuk menutup loop transparansi ke donatur.",
+                "Once the campaign closes (target met or deadline passed), upload a single closing journal with proof photos from Home to close the transparency loop with donors.",
               )}
             </p>
           </div>
