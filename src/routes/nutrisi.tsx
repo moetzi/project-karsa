@@ -397,50 +397,50 @@ function CampaignDetailSheet({
             </p>
           </div>
 
-          <div className="bg-primary-soft/40 rounded-xl p-3">
-            <div className="flex items-center justify-between gap-2">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
-                {("journalPhotos" in c && (c as { journalPhotos?: string[] }).journalPhotos?.length)
-                  ? t("Jurnal Penutup", "Closing Journal")
-                  : t("Cerita Guru", "Teacher's Story")} — {c.teacher.toUpperCase()}
+          {pct >= 100 && (
+            <div className="bg-primary-soft/40 rounded-xl p-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+                  {("journalPhotos" in c && (c as { journalPhotos?: string[] }).journalPhotos?.length)
+                    ? t("Jurnal Penutup", "Closing Journal")
+                    : t("Cerita Guru", "Teacher's Story")} — {c.teacher.toUpperCase()}
+                </p>
+                {"journalDate" in c && (c as { journalDate?: string }).journalDate && (
+                  <span className="font-mono text-[9px] text-muted-foreground shrink-0">
+                    {(c as { journalDate?: string }).journalDate}
+                  </span>
+                )}
+              </div>
+              <p className="font-serif italic text-[13px] text-foreground mt-2 leading-relaxed">
+                "{c.journal}"
               </p>
-              {"journalDate" in c && (c as { journalDate?: string }).journalDate && (
-                <span className="font-mono text-[9px] text-muted-foreground shrink-0">
-                  {(c as { journalDate?: string }).journalDate}
-                </span>
+              {"journalPhotos" in c && (c as { journalPhotos?: string[] }).journalPhotos && (c as { journalPhotos?: string[] }).journalPhotos!.length > 0 && (
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  {(c as { journalPhotos: string[] }).journalPhotos.map((src, i) => (
+                    <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-muted border border-border/60">
+                      <img
+                        src={src}
+                        alt={t("Foto anak-anak makan bersama", "Children eating together")}
+                        width={1024}
+                        height={1024}
+                        loading="lazy"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
-            <p className="font-serif italic text-[13px] text-foreground mt-2 leading-relaxed">
-              "{c.journal}"
-            </p>
-            {"journalPhotos" in c && (c as { journalPhotos?: string[] }).journalPhotos && (c as { journalPhotos?: string[] }).journalPhotos!.length > 0 && (
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                {(c as { journalPhotos: string[] }).journalPhotos.map((src, i) => (
-                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-muted border border-border/60">
-                    <img
-                      src={src}
-                      alt={t("Foto anak-anak makan bersama", "Children eating together")}
-                      width={1024}
-                      height={1024}
-                      loading="lazy"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {pct >= 100 && (
-            <div className="rounded-xl border border-border/60 p-3 space-y-1.5 text-[12px]">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1">
-                {t("Rantai Akuntabilitas", "Accountability Chain")}
-              </p>
-              <p className="flex items-center gap-2"><Truck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span><span className="font-semibold text-foreground">{c.supplier}</span></p>
-              {c.tmp && <p className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Dimasak:", "Cooked by:")}</span><span className="font-semibold text-foreground">{c.tmp}</span></p>}
-              <p className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-foreground">{c.region}</span></p>
-            </div>
           )}
+
+          <div className="rounded-xl border border-border/60 p-3 space-y-1.5 text-[12px]">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1">
+              {t("Rantai Akuntabilitas", "Accountability Chain")}
+            </p>
+            <p className="flex items-center gap-2"><Truck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span><span className="font-semibold text-foreground">{c.supplier}</span></p>
+            {c.tmp && <p className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Dimasak:", "Cooked by:")}</span><span className="font-semibold text-foreground">{c.tmp}</span></p>}
+            <p className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-foreground">{c.region}</span></p>
+          </div>
 
           <div className="flex items-center gap-2 pt-2">
             <button
