@@ -12,6 +12,9 @@ import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations } from "@/lib/donationStore";
 import robinsonMakan1 from "@/assets/robinson-makan-1.jpg";
 import robinsonMakan2 from "@/assets/robinson-makan-2.jpg";
+import heroRobinson from "@/assets/campaign-hero-robinson.jpg";
+import heroKolaka from "@/assets/campaign-hero-kolaka.jpg";
+import heroMahakam from "@/assets/campaign-hero-mahakam.jpg";
 
 export const Route = createFileRoute("/nutrisi")({
   head: () => ({
