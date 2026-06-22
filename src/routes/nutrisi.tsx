@@ -3,8 +3,8 @@ import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
 import {
   ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash,
-  Eye, Repeat2, Share2, X, Link2, Check, Plus, Trash2, Landmark,
-  CalendarDays,
+  Eye, Repeat2, Share2, X, Link2, Check, Landmark,
+  CalendarDays, Calendar, Wallet, Users, Phone, Sparkles,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { DonateSheet } from "@/components/DonateSheet";
@@ -285,16 +285,16 @@ const REGIONS = [
   "Maluku","Maluku Utara","Papua","Papua Barat","Papua Selatan","Papua Tengah","Papua Pegunungan","Papua Barat Daya",
 ];
 
-type Supplier = {
-  id: number;
-  name: string;
-  group: string;
-  account: string;
-  bank: string;
-};
-
 const DAYS_ID = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
 const DAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
+const AI_MENU_SAMPLE: Record<string, string> = {
+  Senin: "Nasi Jagung, Ikan Tongkol Bumbu Kuning, Tumis Kangkung",
+  Selasa: "Bubur Kacang Hijau, Telur Rebus, Pisang",
+  Rabu: "Nasi Merah, Ayam Suwir Kemangi, Sup Bayam",
+  Kamis: "Nasi Putih, Tempe Orek, Sayur Asem, Pepaya",
+  Jumat: "Nasi Uduk, Perkedel Tahu, Tumis Buncis Wortel",
+};
 
 function BuatKampanye() {
   const t = useT();
@@ -305,20 +305,28 @@ function BuatKampanye() {
   const [recipients, setRecipients] = useState("");
   const [guru, setGuru] = useState("");
   const [target, setTarget] = useState("");
+  const [deadline, setDeadline] = useState("");
   const [desc, setDesc] = useState("");
   const [journal, setJournal] = useState("");
 
-  const [suppliers, setSuppliers] = useState<Supplier[]>([
-    { id: 1, name: "", group: "", account: "", bank: "" },
-  ]);
-  const addSupplier = () =>
-    setSuppliers((s) => [...s, { id: Date.now(), name: "", group: "", account: "", bank: "" }]);
-  const removeSupplier = (id: number) =>
-    setSuppliers((s) => (s.length > 1 ? s.filter((x) => x.id !== id) : s));
-  const updateSupplier = (id: number, patch: Partial<Supplier>) =>
-    setSuppliers((s) => s.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  // Disbursement & Accountability
+  const [teacherBank, setTeacherBank] = useState("");
+  const [teacherAccount, setTeacherAccount] = useState("");
+  const [tmpGroup, setTmpGroup] = useState("");
+  const [tmpPhone, setTmpPhone] = useState("");
+  const [supplierName, setSupplierName] = useState("");
+  const [supplierGroup, setSupplierGroup] = useState("");
 
   const [menu, setMenu] = useState<Record<string, string>>({});
+  const [aiLoading, setAiLoading] = useState(false);
+
+  const autoGenerateMenu = () => {
+    setAiLoading(true);
+    setTimeout(() => {
+      setMenu({ ...AI_MENU_SAMPLE });
+      setAiLoading(false);
+    }, 700);
+  };
 
   const groupLabels: Record<string, string> = {
     "BUMDes": t("BUMDes (Badan Usaha Milik Desa)", "BUMDes (Village-Owned Enterprise)"),
@@ -328,8 +336,7 @@ function BuatKampanye() {
     "Lainnya (Kios/UMKM)": t("Lainnya (Kios/UMKM)", "Other (Shop/MSME)"),
   };
 
-  const suppliersValid = suppliers.every((s) => s.name && s.group && s.account && s.bank);
-  const valid = npsn && nama && sekolah && region && recipients && guru && target && desc && journal && suppliersValid;
+  const valid = npsn && nama && sekolah && region && recipients && guru && target && deadline && desc && journal && teacherBank && teacherAccount && tmpGroup && tmpPhone;
 
   return (
     <div className="space-y-4">
@@ -397,6 +404,23 @@ function BuatKampanye() {
               className="w-full bg-muted/60 rounded-xl pl-12 pr-4 py-3 text-sm font-mono text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70" />
           </div>
         </FormField>
+        <FormField label={t("Batas Waktu Kampanye (Deadline)", "Campaign Deadline")} required>
+          <div className="relative">
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+            <input
+              type="date"
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              className="w-full bg-muted/60 rounded-xl pl-10 pr-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none"
+            />
+          </div>
+          <p className="text-[11px] text-muted-foreground mt-1.5 leading-snug">
+            {t(
+              "Kampanye otomatis ditutup jika target dana tercapai atau melewati tanggal ini.",
+              "The campaign auto-closes when the funding target is met or this date passes.",
+            )}
+          </p>
+        </FormField>
         <FormField label={t("Deskripsi Kampanye", "Campaign Description")} required>
           <textarea value={desc} onChange={(e) => setDesc(e.target.value)} rows={4}
             placeholder={t(
@@ -412,71 +436,122 @@ function BuatKampanye() {
         </FormField>
       </SectionCard>
 
-      {/* Multi-Supplier */}
+      {/* Disbursement & Accountability */}
       <SectionCard
-        title={t("Daftar Pemasok", "Supplier List")}
-        subtitle={t("Dana disalurkan langsung ke rekening pemasok terverifikasi.", "Funds are disbursed directly to verified supplier accounts.")}
+        title={
+          <span className="inline-flex items-center gap-2">
+            <ShieldCheck className="w-4 h-4 text-primary" />
+            {t("Pencairan & Akuntabilitas", "Disbursement & Accountability")}
+          </span>
+        }
+        subtitle={t(
+          "Lean disbursement: dana cair ke guru, diverifikasi tim lokal.",
+          "Lean disbursement: funds go to the teacher, verified by the local team.",
+        )}
       >
-        <div className="space-y-3">
-          {suppliers.map((s, idx) => (
-            <div key={s.id} className="rounded-xl border border-border/70 bg-muted/30 p-3 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
-                  {t("Pemasok", "Supplier")} #{idx + 1}
-                </span>
-                {suppliers.length > 1 && (
-                  <button onClick={() => removeSupplier(s.id)} className="text-muted-foreground hover:text-destructive transition" aria-label="Hapus">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                )}
+        {/* Teacher's Bank */}
+        <div className="rounded-xl border border-border/70 bg-muted/30 p-3 space-y-3">
+          <div className="flex items-center gap-2">
+            <Wallet className="w-3.5 h-3.5 text-primary" />
+            <span className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+              {t("Rekening Pencairan (Guru)", "Disbursement Account (Teacher)")}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <FormField label={t("Nama Bank", "Bank Name")} required>
+              <div className="relative">
+                <Landmark className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                <input value={teacherBank} onChange={(e) => setTeacherBank(e.target.value)}
+                  placeholder={t("cth. BRI", "e.g. BRI")}
+                  className="w-full bg-surface rounded-lg pl-8 pr-2 py-2.5 text-sm text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
               </div>
-              <FormField label={t("Nama Pemasok", "Supplier Name")} required>
-                <input value={s.name} onChange={(e) => updateSupplier(s.id, { name: e.target.value })}
-                  placeholder={t("cth. BUMDes Maju Bersama", "e.g. BUMDes Maju Bersama")}
-                  className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
-              </FormField>
-              <FormField label={t("Pilihan Kelompok", "Group Type")} required>
-                <select value={s.group} onChange={(e) => updateSupplier(s.id, { group: e.target.value })}
-                  className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm text-foreground appearance-none border border-border focus:border-primary outline-none">
-                  <option value="">{t("Pilih kelompok...", "Select group...")}</option>
-                  {SUPPLIER_GROUPS.map((g) => <option key={g} value={g}>{groupLabels[g]}</option>)}
-                </select>
-              </FormField>
-              <div className="grid grid-cols-2 gap-3">
-                <FormField label={t("Nama Bank", "Bank Name")} required>
-                  <div className="relative">
-                    <Landmark className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-                    <input value={s.bank} onChange={(e) => updateSupplier(s.id, { bank: e.target.value })}
-                      placeholder={t("cth. BRI", "e.g. BRI")}
-                      className="w-full bg-surface rounded-lg pl-8 pr-2 py-2.5 text-sm text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
-                  </div>
-                </FormField>
-                <FormField label={t("No. Rekening", "Account No.")} required>
-                  <input value={s.account} onChange={(e) => updateSupplier(s.id, { account: e.target.value.replace(/\D/g, "") })}
-                    inputMode="numeric" placeholder="0123456789"
-                    className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm font-mono text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
-                </FormField>
-              </div>
+            </FormField>
+            <FormField label={t("No. Rekening", "Account No.")} required>
+              <input value={teacherAccount} onChange={(e) => setTeacherAccount(e.target.value.replace(/\D/g, ""))}
+                inputMode="numeric" placeholder="0123456789"
+                className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm font-mono text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
+            </FormField>
+          </div>
+          <p className="text-[11px] text-muted-foreground leading-snug">
+            {t("Dana cair langsung ke rekening Anda.", "Funds are disbursed directly to your account.")}
+          </p>
+        </div>
+
+        {/* TMP Verification */}
+        <div className="rounded-xl border border-border/70 bg-muted/30 p-3 space-y-3">
+          <div className="flex items-center gap-2">
+            <Users className="w-3.5 h-3.5 text-primary" />
+            <span className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+              {t("Verifikasi Tim Pembuat Makanan (TMP)", "Meal Team (TMP) Verification")}
+            </span>
+          </div>
+          <FormField label={t("Nama Kelompok PKK/Posyandu", "PKK/Posyandu Group Name")} required>
+            <input value={tmpGroup} onChange={(e) => setTmpGroup(e.target.value)}
+              placeholder={t("cth. Posyandu Tuamese", "e.g. Posyandu Tuamese")}
+              className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
+          </FormField>
+          <FormField label={t("No. WhatsApp Perwakilan", "Representative's WhatsApp No.")} required>
+            <div className="relative">
+              <Phone className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <input value={tmpPhone} onChange={(e) => setTmpPhone(e.target.value.replace(/[^\d+]/g, ""))}
+                inputMode="tel" placeholder="+62 812 3456 7890"
+                className="w-full bg-surface rounded-lg pl-8 pr-2 py-2.5 text-sm font-mono text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
             </div>
-          ))}
-          <button
-            onClick={addSupplier}
-            className="w-full flex items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-primary/40 bg-primary-soft/30 text-primary font-semibold text-sm py-3 hover:bg-primary-soft/50 transition"
-          >
-            <Plus className="w-4 h-4" /> {t("Tambah Pemasok", "Add Supplier")}
-          </button>
+          </FormField>
+        </div>
+
+        {/* Optional Local Supplier */}
+        <div className="rounded-xl border border-dashed border-border/70 bg-muted/20 p-3 space-y-3">
+          <div className="flex items-center gap-2">
+            <Truck className="w-3.5 h-3.5 text-primary" />
+            <span className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+              {t("Mitra Pemasok Lokal (Opsional)", "Local Supplier Partner (Optional)")}
+            </span>
+          </div>
+          <FormField label={t("Nama Pemasok", "Supplier Name")}>
+            <input value={supplierName} onChange={(e) => setSupplierName(e.target.value)}
+              placeholder={t("cth. BUMDes Maju Bersama", "e.g. BUMDes Maju Bersama")}
+              className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
+          </FormField>
+          <FormField label={t("Pilihan Kelompok", "Group Type")}>
+            <select value={supplierGroup} onChange={(e) => setSupplierGroup(e.target.value)}
+              className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm text-foreground appearance-none border border-border focus:border-primary outline-none">
+              <option value="">{t("Pilih kelompok...", "Select group...")}</option>
+              {SUPPLIER_GROUPS.map((g) => <option key={g} value={g}>{groupLabels[g]}</option>)}
+            </select>
+          </FormField>
         </div>
       </SectionCard>
 
       {/* Meal Planner */}
       <SectionCard
         title={
-          <span className="inline-flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-primary" />
-            {t("Jadwal Gizi Mingguan", "Weekly Meal Plan")}
-          </span>
+          <div className="flex items-center justify-between gap-2 w-full">
+            <span className="inline-flex items-center gap-2">
+              <CalendarDays className="w-4 h-4 text-primary" />
+              {t("Jadwal Gizi Mingguan", "Weekly Meal Plan")}
+            </span>
+            <button
+              type="button"
+              onClick={autoGenerateMenu}
+              disabled={aiLoading}
+              className="relative inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold text-white shadow-lg transition hover:scale-[1.02] active:scale-[0.98] disabled:opacity-70"
+              style={{
+                background: "linear-gradient(135deg, oklch(0.72 0.16 50), oklch(0.62 0.18 35))",
+                boxShadow: "0 0 0 2px oklch(0.95 0.08 60), 0 8px 24px -8px oklch(0.65 0.18 40 / 0.55)",
+              }}
+            >
+              <Sparkles className={`w-3.5 h-3.5 ${aiLoading ? "animate-spin" : ""}`} />
+              {aiLoading
+                ? t("Membuat...", "Generating...")
+                : t("Auto-Generate Menu (AI)", "Auto-Generate Menu (AI)")}
+            </button>
+          </div>
         }
-        subtitle={t("Menu ini akan ditampilkan di tab 'Cerita' donatur.", "This menu will appear in the donor's 'Story' tab.")}
+        subtitle={t(
+          "Kosongkan hari yang tidak ada jadwal. Menu ini akan tampil di tab 'Cerita' donatur.",
+          "Leave days blank if not scheduled. This menu appears in the donor's 'Story' tab.",
+        )}
       >
         <div className="space-y-2">
           {DAYS_ID.map((d, i) => (
@@ -487,10 +562,7 @@ function BuatKampanye() {
               <input
                 value={menu[d] ?? ""}
                 onChange={(e) => setMenu((m) => ({ ...m, [d]: e.target.value }))}
-                placeholder={t(
-                  i === 0 ? "Nasi Jagung & Telur Rebus" : "Menu hari ini...",
-                  i === 0 ? "Corn Rice & Boiled Egg" : "Today's menu...",
-                )}
+                placeholder={t("Opsional — kosongkan jika libur", "Optional — leave blank if none")}
                 className="flex-1 bg-muted/60 rounded-lg px-3 py-2.5 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
               />
             </div>
