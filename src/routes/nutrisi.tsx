@@ -18,7 +18,7 @@ export const Route = createFileRoute("/nutrisi")({
   component: Nutrisi,
 });
 
-type Tab = "feed" | "buat" | "dash";
+type Tab = "feed" | "buat";
 
 function Nutrisi() {
   const t = useT();
@@ -28,11 +28,10 @@ function Nutrisi() {
       <div className="px-6 pt-4 pb-6">
         <h1 className="text-[28px] font-extrabold text-foreground">{t("Gizi & Kampanye", "Nutrition & Campaigns")}</h1>
 
-        <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-3 gap-1">
+        <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-2 gap-1">
           {([
             ["feed", t("Feed", "Feed")],
             ["buat", t("+ Buat", "+ Create")],
-            ["dash", t("Dashboard", "Dashboard")],
           ] as [Tab, string][]).map(([k, label]) => (
             <button
               key={k}
@@ -50,7 +49,6 @@ function Nutrisi() {
         <div className="mt-6">
           {tab === "feed" && <Feed />}
           {tab === "buat" && <BuatKampanye />}
-          {tab === "dash" && <Dashboard />}
         </div>
       </div>
     </PhoneShell>
