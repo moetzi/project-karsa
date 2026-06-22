@@ -128,23 +128,16 @@ const campaigns = [
   },
 ];
 
-function getCountdown(deadline?: string, lang: "id" | "en" = "id") {
+function getCountdown(deadline?: string) {
   if (!deadline) return null;
   const ms = new Date(deadline).getTime() - Date.now();
   if (isNaN(ms)) return null;
-  if (ms <= 0) return { label: lang === "id" ? "Berakhir" : "Ended", urgent: true, ended: true };
+  if (ms <= 0) return { id: "Berakhir", en: "Ended", urgent: true, ended: true };
   const days = Math.floor(ms / 86_400_000);
   const hours = Math.floor((ms % 86_400_000) / 3_600_000);
   const urgent = days < 7;
-  const label =
-    days >= 1
-      ? lang === "id"
-        ? `${days} hari ${hours} jam lagi`
-        : `${days}d ${hours}h left`
-      : lang === "id"
-        ? `${hours} jam lagi`
-        : `${hours}h left`;
-  return { label, urgent, ended: false };
+  if (days >= 1) return { id: `${days} hari ${hours} jam lagi`, en: `${days}d ${hours}h left`, urgent, ended: false };
+  return { id: `${hours} jam lagi`, en: `${hours}h left`, urgent, ended: false };
 }
 
 function Feed() {
