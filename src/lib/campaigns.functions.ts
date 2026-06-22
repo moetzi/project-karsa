@@ -91,3 +91,24 @@ export const closeMyActiveCampaign = createServerFn({ method: "POST" })
     if (!data) throw new Error("NO_ACTIVE_CAMPAIGN: There is no active campaign to close.");
     return data;
   });
+
+export const updateMyCampaign = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => UpdateCampaignInput.parse(input))
+  .handler(async ({ data, context }) => {
+    const { supabase, userId } = context;
+    const { id, ...patch } = data;
+    if (Object.keys(patch).length === 0) {
+      throw new Error("NO_CHANGES: Provide at least one field to update.");
+    }
+    const { data: updated, error } = await supabase
+      .from("campaigns")
+      .update(patch)
+      .eq("id", id)
+      .eq("teacher_id", userId)
+      .select()
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    if (!updated) throw new Error("NOT_FOUND: Campaign not found or not yours.");
+    return updated;
+  });
