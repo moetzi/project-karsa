@@ -7,6 +7,7 @@ import {
   CalendarDays,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
+import { DonateSheet } from "@/components/DonateSheet";
 
 export const Route = createFileRoute("/nutrisi")({
   head: () => ({
@@ -57,6 +58,7 @@ function Nutrisi() {
 
 const campaigns = [
   {
+    id: "kolaka-gizi-sehat",
     title: "Gizi Sehat Desa Kolaka",
     school: "SDN 047 Kolaka Utara",
     recipients: 47,
@@ -74,6 +76,7 @@ const campaigns = [
     shares: 450,
   },
   {
+    id: "mahakam-pangan-bergizi",
     title: "Pangan Bergizi Kampung Baru",
     school: "SDN 013 Mahakam Ulu",
     recipients: 63,
@@ -106,6 +109,7 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const t = useT();
   const [boosted, setBoosted] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [donateOpen, setDonateOpen] = useState(false);
   const shares = c.shares;
   const boosts = c.boosts + (boosted ? 1 : 0);
   return (
@@ -200,13 +204,14 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           >
             <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
           </button>
-          <button className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1">
+          <button onClick={() => setDonateOpen(true)} className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1 hover:opacity-80 transition">
             {t("Donasi", "Donate")} <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
 
       {shareOpen && <ShareSheet title={c.title} onClose={() => setShareOpen(false)} />}
+      {donateOpen && <DonateSheet campaign={{ id: c.id, title: c.title, school: c.school }} onClose={() => setDonateOpen(false)} />}
     </article>
   );
 }
