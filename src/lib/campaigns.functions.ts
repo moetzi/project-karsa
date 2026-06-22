@@ -9,6 +9,14 @@ const CreateCampaignInput = z.object({
   target_amount: z.number().int().positive().max(1_000_000_000),
 });
 
+const UpdateCampaignInput = z.object({
+  id: z.string().uuid(),
+  title: z.string().min(3).max(120).optional(),
+  description: z.string().min(20).max(4000).optional(),
+  school: z.string().min(2).max(160).optional(),
+  target_amount: z.number().int().positive().max(1_000_000_000).optional(),
+});
+
 export const getMyActiveCampaign = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
