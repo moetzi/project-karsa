@@ -1,11 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash,
   Eye, Repeat2, Share2, X, Link2, Check, Landmark,
   CalendarDays, Calendar, Wallet, Users, Phone, Sparkles,
-  ImagePlus, Trash2, Camera, Clock,
+  ImagePlus, Trash2, Camera, Clock, Lock, LogIn,
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { DonateSheet } from "@/components/DonateSheet";
@@ -15,6 +15,12 @@ import robinsonMakan2 from "@/assets/robinson-makan-2.jpg";
 import heroRobinson from "@/assets/campaign-hero-robinson.jpg";
 import heroKolaka from "@/assets/campaign-hero-kolaka.jpg";
 import heroMahakam from "@/assets/campaign-hero-mahakam.jpg";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { createCampaign, getMyActiveCampaign } from "@/lib/campaigns.functions";
+
 
 export const Route = createFileRoute("/nutrisi")({
   head: () => ({
