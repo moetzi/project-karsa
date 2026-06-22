@@ -431,14 +431,16 @@ function CampaignDetailSheet({
             )}
           </div>
 
-          <div className="rounded-xl border border-border/60 p-3 space-y-1.5 text-[12px]">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1">
-              {t("Rantai Akuntabilitas", "Accountability Chain")}
-            </p>
-            <p className="flex items-center gap-2"><Truck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span><span className="font-semibold text-foreground">{c.supplier}</span></p>
-            {c.tmp && <p className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Dimasak:", "Cooked by:")}</span><span className="font-semibold text-foreground">{c.tmp}</span></p>}
-            <p className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-foreground">{c.region}</span></p>
-          </div>
+          {pct >= 100 && (
+            <div className="rounded-xl border border-border/60 p-3 space-y-1.5 text-[12px]">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1">
+                {t("Rantai Akuntabilitas", "Accountability Chain")}
+              </p>
+              <p className="flex items-center gap-2"><Truck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span><span className="font-semibold text-foreground">{c.supplier}</span></p>
+              {c.tmp && <p className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Dimasak:", "Cooked by:")}</span><span className="font-semibold text-foreground">{c.tmp}</span></p>}
+              <p className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-foreground">{c.region}</span></p>
+            </div>
+          )}
 
           <div className="flex items-center gap-2 pt-2">
             <button
