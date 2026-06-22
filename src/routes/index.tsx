@@ -63,8 +63,17 @@ function Beranda() {
   const donations = useDonations(ACTIVE_CAMPAIGN.id);
 
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
+  // Live totals mirror the Nutrisi feed card (baseline raised in juta + new donations).
+  const baselineRaised = ACTIVE_CAMPAIGN_SRC.raised * 1_000_000;
+  const targetRp = ACTIVE_CAMPAIGN_SRC.target * 1_000_000;
+  const newRaised = donations.reduce((s, d) => s + d.amount, 0);
+  const totalRaised = baselineRaised + newRaised;
+  const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const fmtJt = (n: number) =>
+    (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
+  const targetJt = ACTIVE_CAMPAIGN_SRC.target;
   // Constraint: 1 active campaign per teacher. Closing journal unlocks only when campaign is closed (target reached / period ended).
-  const isCampaignClosed = false;
+  const isCampaignClosed = pct >= 100;
   const allDonors = [
     ...donations.map((d) => ({ name: d.name, amount: d.amount, time: fmtDonRel(d.createdAt, "id"), timeEn: fmtDonRel(d.createdAt, "en") })),
     ...donors,
