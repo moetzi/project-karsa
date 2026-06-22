@@ -1,7 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
-import { ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash, Eye, Repeat2, Share2, X, Link2, Check } from "lucide-react";
+import {
+  ShieldCheck, MapPin, Truck, ChevronRight, ThumbsUp, Info, Send, Hash,
+  Eye, Repeat2, Share2, X, Link2, Check, Plus, Trash2, Landmark,
+  CalendarDays, BarChart3, Users, TrendingUp,
+} from "lucide-react";
 import { useT } from "@/lib/i18n";
 
 export const Route = createFileRoute("/nutrisi")({
@@ -14,7 +18,7 @@ export const Route = createFileRoute("/nutrisi")({
   component: Nutrisi,
 });
 
-type Tab = "feed" | "buat";
+type Tab = "feed" | "buat" | "dash";
 
 function Nutrisi() {
   const t = useT();
@@ -24,29 +28,29 @@ function Nutrisi() {
       <div className="px-6 pt-4 pb-6">
         <h1 className="text-[28px] font-extrabold text-foreground">{t("Gizi & Kampanye", "Nutrition & Campaigns")}</h1>
 
-        <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-2 gap-1">
-          <button
-            onClick={() => setTab("feed")}
-            className={
-              "py-2.5 rounded-xl text-sm font-semibold transition-all " +
-              (tab === "feed" ? "bg-surface text-primary shadow-sm" : "text-muted-foreground")
-            }
-          >
-            {t("Feed Publik", "Public Feed")}
-          </button>
-          <button
-            onClick={() => setTab("buat")}
-            className={
-              "py-2.5 rounded-xl text-sm font-semibold transition-all " +
-              (tab === "buat" ? "bg-surface text-primary shadow-sm" : "text-muted-foreground")
-            }
-          >
-            {t("+ Buat Kampanye", "+ Create Campaign")}
-          </button>
+        <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-3 gap-1">
+          {([
+            ["feed", t("Feed", "Feed")],
+            ["buat", t("+ Buat", "+ Create")],
+            ["dash", t("Dashboard", "Dashboard")],
+          ] as [Tab, string][]).map(([k, label]) => (
+            <button
+              key={k}
+              onClick={() => setTab(k)}
+              className={
+                "py-2.5 rounded-xl text-xs font-semibold transition-all " +
+                (tab === k ? "bg-surface text-primary shadow-sm" : "text-muted-foreground")
+              }
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         <div className="mt-6">
-          {tab === "feed" ? <Feed /> : <BuatKampanye />}
+          {tab === "feed" && <Feed />}
+          {tab === "buat" && <BuatKampanye />}
+          {tab === "dash" && <Dashboard />}
         </div>
       </div>
     </PhoneShell>
@@ -108,7 +112,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const boosts = c.boosts + (boosted ? 1 : 0);
   return (
     <article className="relative bg-surface rounded-2xl overflow-hidden border border-border/60">
-      {/* Hero */}
       <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
         <span className="self-start inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
           <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
@@ -122,7 +125,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
       </div>
 
       <div className="p-4">
-        {/* Meta grid */}
         <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs items-center pb-3 border-b border-border/60">
           <div className="text-center">
             <p className="font-bold text-lg text-foreground leading-none">{c.recipients}</p>
@@ -134,7 +136,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </div>
         </div>
 
-        {/* Funding */}
         <div className="pt-3">
           <div className="flex justify-between text-xs mb-1.5">
             <span className="font-mono font-bold text-foreground">Rp {c.raised}jt</span>
@@ -146,7 +147,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${c.pct}% terkumpul`, `${c.pct}% raised`)}</p>
         </div>
 
-        {/* Transparency report */}
         <div className="mt-4 pt-4 border-t border-border/60">
           <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold flex items-center gap-1.5">
             <ShieldCheck className="w-3 h-3" /> {t("Laporan Transparansi", "Transparency Report")}
@@ -163,7 +163,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </div>
         </div>
 
-        {/* Teacher journal */}
         <div className="mt-4 bg-primary-soft/40 rounded-xl p-3">
           <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
             {t("Jurnal Guru", "Teacher's Journal")} — {c.teacher.toUpperCase()}
@@ -173,7 +172,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </p>
         </div>
 
-        {/* Reach stats */}
         <div className="mt-4 flex items-center gap-4 text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
             <Eye className="w-3.5 h-3.5" />
@@ -186,7 +184,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </span>
         </div>
 
-        {/* Actions */}
         <div className="mt-3 flex items-center gap-2">
           <button
             onClick={() => setBoosted((b) => !b)}
@@ -271,7 +268,7 @@ function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) 
   );
 }
 
-const SUPPLIERS = [
+const SUPPLIER_GROUPS = [
   "BUMDes",
   "Kelompok Tani Lokal",
   "Kelompok Ternak Lokal",
@@ -288,9 +285,19 @@ const REGIONS = [
   "Maluku","Maluku Utara","Papua","Papua Barat","Papua Selatan","Papua Tengah","Papua Pegunungan","Papua Barat Daya",
 ];
 
+type Supplier = {
+  id: number;
+  name: string;
+  group: string;
+  account: string;
+  bank: string;
+};
+
+const DAYS_ID = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
+const DAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+
 function BuatKampanye() {
   const t = useT();
-  const [supplier, setSupplier] = useState("");
   const [npsn, setNpsn] = useState("");
   const [nama, setNama] = useState("");
   const [sekolah, setSekolah] = useState("");
@@ -300,19 +307,29 @@ function BuatKampanye() {
   const [target, setTarget] = useState("");
   const [desc, setDesc] = useState("");
   const [journal, setJournal] = useState("");
-  const [lainnya, setLainnya] = useState("");
-  const showLainnya = supplier === "Lainnya (Kios/UMKM)";
-  const valid =
-    npsn && nama && sekolah && region && recipients && guru &&
-    supplier && target && desc && journal && (!showLainnya || lainnya);
 
-  const supplierLabels: Record<string, string> = {
+  const [suppliers, setSuppliers] = useState<Supplier[]>([
+    { id: 1, name: "", group: "", account: "", bank: "" },
+  ]);
+  const addSupplier = () =>
+    setSuppliers((s) => [...s, { id: Date.now(), name: "", group: "", account: "", bank: "" }]);
+  const removeSupplier = (id: number) =>
+    setSuppliers((s) => (s.length > 1 ? s.filter((x) => x.id !== id) : s));
+  const updateSupplier = (id: number, patch: Partial<Supplier>) =>
+    setSuppliers((s) => s.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+
+  const [menu, setMenu] = useState<Record<string, string>>({});
+
+  const groupLabels: Record<string, string> = {
     "BUMDes": t("BUMDes (Badan Usaha Milik Desa)", "BUMDes (Village-Owned Enterprise)"),
     "Kelompok Tani Lokal": t("Kelompok Tani Lokal", "Local Farmer Group"),
     "Kelompok Ternak Lokal": t("Kelompok Ternak Lokal", "Local Livestock Group"),
     "Kelompok Nelayan Lokal": t("Kelompok Nelayan Lokal", "Local Fisher Group"),
     "Lainnya (Kios/UMKM)": t("Lainnya (Kios/UMKM)", "Other (Shop/MSME)"),
   };
+
+  const suppliersValid = suppliers.every((s) => s.name && s.group && s.account && s.bank);
+  const valid = npsn && nama && sekolah && region && recipients && guru && target && desc && journal && suppliersValid;
 
   return (
     <div className="space-y-4">
@@ -328,7 +345,8 @@ function BuatKampanye() {
         </p>
       </div>
 
-      <div className="bg-surface rounded-2xl p-5 border border-border/60 space-y-4">
+      {/* Identitas Sekolah */}
+      <SectionCard title={t("Identitas Sekolah", "School Identity")}>
         <FormField label={t("NPSN (ID Sekolah)", "NPSN (School ID)")} required>
           <div className="relative">
             <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -340,125 +358,165 @@ function BuatKampanye() {
             />
           </div>
         </FormField>
-
-        <FormField label={t("Nama Kampanye", "Campaign Name")} required>
-          <input
-            value={nama}
-            onChange={(e) => setNama(e.target.value)}
-            placeholder={t("cth. Gizi Sehat Desa Kolaka 2025", "e.g. Healthy Nutrition Kolaka Village 2025")}
-            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
-          />
-        </FormField>
-
         <FormField label={t("Nama Sekolah", "School Name")} required>
-          <input
-            value={sekolah}
-            onChange={(e) => setSekolah(e.target.value)}
+          <input value={sekolah} onChange={(e) => setSekolah(e.target.value)}
             placeholder={t("cth. SDN 047 Kolaka Utara", "e.g. SDN 047 Kolaka Utara")}
-            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
-          />
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70" />
         </FormField>
-
         <FormField label={t("Provinsi", "Province")} required>
-          <select
-            value={region}
-            onChange={(e) => setRegion(e.target.value)}
-            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground appearance-none border border-transparent focus:border-primary outline-none"
-          >
+          <select value={region} onChange={(e) => setRegion(e.target.value)}
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground appearance-none border border-transparent focus:border-primary outline-none">
             <option value="">{t("Pilih provinsi...", "Select province...")}</option>
-            {REGIONS.map((r) => (
-              <option key={r} value={r}>{r}</option>
-            ))}
+            {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
           </select>
         </FormField>
-
-        <FormField label={t("Jumlah Penerima (Siswa)", "Number of Recipients (Students)")} required>
-          <input
-            value={recipients}
-            onChange={(e) => setRecipients(e.target.value.replace(/\D/g, ""))}
-            inputMode="numeric"
-            placeholder={t("cth. 47", "e.g. 47")}
-            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm font-mono text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
-          />
-        </FormField>
-
         <FormField label={t("Nama Guru Penanggung Jawab", "Responsible Teacher's Name")} required>
-          <input
-            value={guru}
-            onChange={(e) => setGuru(e.target.value)}
+          <input value={guru} onChange={(e) => setGuru(e.target.value)}
             placeholder={t("cth. Ibu Sari Dewi", "e.g. Ms. Sari Dewi")}
-            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
-          />
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70" />
         </FormField>
+      </SectionCard>
 
-        <FormField label={t("Pilih Pemasok Lokal", "Select Local Supplier")} required>
-          <select
-            value={supplier}
-            onChange={(e) => setSupplier(e.target.value)}
-            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground appearance-none border border-transparent focus:border-primary outline-none"
-          >
-            <option value="">{t("Pilih pemasok lokal...", "Select local supplier...")}</option>
-            {SUPPLIERS.map((s) => (
-              <option key={s} value={s}>{supplierLabels[s]}</option>
-            ))}
-          </select>
+      {/* Detail Kampanye */}
+      <SectionCard title={t("Detail Kampanye", "Campaign Details")}>
+        <FormField label={t("Nama Kampanye", "Campaign Name")} required>
+          <input value={nama} onChange={(e) => setNama(e.target.value)}
+            placeholder={t("cth. Gizi Sehat Desa Kolaka 2025", "e.g. Healthy Nutrition Kolaka Village 2025")}
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70" />
         </FormField>
-
-        {showLainnya && (
-          <FormField label={t("Sebutkan nama merchant", "Specify merchant name")} required>
-            <input
-              value={lainnya}
-              onChange={(e) => setLainnya(e.target.value)}
-              placeholder={t("cth. Kios Bu Tini, Warung Berkah...", "e.g. Bu Tini's Shop, Warung Berkah...")}
-              className="w-full bg-accent-soft/40 rounded-xl px-4 py-3 text-sm text-foreground border border-accent/40 focus:border-accent outline-none placeholder:text-muted-foreground/70"
-            />
-          </FormField>
-        )}
-
+        <FormField label={t("Jumlah Penerima (Siswa)", "Number of Recipients (Students)")} required>
+          <input value={recipients} onChange={(e) => setRecipients(e.target.value.replace(/\D/g, ""))}
+            inputMode="numeric" placeholder={t("cth. 47", "e.g. 47")}
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm font-mono text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70" />
+        </FormField>
         <FormField label={t("Target Dana (IDR)", "Funding Target (IDR)")} required>
           <div className="relative">
             <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-mono font-semibold text-foreground">Rp</span>
-            <input
-              value={target}
-              onChange={(e) => setTarget(e.target.value.replace(/\D/g, ""))}
-              inputMode="numeric"
-              placeholder="15000000"
-              className="w-full bg-muted/60 rounded-xl pl-12 pr-4 py-3 text-sm font-mono text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
-            />
+            <input value={target} onChange={(e) => setTarget(e.target.value.replace(/\D/g, ""))}
+              inputMode="numeric" placeholder="15000000"
+              className="w-full bg-muted/60 rounded-xl pl-12 pr-4 py-3 text-sm font-mono text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70" />
           </div>
         </FormField>
-
         <FormField label={t("Deskripsi Kampanye", "Campaign Description")} required>
-          <textarea
-            value={desc}
-            onChange={(e) => setDesc(e.target.value)}
-            rows={4}
+          <textarea value={desc} onChange={(e) => setDesc(e.target.value)} rows={4}
             placeholder={t(
-              "Ceritakan kondisi anak-anak di sekolah Anda dan bagaimana dana ini akan digunakan untuk mencegah stunting...",
-              "Describe the condition of children at your school and how the funds will be used to prevent stunting...",
+              "Ceritakan kondisi anak-anak di sekolah Anda dan bagaimana dana ini akan digunakan...",
+              "Describe the condition of children at your school and how the funds will be used...",
             )}
-            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none resize-none placeholder:text-muted-foreground/70"
-          />
+            className="w-full bg-muted/60 rounded-xl px-4 py-3 text-sm text-foreground border border-transparent focus:border-primary outline-none resize-none font-serif placeholder:text-muted-foreground/70 placeholder:font-sans" />
         </FormField>
-
         <FormField label={t("Jurnal Guru (Pembuka)", "Teacher's Journal (Opening)")} required>
-          <textarea
-            value={journal}
-            onChange={(e) => setJournal(e.target.value)}
-            rows={3}
+          <textarea value={journal} onChange={(e) => setJournal(e.target.value)} rows={3}
             placeholder={t("Tuliskan catatan pertama Anda untuk para donatur...", "Write your first note to donors...")}
-            className="w-full bg-primary-soft/30 rounded-xl px-4 py-3 text-sm text-foreground border border-primary/20 focus:border-primary outline-none resize-none font-serif italic placeholder:text-muted-foreground/70 placeholder:not-italic placeholder:font-sans"
-          />
+            className="w-full bg-primary-soft/30 rounded-xl px-4 py-3 text-sm text-foreground border border-primary/20 focus:border-primary outline-none resize-none font-serif italic placeholder:text-muted-foreground/70 placeholder:not-italic placeholder:font-sans" />
         </FormField>
+      </SectionCard>
 
-        <button
-          disabled={!valid}
-          className="w-full bg-accent text-accent-foreground rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-50 hover:opacity-95 transition"
-        >
-          <Send className="w-4 h-4" /> {t("Ajukan Kampanye", "Submit Campaign")}
-        </button>
-      </div>
+      {/* Multi-Supplier */}
+      <SectionCard
+        title={t("Daftar Pemasok", "Supplier List")}
+        subtitle={t("Dana disalurkan langsung ke rekening pemasok terverifikasi.", "Funds are disbursed directly to verified supplier accounts.")}
+      >
+        <div className="space-y-3">
+          {suppliers.map((s, idx) => (
+            <div key={s.id} className="rounded-xl border border-border/70 bg-muted/30 p-3 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+                  {t("Pemasok", "Supplier")} #{idx + 1}
+                </span>
+                {suppliers.length > 1 && (
+                  <button onClick={() => removeSupplier(s.id)} className="text-muted-foreground hover:text-destructive transition" aria-label="Hapus">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+              <FormField label={t("Nama Pemasok", "Supplier Name")} required>
+                <input value={s.name} onChange={(e) => updateSupplier(s.id, { name: e.target.value })}
+                  placeholder={t("cth. BUMDes Maju Bersama", "e.g. BUMDes Maju Bersama")}
+                  className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
+              </FormField>
+              <FormField label={t("Pilihan Kelompok", "Group Type")} required>
+                <select value={s.group} onChange={(e) => updateSupplier(s.id, { group: e.target.value })}
+                  className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm text-foreground appearance-none border border-border focus:border-primary outline-none">
+                  <option value="">{t("Pilih kelompok...", "Select group...")}</option>
+                  {SUPPLIER_GROUPS.map((g) => <option key={g} value={g}>{groupLabels[g]}</option>)}
+                </select>
+              </FormField>
+              <div className="grid grid-cols-2 gap-3">
+                <FormField label={t("Nama Bank", "Bank Name")} required>
+                  <div className="relative">
+                    <Landmark className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+                    <input value={s.bank} onChange={(e) => updateSupplier(s.id, { bank: e.target.value })}
+                      placeholder={t("cth. BRI", "e.g. BRI")}
+                      className="w-full bg-surface rounded-lg pl-8 pr-2 py-2.5 text-sm text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
+                  </div>
+                </FormField>
+                <FormField label={t("No. Rekening", "Account No.")} required>
+                  <input value={s.account} onChange={(e) => updateSupplier(s.id, { account: e.target.value.replace(/\D/g, "") })}
+                    inputMode="numeric" placeholder="0123456789"
+                    className="w-full bg-surface rounded-lg px-3 py-2.5 text-sm font-mono text-foreground border border-border focus:border-primary outline-none placeholder:text-muted-foreground/70" />
+                </FormField>
+              </div>
+            </div>
+          ))}
+          <button
+            onClick={addSupplier}
+            className="w-full flex items-center justify-center gap-1.5 rounded-xl border-2 border-dashed border-primary/40 bg-primary-soft/30 text-primary font-semibold text-sm py-3 hover:bg-primary-soft/50 transition"
+          >
+            <Plus className="w-4 h-4" /> {t("Tambah Pemasok", "Add Supplier")}
+          </button>
+        </div>
+      </SectionCard>
+
+      {/* Meal Planner */}
+      <SectionCard
+        title={
+          <span className="inline-flex items-center gap-2">
+            <CalendarDays className="w-4 h-4 text-primary" />
+            {t("Jadwal Gizi Mingguan", "Weekly Meal Plan")}
+          </span>
+        }
+        subtitle={t("Menu ini akan ditampilkan di tab 'Cerita' donatur.", "This menu will appear in the donor's 'Story' tab.")}
+      >
+        <div className="space-y-2">
+          {DAYS_ID.map((d, i) => (
+            <div key={d} className="flex items-center gap-2">
+              <span className="w-16 shrink-0 font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+                {t(d, DAYS_EN[i])}
+              </span>
+              <input
+                value={menu[d] ?? ""}
+                onChange={(e) => setMenu((m) => ({ ...m, [d]: e.target.value }))}
+                placeholder={t(
+                  i === 0 ? "Nasi Jagung & Telur Rebus" : "Menu hari ini...",
+                  i === 0 ? "Corn Rice & Boiled Egg" : "Today's menu...",
+                )}
+                className="flex-1 bg-muted/60 rounded-lg px-3 py-2.5 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
+              />
+            </div>
+          ))}
+        </div>
+      </SectionCard>
+
+      <button
+        disabled={!valid}
+        className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 disabled:opacity-50 hover:opacity-95 transition"
+      >
+        <Send className="w-4 h-4" /> {t("Ajukan Kampanye", "Submit Campaign")}
+      </button>
     </div>
+  );
+}
+
+function SectionCard({
+  title, subtitle, children,
+}: { title: React.ReactNode; subtitle?: string; children: React.ReactNode }) {
+  return (
+    <section className="bg-surface rounded-2xl p-5 border border-border/60">
+      <h3 className="text-sm font-bold text-foreground">{title}</h3>
+      {subtitle && <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">{subtitle}</p>}
+      <div className="mt-4 space-y-4">{children}</div>
+    </section>
   );
 }
 
@@ -469,6 +527,112 @@ function FormField({ label, required, children }: { label: string; required?: bo
         {label} {required && <span className="text-accent">*</span>}
       </label>
       {children}
+    </div>
+  );
+}
+
+/* ------------------------- DASHBOARD ------------------------- */
+
+const donors = [
+  { name: "Hamba Allah #12", amount: 250_000, time: "2 mnt lalu", timeEn: "2 min ago" },
+  { name: "Andi P.", amount: 100_000, time: "15 mnt lalu", timeEn: "15 min ago" },
+  { name: "Hamba Allah #11", amount: 500_000, time: "1 jam lalu", timeEn: "1 hr ago" },
+  { name: "Keluarga Suryanto", amount: 1_000_000, time: "3 jam lalu", timeEn: "3 hr ago" },
+  { name: "Hamba Allah #10", amount: 75_000, time: "5 jam lalu", timeEn: "5 hr ago" },
+  { name: "Komunitas Sahabat Anak", amount: 750_000, time: "Kemarin", timeEn: "Yesterday" },
+];
+
+function Dashboard() {
+  const t = useT();
+  const [shareOpen, setShareOpen] = useState(false);
+  const c = campaigns[0];
+  const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
+
+  return (
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="bg-surface rounded-2xl p-5 border border-border/60">
+        <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
+          <BarChart3 className="w-3 h-3" /> {t("Dashboard Performa", "Performance Dashboard")}
+        </p>
+        <h2 className="mt-1 text-lg font-extrabold text-foreground leading-tight">{c.title}</h2>
+        <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+          <MapPin className="w-3 h-3" /> {c.school}
+        </p>
+      </div>
+
+      {/* Engagement Row */}
+      <div className="grid grid-cols-3 gap-2">
+        <StatTile icon={<Eye className="w-4 h-4" />} value={c.views} label={t("Tayangan", "Views")} />
+        <StatTile icon={<Repeat2 className="w-4 h-4" />} value={c.shares.toString()} label={t("Bagikan", "Shares")} />
+        <StatTile icon={<ThumbsUp className="w-4 h-4" />} value={c.boosts.toString()} label={t("Boost", "Boost")} />
+      </div>
+
+      {/* Fund Tracking */}
+      <div className="bg-surface rounded-2xl p-5 border border-border/60">
+        <div className="flex items-center justify-between">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground font-semibold">
+            {t("Dana Terkumpul", "Funds Raised")}
+          </p>
+          <span className="text-[11px] font-mono font-semibold text-accent inline-flex items-center gap-1">
+            <TrendingUp className="w-3 h-3" /> +12% {t("minggu ini", "this week")}
+          </span>
+        </div>
+        <div className="mt-2 flex items-baseline gap-2">
+          <span className="text-2xl font-extrabold text-foreground font-mono">{fmt(c.raised * 1_000_000)}</span>
+          <span className="text-xs text-muted-foreground font-mono">{t(`dari ${fmt(c.target * 1_000_000)}`, `of ${fmt(c.target * 1_000_000)}`)}</span>
+        </div>
+        <div className="mt-3 h-3 rounded-full bg-muted overflow-hidden">
+          <div className="h-full rounded-full" style={{ width: `${c.pct}%`, background: "#F47B20" }} />
+        </div>
+        <p className="text-[11px] text-muted-foreground mt-1.5 font-mono">{c.pct}% • {c.recipients} {t("penerima", "recipients")}</p>
+      </div>
+
+      {/* Share Toolkit */}
+      <button
+        onClick={() => setShareOpen(true)}
+        className="w-full bg-primary text-primary-foreground rounded-xl py-3.5 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 transition"
+      >
+        <Share2 className="w-4 h-4" /> {t("Bagikan Link Kampanye", "Share Campaign Link")}
+      </button>
+
+      {/* Supporter List */}
+      <div className="bg-surface rounded-2xl border border-border/60 overflow-hidden">
+        <div className="p-4 border-b border-border/60 flex items-center justify-between">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
+            <Users className="w-3 h-3" /> {t("Donatur Terakhir", "Recent Donors")}
+          </p>
+          <span className="text-[10px] text-muted-foreground font-mono">{donors.length} {t("donatur", "donors")}</span>
+        </div>
+        <ul className="divide-y divide-border/60">
+          {donors.map((d, i) => (
+            <li key={i} className="flex items-center gap-3 px-4 py-3">
+              <div className="w-9 h-9 rounded-full bg-primary-soft text-primary grid place-items-center text-xs font-bold shrink-0">
+                {d.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-semibold text-foreground truncate">{d.name}</p>
+                <p className="text-[11px] text-muted-foreground font-mono">{t(d.time, d.timeEn)}</p>
+              </div>
+              <span className="text-sm font-mono font-bold text-primary">{fmt(d.amount)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {shareOpen && <ShareSheet title={c.title} onClose={() => setShareOpen(false)} />}
+    </div>
+  );
+}
+
+function StatTile({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
+  return (
+    <div className="bg-surface rounded-2xl p-3 border border-border/60 text-center">
+      <div className="w-8 h-8 rounded-full bg-primary-soft text-primary grid place-items-center mx-auto">
+        {icon}
+      </div>
+      <p className="mt-2 text-lg font-extrabold text-foreground font-mono leading-none">{value}</p>
+      <p className="mt-1 text-[10px] uppercase tracking-wider text-muted-foreground font-mono font-semibold">{label}</p>
     </div>
   );
 }
