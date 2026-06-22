@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { DonateSheet } from "@/components/DonateSheet";
+import { useDonations } from "@/lib/donationStore";
 
 export const Route = createFileRoute("/nutrisi")({
   head: () => ({
@@ -110,8 +111,28 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const [boosted, setBoosted] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const [donateOpen, setDonateOpen] = useState(false);
+  const donations = useDonations(c.id);
   const shares = c.shares;
   const boosts = c.boosts + (boosted ? 1 : 0);
+
+  // Live totals — baseline (in juta) + new donations
+  const newRaised = donations.reduce((s, d) => s + d.amount, 0);
+  const totalRaised = c.raised * 1_000_000 + newRaised;
+  const targetRp = c.target * 1_000_000;
+  const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const fmtJt = (n: number) => (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
+
+  // Per-method breakdown
+  const methods = [
+    { id: "qris", label: "QRIS" },
+    { id: "va", label: "VA" },
+    { id: "card", label: t("Kartu", "Card") },
+  ];
+  const byMethod = methods.map((m) => {
+    const sum = donations.filter((d) => d.method === m.id).reduce((s, d) => s + d.amount, 0);
+    return { ...m, sum, share: newRaised > 0 ? sum / newRaised : 0 };
+  });
+
   return (
     <article className="relative bg-surface rounded-2xl overflow-hidden border border-border/60">
       <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
@@ -138,28 +159,50 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </div>
         </div>
 
+
         <div className="pt-3">
           <div className="flex justify-between text-xs mb-1.5">
-            <span className="font-mono font-bold text-foreground">Rp {c.raised}jt</span>
+            <span className="font-mono font-bold text-foreground">Rp {fmtJt(totalRaised)}</span>
             <span className="font-mono text-muted-foreground">{t(`dari Rp ${c.target}jt`, `of Rp ${c.target}M`)}</span>
           </div>
           <div className="h-2 rounded-full bg-muted overflow-hidden">
-            <div className="h-full progress-gradient rounded-full" style={{ width: `${c.pct}%` }} />
+            <div className="h-full progress-gradient rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
           </div>
-          <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${c.pct}% terkumpul`, `${c.pct}% raised`)}</p>
+          <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
         </div>
 
         <div className="mt-4 pt-4 border-t border-border/60">
           <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold flex items-center gap-1.5">
             <ShieldCheck className="w-3 h-3" /> {t("Laporan Transparansi", "Transparency Report")}
           </p>
-          <div className="mt-2 relative rounded-xl overflow-hidden h-32" style={{ background: c.report }}>
-            <span className="absolute top-2 right-2 bg-foreground/70 text-background text-[10px] font-semibold px-2 py-1 rounded-full">
-              {t("Ketuk untuk lanjut", "Tap to continue")}
-            </span>
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1">
-              {[0, 1, 2, 3].map((d) => (
-                <span key={d} className={"h-1 rounded-full " + (d === 0 ? "w-6 bg-white" : "w-1.5 bg-white/50")} />
+          <div className="mt-2 rounded-xl p-3 text-primary-foreground relative overflow-hidden" style={{ background: c.report }}>
+            <div className="grid grid-cols-3 gap-2 text-center">
+              <div>
+                <p className="font-mono font-extrabold text-base leading-none">{donations.length}</p>
+                <p className="text-[9px] uppercase tracking-wider opacity-85 mt-1">{t("Donatur Baru", "New Donors")}</p>
+              </div>
+              <div>
+                <p className="font-mono font-extrabold text-base leading-none">Rp {newRaised > 0 ? fmtJt(newRaised) : "0"}</p>
+                <p className="text-[9px] uppercase tracking-wider opacity-85 mt-1">{t("Masuk Hari Ini", "Incoming Today")}</p>
+              </div>
+              <div>
+                <p className="font-mono font-extrabold text-base leading-none">
+                  Rp {donations.length > 0 ? Math.round(newRaised / donations.length / 1000) + "rb" : "0"}
+                </p>
+                <p className="text-[9px] uppercase tracking-wider opacity-85 mt-1">{t("Rata-rata", "Average")}</p>
+              </div>
+            </div>
+            <div className="mt-3 pt-3 border-t border-white/20 space-y-1.5">
+              {byMethod.map((m) => (
+                <div key={m.id} className="flex items-center gap-2 text-[10px]">
+                  <span className="w-10 font-mono font-semibold opacity-90">{m.label}</span>
+                  <div className="flex-1 h-1.5 rounded-full bg-white/15 overflow-hidden">
+                    <div className="h-full bg-white rounded-full transition-all duration-500" style={{ width: `${m.share * 100}%` }} />
+                  </div>
+                  <span className="font-mono font-bold tabular-nums w-12 text-right">
+                    {m.sum > 0 ? "Rp " + (m.sum >= 1_000_000 ? (m.sum / 1_000_000).toFixed(1) + "jt" : Math.round(m.sum / 1000) + "rb") : "—"}
+                  </span>
+                </div>
               ))}
             </div>
           </div>
