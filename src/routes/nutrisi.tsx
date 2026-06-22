@@ -10,6 +10,8 @@ import {
 import { useT } from "@/lib/i18n";
 import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations } from "@/lib/donationStore";
+import robinsonMakan1 from "@/assets/robinson-makan-1.jpg";
+import robinsonMakan2 from "@/assets/robinson-makan-2.jpg";
 
 export const Route = createFileRoute("/nutrisi")({
   head: () => ({
