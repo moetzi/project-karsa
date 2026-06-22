@@ -152,111 +152,248 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
 
   return (
     <article className="relative bg-surface rounded-2xl overflow-hidden border border-border/60">
-      <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
-        <div className="flex items-start justify-between gap-2">
-          <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
-            <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
-          </span>
-        </div>
-        <div className="text-primary-foreground">
-          <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
-          <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
-            <MapPin className="w-3 h-3" /> {c.school}
-          </p>
-        </div>
-      </div>
-
-      <div className="p-4">
-        <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs items-start pb-3 border-b border-border/60">
-          <div className="text-center pt-0.5">
-            <p className="font-bold text-lg text-foreground leading-none">{c.recipients}</p>
-            <p className="text-[10px] text-muted-foreground">{t("Penerima", "Recipients")}</p>
-          </div>
-          <div className="text-[11px] space-y-0.5">
-            {c.supplier.split(" & ").filter(Boolean).map((s, i) => (
-              <p key={i} className="flex items-center gap-1.5">
-                <Truck className="w-3 h-3 text-primary shrink-0" />
-                {i === 0 && <span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span>}
-                <span className="font-semibold text-foreground">{s}</span>
-              </p>
-            ))}
-            {c.tmp && (
-              <p className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3 h-3 text-primary shrink-0" />
-                <span className="text-muted-foreground">{t("Dimasak oleh:", "Cooked by:")}</span>
-                <span className="font-semibold text-foreground">{c.tmp}</span>
-              </p>
-            )}
-            <p className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-primary shrink-0" /><span className="text-foreground">{c.region}</span></p>
-          </div>
-        </div>
-
-        <div className="pt-3">
-          <div className="flex justify-between text-xs mb-1.5">
-            <span className="font-mono font-bold text-foreground">Rp {fmtJt(totalRaised)}</span>
-            <span className="font-mono text-muted-foreground">{t(`dari Rp ${c.target}jt`, `of Rp ${c.target}M`)}</span>
-          </div>
-          <div className="h-2 rounded-full bg-muted overflow-hidden">
-            <div className="h-full progress-gradient rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
-          </div>
-          <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
-        </div>
-
-
-        <div className="mt-4 bg-primary-soft/40 rounded-xl p-3">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
-            {t("Jurnal Guru", "Teacher's Journal")} — {c.teacher.toUpperCase()}
-          </p>
-          <p className="font-serif italic text-[13px] text-foreground mt-2 leading-relaxed">
-            "{c.journal}"
-          </p>
-        </div>
-
-        <div className="mt-4 flex items-center gap-4 text-[11px] text-muted-foreground">
-          <span className="inline-flex items-center gap-1.5">
-            <Eye className="w-3.5 h-3.5" />
-            <span><span className="font-mono font-semibold text-foreground">{c.views}</span> {t("Views", "Views")}</span>
-          </span>
-          <span className="w-px h-3 bg-border" />
-          <span className="inline-flex items-center gap-1.5">
-            <Repeat2 className="w-3.5 h-3.5" />
-            <span><span className="font-mono font-semibold text-foreground">{shares}</span> {t("Shares", "Shares")}</span>
-          </span>
-        </div>
-
-        <div className="mt-3 flex items-center gap-2">
-          <button
-            onClick={() => setBoosted((b) => !b)}
-            className={
-              "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border transition-colors " +
-              (boosted
-                ? "bg-accent text-accent-foreground border-accent"
-                : "bg-muted/60 text-foreground border-border")
-            }
-          >
-            <ThumbsUp className="w-4 h-4" /> {t("Boost", "Boost")} <span className="font-mono">{boosts}</span>
-          </button>
-          <button
-            onClick={() => setShareOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border border-primary/30 bg-primary-soft/60 text-primary hover:bg-primary-soft transition-colors"
-          >
-            <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
-          </button>
-          {pct >= 100 ? (
-            <span className="ml-auto inline-flex items-center gap-1 text-primary font-bold text-sm">
-              {t("Target Terpenuhi 🎉", "Target Met 🎉")}
+      <button
+        type="button"
+        onClick={() => setDetailOpen(true)}
+        className="block w-full text-left hover:bg-muted/20 transition-colors"
+        aria-label={t(`Lihat detail ${c.title}`, `View ${c.title} details`)}
+      >
+        <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
+          <div className="flex items-start justify-between gap-2">
+            <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
+              <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
             </span>
-          ) : (
-            <button onClick={() => setDonateOpen(true)} className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1 hover:opacity-80 transition">
-              {t("Donasi", "Donate")} <ChevronRight className="w-4 h-4" />
-            </button>
-          )}
+          </div>
+          <div className="text-primary-foreground">
+            <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
+            <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
+              <MapPin className="w-3 h-3" /> {c.school}
+            </p>
+          </div>
         </div>
+
+        <div className="p-4">
+          <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs items-start pb-3 border-b border-border/60">
+            <div className="text-center pt-0.5">
+              <p className="font-bold text-lg text-foreground leading-none">{c.recipients}</p>
+              <p className="text-[10px] text-muted-foreground">{t("Penerima", "Recipients")}</p>
+            </div>
+            <div className="text-[11px] space-y-0.5">
+              {c.supplier.split(" & ").filter(Boolean).map((s, i) => (
+                <p key={i} className="flex items-center gap-1.5">
+                  <Truck className="w-3 h-3 text-primary shrink-0" />
+                  {i === 0 && <span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span>}
+                  <span className="font-semibold text-foreground">{s}</span>
+                </p>
+              ))}
+              {c.tmp && (
+                <p className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-3 h-3 text-primary shrink-0" />
+                  <span className="text-muted-foreground">{t("Dimasak oleh:", "Cooked by:")}</span>
+                  <span className="font-semibold text-foreground">{c.tmp}</span>
+                </p>
+              )}
+              <p className="flex items-center gap-1.5"><MapPin className="w-3 h-3 text-primary shrink-0" /><span className="text-foreground">{c.region}</span></p>
+            </div>
+          </div>
+
+          <div className="pt-3">
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="font-mono font-bold text-foreground">Rp {fmtJt(totalRaised)}</span>
+              <span className="font-mono text-muted-foreground">{t(`dari Rp ${c.target}jt`, `of Rp ${c.target}M`)}</span>
+            </div>
+            <div className="h-2 rounded-full bg-muted overflow-hidden">
+              <div className="h-full progress-gradient rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
+          </div>
+
+          <div className="mt-3 flex items-center justify-between text-[11px]">
+            <div className="flex items-center gap-3 text-muted-foreground">
+              <span className="inline-flex items-center gap-1.5">
+                <Eye className="w-3.5 h-3.5" />
+                <span className="font-mono font-semibold text-foreground">{c.views}</span>
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <Repeat2 className="w-3.5 h-3.5" />
+                <span className="font-mono font-semibold text-foreground">{shares}</span>
+              </span>
+            </div>
+            <span className="inline-flex items-center gap-0.5 text-primary font-semibold">
+              {t("Lihat detail", "View details")} <ChevronRight className="w-3.5 h-3.5" />
+            </span>
+          </div>
+        </div>
+      </button>
+
+      <div className="px-4 pb-4 -mt-1 flex items-center gap-2">
+        <button
+          onClick={() => setBoosted((b) => !b)}
+          className={
+            "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border transition-colors " +
+            (boosted
+              ? "bg-accent text-accent-foreground border-accent"
+              : "bg-muted/60 text-foreground border-border")
+          }
+        >
+          <ThumbsUp className="w-4 h-4" /> {t("Boost", "Boost")} <span className="font-mono">{boosts}</span>
+        </button>
+        <button
+          onClick={() => setShareOpen(true)}
+          className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border border-primary/30 bg-primary-soft/60 text-primary hover:bg-primary-soft transition-colors"
+        >
+          <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
+        </button>
+        {pct >= 100 ? (
+          <span className="ml-auto inline-flex items-center gap-1 text-primary font-bold text-sm">
+            {t("Target Terpenuhi 🎉", "Target Met 🎉")}
+          </span>
+        ) : (
+          <button onClick={() => setDonateOpen(true)} className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1 hover:opacity-80 transition">
+            {t("Donasi", "Donate")} <ChevronRight className="w-4 h-4" />
+          </button>
+        )}
       </div>
 
       {shareOpen && <ShareSheet title={c.title} onClose={() => setShareOpen(false)} />}
       {donateOpen && <DonateSheet campaign={{ id: c.id, title: c.title, school: c.school }} onClose={() => setDonateOpen(false)} />}
+      {detailOpen && (
+        <CampaignDetailSheet
+          c={c}
+          pct={pct}
+          totalRaised={totalRaised}
+          fmtJt={fmtJt}
+          onClose={() => setDetailOpen(false)}
+          onDonate={() => { setDetailOpen(false); setDonateOpen(true); }}
+          onShare={() => { setDetailOpen(false); setShareOpen(true); }}
+        />
+      )}
     </article>
+  );
+}
+
+function CampaignDetailSheet({
+  c, pct, totalRaised, fmtJt, onClose, onDonate, onShare,
+}: {
+  c: typeof campaigns[number];
+  pct: number;
+  totalRaised: number;
+  fmtJt: (n: number) => string;
+  onClose: () => void;
+  onDonate: () => void;
+  onShare: () => void;
+}) {
+  const t = useT();
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full max-w-md bg-background rounded-t-3xl max-h-[92vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom duration-300"
+      >
+        <div className="sticky top-0 bg-background z-10 pt-2 pb-3 px-5 border-b border-border/60">
+          <div className="mx-auto w-10 h-1 rounded-full bg-muted-foreground/30 mb-3" />
+          <div className="flex items-center justify-between">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+              {t("Detail Kampanye", "Campaign Details")}
+            </p>
+            <button onClick={onClose} className="w-9 h-9 grid place-items-center rounded-full bg-muted hover:bg-muted/70">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        <div className="relative h-40 p-4 flex items-end" style={{ background: c.hero }}>
+          <div className="text-primary-foreground">
+            <h2 className="text-2xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
+            <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
+              <MapPin className="w-3 h-3" /> {c.school} • {c.region}
+            </p>
+          </div>
+        </div>
+
+        <div className="p-5 space-y-5">
+          <div>
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="font-mono font-bold text-foreground">Rp {fmtJt(totalRaised)}</span>
+              <span className="font-mono text-muted-foreground">{t(`dari Rp ${c.target}jt`, `of Rp ${c.target}M`)}</span>
+            </div>
+            <div className="h-2 rounded-full bg-muted overflow-hidden">
+              <div className="h-full progress-gradient rounded-full" style={{ width: `${pct}%` }} />
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div className="rounded-xl bg-muted/40 p-2.5">
+              <p className="font-bold text-base text-foreground">{c.recipients}</p>
+              <p className="text-[10px] text-muted-foreground">{t("Penerima", "Recipients")}</p>
+            </div>
+            <div className="rounded-xl bg-muted/40 p-2.5">
+              <p className="font-bold text-base text-foreground">{c.views}</p>
+              <p className="text-[10px] text-muted-foreground">{t("Views", "Views")}</p>
+            </div>
+            <div className="rounded-xl bg-muted/40 p-2.5">
+              <p className="font-bold text-base text-foreground">{c.shares}</p>
+              <p className="text-[10px] text-muted-foreground">{t("Shares", "Shares")}</p>
+            </div>
+          </div>
+
+          <div>
+            <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold mb-2">
+              {t("Deskripsi Kampanye", "Campaign Description")}
+            </p>
+            <p className="font-serif text-[13px] text-foreground leading-relaxed whitespace-pre-line">
+              {c.description}
+            </p>
+          </div>
+
+          <div className="bg-primary-soft/40 rounded-xl p-3">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+              {t("Cerita Guru", "Teacher's Story")} — {c.teacher.toUpperCase()}
+            </p>
+            <p className="font-serif italic text-[13px] text-foreground mt-2 leading-relaxed">
+              "{c.journal}"
+            </p>
+          </div>
+
+          <div className="rounded-xl border border-border/60 p-3 space-y-1.5 text-[12px]">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1">
+              {t("Rantai Akuntabilitas", "Accountability Chain")}
+            </p>
+            <p className="flex items-center gap-2"><Truck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Pemasok:", "Supplier:")}</span><span className="font-semibold text-foreground">{c.supplier}</span></p>
+            {c.tmp && <p className="flex items-center gap-2"><ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-muted-foreground">{t("Dimasak:", "Cooked by:")}</span><span className="font-semibold text-foreground">{c.tmp}</span></p>}
+            <p className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-foreground">{c.region}</span></p>
+          </div>
+
+          <div className="flex items-center gap-2 pt-2">
+            <button
+              onClick={onShare}
+              className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-3 text-sm font-semibold border border-primary/30 bg-primary-soft/60 text-primary"
+            >
+              <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
+            </button>
+            {pct >= 100 ? (
+              <span className="flex-1 text-center text-primary font-bold text-sm py-3">
+                {t("Target Terpenuhi 🎉", "Target Met 🎉")}
+              </span>
+            ) : (
+              <button
+                onClick={onDonate}
+                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl px-3 py-3 text-sm font-semibold bg-primary text-primary-foreground"
+              >
+                {t("Donasi Sekarang", "Donate Now")} <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+          <p className="text-[10px] text-center text-muted-foreground font-mono pb-2">
+            {t(
+              "Jurnal penutup & foto akan diunggah guru saat kampanye selesai.",
+              "Closing journal & photos uploaded by the teacher when the campaign closes.",
+            )}
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
