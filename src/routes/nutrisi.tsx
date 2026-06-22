@@ -59,11 +59,32 @@ function Nutrisi() {
 
 const campaigns = [
   {
+    id: "tuamese-darurat-robinson",
+    title: "Darurat Gizi Akhir Pekan — Robinson & Teman",
+    school: "SDN Tuamese",
+    recipients: 12,
+    supplier: "KWT Tuamese & Pasar Nyong Ganteng",
+    tmp: "Posyandu Tuamese",
+    region: "Nusa Tenggara Timur",
+    raised: 0.25,
+    target: 0.25,
+    pct: 100,
+    urgent: true,
+    hero: "linear-gradient(135deg, #8a2a1a 0%, #d4842a 100%)",
+    report: "linear-gradient(135deg, #2d5016 0%, #5a8a3d 100%)",
+    teacher: "Pak Budi",
+    journal: "Pagi tadi Robinson pingsan di kelas karena kelaparan. Bantuan Anda akan memberinya — dan teman-temannya — makanan bergizi akhir pekan ini.",
+    boosts: 218,
+    views: "3.4k",
+    shares: 612,
+  },
+  {
     id: "kolaka-gizi-sehat",
     title: "Gizi Sehat Desa Kolaka",
     school: "SDN 047 Kolaka Utara",
     recipients: 47,
     supplier: "BUMDes Maju Bersama",
+    tmp: "PKK Desa Kolaka Utara",
     region: "Sulawesi Tenggara",
     raised: 8.4,
     target: 15,
@@ -82,6 +103,7 @@ const campaigns = [
     school: "SDN 013 Mahakam Ulu",
     recipients: 63,
     supplier: "Kelompok Tani Harapan Jaya",
+    tmp: "Posyandu Mahakam Ulu",
     region: "Kalimantan Timur",
     raised: 5.2,
     target: 12,
@@ -126,9 +148,19 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   return (
     <article className="relative bg-surface rounded-2xl overflow-hidden border border-border/60">
       <div className="relative h-44 p-4 flex flex-col justify-between" style={{ background: c.hero }}>
-        <span className="self-start inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
-          <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
-        </span>
+        <div className="flex items-start justify-between gap-2">
+          <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
+            <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
+          </span>
+          {c.urgent && (
+            <span
+              className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full text-white animate-pulse"
+              style={{ background: "linear-gradient(135deg, oklch(0.62 0.2 25), oklch(0.55 0.22 15))" }}
+            >
+              ⚡ {t("DARURAT • AKHIR PEKAN", "URGENT • WEEKEND")}
+            </span>
+          )}
+        </div>
         <div className="text-primary-foreground">
           <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
           <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
@@ -149,6 +181,23 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </div>
         </div>
 
+        {/* Dynamic Transparency Badge */}
+        {(c.tmp || c.supplier) && (
+          <div
+            className="mt-3 rounded-xl px-3 py-2.5 flex items-start gap-2 text-[11px] leading-snug"
+            style={{ background: "oklch(0.96 0.03 175)", border: "1px solid oklch(0.85 0.06 175)" }}
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              {c.tmp && (
+                <p><span className="text-muted-foreground">{t("Dimasak oleh:", "Cooked by:")}</span> <span className="font-semibold text-foreground">{c.tmp}</span></p>
+              )}
+              {c.supplier && (
+                <p><span className="text-muted-foreground">{t("Pangan dari:", "Sourced from:")}</span> <span className="font-semibold text-foreground">{c.supplier}</span></p>
+              )}
+            </div>
+          </div>
+        )}
 
         <div className="pt-3">
           <div className="flex justify-between text-xs mb-1.5">
@@ -201,9 +250,15 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           >
             <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
           </button>
-          <button onClick={() => setDonateOpen(true)} className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1 hover:opacity-80 transition">
-            {t("Donasi", "Donate")} <ChevronRight className="w-4 h-4" />
-          </button>
+          {pct >= 100 ? (
+            <span className="ml-auto inline-flex items-center gap-1 text-primary font-bold text-sm">
+              {t("Target Terpenuhi 🎉", "Target Met 🎉")}
+            </span>
+          ) : (
+            <button onClick={() => setDonateOpen(true)} className="ml-auto text-primary font-semibold text-sm inline-flex items-center gap-1 hover:opacity-80 transition">
+              {t("Donasi", "Donate")} <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
       </div>
 
