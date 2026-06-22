@@ -159,16 +159,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </div>
         </div>
 
-        <div className="pt-3">
-          <div className="flex justify-between text-xs mb-1.5">
-            <span className="font-mono font-bold text-foreground">Rp {c.raised}jt</span>
-            <span className="font-mono text-muted-foreground">{t(`dari Rp ${c.target}jt`, `of Rp ${c.target}M`)}</span>
-          </div>
-          <div className="h-2 rounded-full bg-muted overflow-hidden">
-            <div className="h-full progress-gradient rounded-full" style={{ width: `${c.pct}%` }} />
-          </div>
-          <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${c.pct}% terkumpul`, `${c.pct}% raised`)}</p>
-        </div>
 
         <div className="pt-3">
           <div className="flex justify-between text-xs mb-1.5">
