@@ -60,10 +60,10 @@ function Nutrisi() {
 const campaigns = [
   {
     id: "tuamese-darurat-robinson",
-    title: "Darurat Gizi Akhir Pekan — Robinson & Teman",
+    title: "Darurat Gizi — Robinson & Teman",
     school: "SDN Tuamese",
     recipients: 12,
-    supplier: "KWT Tuamese & Pasar Nyong Ganteng",
+    supplier: "KWT Tuamese",
     tmp: "Posyandu Tuamese",
     region: "Nusa Tenggara Timur",
     raised: 0.25,
@@ -73,7 +73,7 @@ const campaigns = [
     hero: "linear-gradient(135deg, #8a2a1a 0%, #d4842a 100%)",
     report: "linear-gradient(135deg, #2d5016 0%, #5a8a3d 100%)",
     teacher: "Pak Budi",
-    journal: "Pagi tadi Robinson pingsan di kelas karena kelaparan. Bantuan Anda akan memberinya — dan teman-temannya — makanan bergizi akhir pekan ini.",
+    journal: "Pagi tadi Robinson pingsan di kelas karena kelaparan. Bantuan Anda akan memberinya — dan teman-temannya — makanan bergizi yang sangat dibutuhkan.",
     boosts: 218,
     views: "3.4k",
     shares: 612,
