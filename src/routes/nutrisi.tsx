@@ -963,12 +963,41 @@ function BuatKampanye() {
       >
         <Send className="w-4 h-4" /> {t("Ajukan Kampanye", "Submit Campaign")}
       </button>
-      <p className="text-[11px] text-muted-foreground text-center leading-snug -mt-1">
-        {t(
-          "Loop Transparansi: cukup satu jurnal penutup dengan foto saat kampanye selesai — otomatis dikirim ke donatur.",
-          "Transparency loop: just one closing journal with photos when the campaign ends — auto-sent to donors.",
-        )}
-      </p>
+      <button
+        type="button"
+        onClick={() => setJournalCommit((v) => !v)}
+        className={
+          "w-full flex items-start gap-3 rounded-xl border px-4 py-3 text-left transition " +
+          (journalCommit
+            ? "border-primary bg-primary/10"
+            : "border-border/60 bg-muted/40 hover:bg-muted/60")
+        }
+      >
+        <span
+          className={
+            "mt-0.5 shrink-0 w-5 h-5 rounded-md border flex items-center justify-center transition " +
+            (journalCommit
+              ? "bg-primary border-primary text-primary-foreground"
+              : "bg-transparent border-muted-foreground/30")
+          }
+        >
+          {journalCommit && <Check className="w-3.5 h-3.5" />}
+        </span>
+        <div>
+          <p className="text-xs font-semibold text-foreground">
+            {t(
+              "Saya berkomitmen membuat jurnal penutup dengan foto bukti saat kampanye selesai",
+              "I commit to creating a closing journal with proof photos when the campaign ends",
+            )}
+          </p>
+          <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
+            {t(
+              "Jurnal ini menjadi laporan transparansi yang otomatis dikirim ke semua donatur.",
+              "This journal becomes the transparency report auto-sent to all donors.",
+            )}
+          </p>
+        </div>
+      </button>
     </div>
   );
 }
