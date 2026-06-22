@@ -537,7 +537,7 @@ function BuatKampanye() {
     ["target", t("Target Dana", "Funding Target"), !!target],
     ["deadline", t("Deadline", "Deadline"), !!deadline],
     ["desc", t("Deskripsi Kampanye", "Campaign Description"), !!desc],
-    ["journal", t("Jurnal Guru", "Teacher's Journal"), !!journal],
+    ["photos", t("Foto Bukti (min. 1)", "Proof Photos (min. 1)"), photos.length > 0],
     ["teacherBank", t("Nama Bank", "Bank Name"), !!teacherBank],
     ["teacherAccount", t("No. Rekening", "Account No."), !!teacherAccount],
     ["tmpGroup", t("Kelompok TMP", "TMP Group"), !!tmpGroup],
