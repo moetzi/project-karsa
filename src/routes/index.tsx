@@ -224,10 +224,10 @@ function Beranda() {
               <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
                 <Users className="w-3 h-3" /> {t("Donatur Terakhir", "Recent Donors")}
               </p>
-              <span className="text-[10px] text-muted-foreground font-mono">{donors.length} {t("donatur", "donors")}</span>
+              <span className="text-[10px] text-muted-foreground font-mono">{allDonors.length} {t("donatur", "donors")}</span>
             </div>
             <ul className="divide-y divide-border/60 max-h-56 overflow-y-auto">
-              {donors.map((d, i) => (
+              {allDonors.map((d, i) => (
                 <li key={i} className="flex items-center gap-2.5 px-3 py-2.5">
                   <div className="w-8 h-8 rounded-full bg-primary-soft text-primary grid place-items-center text-[10px] font-bold shrink-0">
                     {d.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
@@ -290,15 +290,29 @@ function Beranda() {
             )}
           </div>
 
-          <button
-            onClick={() => setShareOpen(true)}
-            className="mt-4 w-full bg-primary text-primary-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 transition"
-          >
-            <Share2 className="w-4 h-4" /> {t("Bagikan Link Kampanye", "Share Campaign Link")}
-          </button>
+          <div className="mt-4 flex gap-2">
+            <button
+              onClick={() => setDonateOpen(true)}
+              className="flex-1 bg-primary text-primary-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 transition"
+            >
+              <Heart className="w-4 h-4" /> {t("Donasi", "Donate")}
+            </button>
+            <button
+              onClick={() => setShareOpen(true)}
+              className="flex-1 bg-muted text-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-muted/80 transition border border-border"
+            >
+              <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
+            </button>
+          </div>
 
           {shareOpen && (
             <ShareSheet title={t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")} onClose={() => setShareOpen(false)} />
+          )}
+          {donateOpen && (
+            <DonateSheet
+              campaign={{ id: ACTIVE_CAMPAIGN.id, title: t(ACTIVE_CAMPAIGN.title, ACTIVE_CAMPAIGN.titleEn), school: ACTIVE_CAMPAIGN.school }}
+              onClose={() => setDonateOpen(false)}
+            />
           )}
         </section>
 
