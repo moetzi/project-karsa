@@ -161,42 +161,6 @@ function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           <p className="text-[11px] text-muted-foreground mt-1.5">{t(`${pct}% terkumpul`, `${pct}% raised`)}</p>
         </div>
 
-        <div className="mt-4 pt-4 border-t border-border/60">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-semibold flex items-center gap-1.5">
-            <ShieldCheck className="w-3 h-3" /> {t("Laporan Transparansi", "Transparency Report")}
-          </p>
-          <div className="mt-2 rounded-xl p-3 text-primary-foreground relative overflow-hidden" style={{ background: c.report }}>
-            <div className="grid grid-cols-3 gap-2 text-center">
-              <div>
-                <p className="font-mono font-extrabold text-base leading-none">{donations.length}</p>
-                <p className="text-[9px] uppercase tracking-wider opacity-85 mt-1">{t("Donatur Baru", "New Donors")}</p>
-              </div>
-              <div>
-                <p className="font-mono font-extrabold text-base leading-none">Rp {newRaised > 0 ? fmtJt(newRaised) : "0"}</p>
-                <p className="text-[9px] uppercase tracking-wider opacity-85 mt-1">{t("Masuk Hari Ini", "Incoming Today")}</p>
-              </div>
-              <div>
-                <p className="font-mono font-extrabold text-base leading-none">
-                  Rp {donations.length > 0 ? Math.round(newRaised / donations.length / 1000) + "rb" : "0"}
-                </p>
-                <p className="text-[9px] uppercase tracking-wider opacity-85 mt-1">{t("Rata-rata", "Average")}</p>
-              </div>
-            </div>
-            <div className="mt-3 pt-3 border-t border-white/20 space-y-1.5">
-              {byMethod.map((m) => (
-                <div key={m.id} className="flex items-center gap-2 text-[10px]">
-                  <span className="w-10 font-mono font-semibold opacity-90">{m.label}</span>
-                  <div className="flex-1 h-1.5 rounded-full bg-white/15 overflow-hidden">
-                    <div className="h-full bg-white rounded-full transition-all duration-500" style={{ width: `${m.share * 100}%` }} />
-                  </div>
-                  <span className="font-mono font-bold tabular-nums w-12 text-right">
-                    {m.sum > 0 ? "Rp " + (m.sum >= 1_000_000 ? (m.sum / 1_000_000).toFixed(1) + "jt" : Math.round(m.sum / 1000) + "rb") : "—"}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
 
         <div className="mt-4 bg-primary-soft/40 rounded-xl p-3">
           <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
