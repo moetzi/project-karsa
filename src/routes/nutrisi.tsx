@@ -330,6 +330,20 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
               <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
                 <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
               </span>
+              {(() => {
+                const hasJournal = !!c.journal;
+                const status =
+                  pct < 100
+                    ? { id: "Pending", en: "Pending", cls: "bg-muted text-muted-foreground" }
+                    : hasJournal
+                    ? { id: "Dilaporkan", en: "Reported", cls: "bg-primary text-primary-foreground" }
+                    : { id: "Tersalur", en: "Disbursed", cls: "bg-accent text-accent-foreground" };
+                return (
+                  <span className={"inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full " + status.cls}>
+                    {t(status.id, status.en)}
+                  </span>
+                );
+              })()}
             </div>
             <div className="text-white">
               <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
