@@ -443,6 +443,13 @@ function HelpSection() {
         "The 100% Funds Disbursed notification reminds teachers to create a daily or closing journal immediately. With one tap, you can open the journal sheet without refreshing the page, keeping campaign transparency intact and automatically updating the Children Helped statistics.",
       ),
     },
+    {
+      q: t("Data apa saja yang perlu atau bisa diunggah ke jurnal?", "What data can or should be uploaded to a journal?"),
+      a: t(
+        "Anda bisa mengunggah foto struk atau nota pembelian, foto bahan makanan/menu yang disajikan, serta detail pembelian seperti nama item, jumlah, harga satuan, dan total. Catat juga tanggal pencairan, estimasi jumlah anak terbantu, dan keterangan tambahan agar laporan tetap transparan.",
+        "You can upload photos of purchase receipts, food ingredients, or served menus, plus purchase details such as item name, quantity, unit price, and total. Also record the disbursement date, estimated number of children helped, and any additional notes to keep the report transparent.",
+      ),
+    },
   ];
 
   return (
