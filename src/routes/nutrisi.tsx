@@ -29,6 +29,7 @@ import { generateMealPlan } from "@/lib/ai.functions";
 import { JournalSheet } from "@/components/JournalSheet";
 import { ConnectionBadge } from "@/components/ConnectionBadge";
 import { withSync } from "@/lib/useConnectionStatus";
+import { useReach, trackView, trackShare, toggleBoost } from "@/lib/reachStore";
 
 
 export const Route = createFileRoute("/nutrisi")({
