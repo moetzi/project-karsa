@@ -65,12 +65,13 @@ function Landing() {
               <ShieldCheck className="w-3.5 h-3.5" /> Diverifikasi NUPTK & Dapodik
             </span>
             <h1 className="mt-5 text-4xl md:text-6xl font-extrabold leading-[1.05] tracking-tight">
-              Akhiri stunting.<br />
-              <span className="text-primary">Mulai dari ruang kelas.</span>
+              Di pelosok negeri,<br />
+              <span className="text-primary">seorang guru menolak menyerah.</span>
             </h1>
             <p className="mt-5 text-base md:text-lg text-muted-foreground max-w-xl leading-relaxed">
-              Setiap rupiah donasi Anda langsung menjadi sepiring nasi panas, ikan segar, dan sayur kebun
-              untuk anak-anak Indonesia di pelosok — dikelola oleh guru-guru terverifikasi.
+              Mereka tahu nama setiap muridnya. Mereka tahu siapa yang datang ke sekolah dengan perut kosong.
+              Karsa berdiri di samping mereka — agar setiap rupiah donasi Anda berubah menjadi sepiring makanan
+              hangat hari ini, bukan janji bertahun kemudian.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <a
