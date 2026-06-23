@@ -116,6 +116,15 @@ function HeroCard({ hero, t, lang }: { hero: (typeof campaigns)[number]; t: Retu
         )}
       </div>
 
+      {/* Journal card below image */}
+      <div className="mt-4 rounded-2xl border border-border/60 bg-surface p-4 shadow-lg">
+        <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+          {t("Jurnal Guru", "Teacher's Journal")} · {hero.teacher}
+        </p>
+        <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground line-clamp-5">
+          {hero.journal}
+        </p>
+      </div>
     </div>
   );
 }
