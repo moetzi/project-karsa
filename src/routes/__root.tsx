@@ -85,6 +85,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "manifest", href: "/manifest.webmanifest" },
+      { rel: "icon", type: "image/png", sizes: "192x192", href: "/icon-192.png" },
+      { rel: "apple-touch-icon", href: "/icon-192.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
@@ -92,6 +95,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         href: "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Mono:wght@400;500&display=swap",
       },
     ],
+
   }),
   shellComponent: RootShell,
   component: RootComponent,
@@ -116,6 +120,10 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  useEffect(() => {
+    void import("../lib/registerSW").then((m) => m.registerSW());
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <LangProvider>
@@ -126,3 +134,4 @@ function RootComponent() {
     </QueryClientProvider>
   );
 }
+
