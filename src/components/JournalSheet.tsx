@@ -181,6 +181,33 @@ export function JournalSheet({ campaign, onClose }: Props) {
               </div>
             </div>
 
+            {hasDraft && (
+              <div className="rounded-xl bg-accent-soft/50 border border-accent/30 px-3 py-2 text-[11px] text-foreground flex items-center gap-2">
+                <Save className="w-3.5 h-3.5 text-accent shrink-0" />
+                <span className="flex-1">{t("Draft tersimpan otomatis. Lanjutkan kapan saja.", "Draft auto-saved. Resume anytime.")}</span>
+                <button
+                  onClick={async () => {
+                    await deleteDraft(campaign.id);
+                    setMenu(""); setStory(""); setMood(null); setAttendance("");
+                    setHasDraft(false);
+                    toast.success(t("Draft dihapus", "Draft cleared"));
+                  }}
+                  className="text-accent font-semibold hover:underline"
+                >
+                  {t("Hapus", "Clear")}
+                </button>
+              </div>
+            )}
+
+            {isOffline && (
+              <div className="rounded-xl bg-muted border border-border px-3 py-2 text-[11px] text-foreground flex items-start gap-2">
+                <CloudOff className="w-3.5 h-3.5 mt-0.5 shrink-0" />
+                <span>{t("Sedang offline — tulisan disimpan sebagai draft. Foto perlu koneksi untuk diunggah.", "Offline — text saved as draft. Photos need a connection to upload.")}</span>
+              </div>
+            )}
+
+
+
             <div>
               <label className="text-xs font-semibold text-foreground flex items-center justify-between mb-2">
                 <span>{t("Foto Makan Bersama", "Group Meal Photo")} <span className="text-accent">*</span></span>
