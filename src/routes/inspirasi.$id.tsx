@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Clock, BookOpen, Sprout, ExternalLink, Quote } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, BookOpen, Sprout, ExternalLink, Quote } from "lucide-react";
 import { useEffect, useState } from "react";
 import { INSPIRASI } from "@/lib/inspirasi";
 import articleStunting from "@/assets/article-stunting.jpg";
@@ -301,6 +301,9 @@ function Article() {
   const { id } = Route.useParams();
   const a = ARTICLES[id] ?? ARTICLES["1"];
   const others = INSPIRASI.filter((x) => x.id !== id);
+  const currentIndex = INSPIRASI.findIndex((x) => x.id === id);
+  const prev = currentIndex > 0 ? INSPIRASI[currentIndex - 1] : null;
+  const next = currentIndex < INSPIRASI.length - 1 ? INSPIRASI[currentIndex + 1] : null;
   const [heroReady, setHeroReady] = useState(false);
   useEffect(() => {
     const raf = requestAnimationFrame(() => setHeroReady(true));
@@ -507,13 +510,35 @@ function Article() {
           </p>
         </section>
 
-        <div className="mt-10 rounded-2xl p-6 sm:p-8 bg-primary-soft/50 border border-primary/10 animate-fade-in">
-          <p className="font-mono text-[11px] uppercase tracking-widest text-primary font-bold">
-            Aksi Selanjutnya
-          </p>
-          <p className="font-serif italic text-base sm:text-lg text-foreground mt-2 leading-relaxed">
-            "Setiap hari adalah kesempatan baru untuk mengubah hidup seorang anak."
-          </p>
+        <div className="mt-10 grid sm:grid-cols-2 gap-4 animate-fade-in">
+          {prev && (
+            <Link
+              to="/inspirasi/$id"
+              params={{ id: prev.id }}
+              className="group flex flex-col rounded-2xl border border-border/60 bg-surface p-5 hover:border-primary/30 hover:bg-primary-soft/30 transition-colors"
+            >
+              <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                <ArrowLeft className="w-3 h-3" /> Bacaan sebelumnya
+              </span>
+              <span className="mt-2 font-serif text-base sm:text-lg text-foreground leading-snug group-hover:text-primary transition-colors">
+                {prev.title.id}
+              </span>
+            </Link>
+          )}
+          {next && (
+            <Link
+              to="/inspirasi/$id"
+              params={{ id: next.id }}
+              className={`group flex flex-col rounded-2xl border border-border/60 bg-surface p-5 hover:border-primary/30 hover:bg-primary-soft/30 transition-colors ${prev ? "sm:items-end sm:text-right" : "sm:col-span-2 sm:items-center sm:text-center"}`}
+            >
+              <span className="inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                Bacaan berikutnya <ArrowRight className="w-3 h-3" />
+              </span>
+              <span className="mt-2 font-serif text-base sm:text-lg text-foreground leading-snug group-hover:text-primary transition-colors">
+                {next.title.id}
+              </span>
+            </Link>
+          )}
         </div>
       </section>
 
