@@ -334,10 +334,10 @@ export function CampaignDetailSheet({
 }) {
   const t = useT();
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md bg-background rounded-t-3xl max-h-[92vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom duration-300"
+        className="w-full max-w-md sm:max-w-2xl lg:max-w-3xl bg-background rounded-t-3xl sm:rounded-3xl max-h-[92vh] overflow-y-auto shadow-2xl animate-in slide-in-from-bottom sm:slide-in-from-bottom-4 duration-300"
       >
         <div className="sticky top-0 bg-background z-10 pt-2 pb-3 px-5 border-b border-border/60">
           <div className="mx-auto w-10 h-1 rounded-full bg-muted-foreground/30 mb-3" />
