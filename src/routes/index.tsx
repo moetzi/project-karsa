@@ -329,8 +329,8 @@ function Landing() {
           <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">{t("Cara Kerja", "How It Works")}</p>
           <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">
             {t(
-              "Dari niat baik Anda ke piring anak-anak — dalam lima langkah jelas.",
-              "From your goodwill to the children's plates — in five clear steps."
+              "Dari niat baik Anda ke piring anak-anak.",
+              "From your goodwill to the children's plates."
             )}
           </h2>
           <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
