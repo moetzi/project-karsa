@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useState } from "react";
-import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2, Heart } from "lucide-react";
+import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2, Heart, Lock } from "lucide-react";
 import { donors, ShareSheet, getCountdown, CampaignDetailSheet, campaigns } from "@/routes/nutrisi";
 import { JournalSheet } from "@/components/JournalSheet";
 import { DonateSheet } from "@/components/DonateSheet";
@@ -273,14 +273,22 @@ function Beranda() {
             >
               <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
             </button>
-            {!isCampaignClosed && (
-              <button
-                onClick={() => setJournalOpen(true)}
-                className="col-span-2 border border-primary/40 bg-primary-soft/40 text-primary rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary-soft/60 transition"
-              >
-                <NotebookPen className="w-4 h-4" /> {t("Buat Jurnal Harian", "Create Daily Journal")}
-              </button>
-            )}
+            <button
+              onClick={() => isCampaignClosed && setJournalOpen(true)}
+              disabled={!isCampaignClosed}
+              title={!isCampaignClosed ? t("Tersedia setelah dana tersalurkan (100%)", "Unlocks after funds are disbursed (100%)") : undefined}
+              className={`col-span-2 rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 transition border ${
+                isCampaignClosed
+                  ? "border-primary/40 bg-primary-soft/40 text-primary hover:bg-primary-soft/60"
+                  : "border-border bg-muted/40 text-muted-foreground cursor-not-allowed"
+              }`}
+            >
+              {isCampaignClosed ? (
+                <><NotebookPen className="w-4 h-4" /> {t("Buat Jurnal Harian", "Create Daily Journal")}</>
+              ) : (
+                <><Lock className="w-4 h-4" /> {t(`Jurnal terkunci · ${pct}/100%`, `Journal locked · ${pct}/100%`)}</>
+              )}
+            </button>
           </div>
 
           {shareOpen && (
