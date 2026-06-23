@@ -260,23 +260,31 @@ function Beranda() {
             </div>
           </button>
 
-          <div className="px-5 pb-5 mt-4 flex gap-2">
+          <div className="px-5 pb-5 mt-4 grid grid-cols-2 gap-2">
             <button
               onClick={() => setDonateOpen(true)}
-              className="flex-1 bg-primary text-primary-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 transition"
+              className="bg-primary text-primary-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 transition"
             >
               <Heart className="w-4 h-4" /> {t("Donasi", "Donate")}
             </button>
             <button
               onClick={() => setShareOpen(true)}
-              className="flex-1 bg-muted text-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-muted/80 transition border border-border"
+              className="bg-muted text-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-muted/80 transition border border-border"
             >
               <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
             </button>
+            {!isCampaignClosed && (
+              <button
+                onClick={() => setJournalOpen(true)}
+                className="col-span-2 border border-primary/40 bg-primary-soft/40 text-primary rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary-soft/60 transition"
+              >
+                <NotebookPen className="w-4 h-4" /> {t("Buat Jurnal Harian", "Create Daily Journal")}
+              </button>
+            )}
           </div>
 
           {shareOpen && (
-            <ShareSheet title={t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")} onClose={() => setShareOpen(false)} />
+            <ShareSheet campaignId={ACTIVE_CAMPAIGN.id} title={t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")} school={ACTIVE_CAMPAIGN.school} onClose={() => setShareOpen(false)} />
           )}
           {donateOpen && (
             <DonateSheet
@@ -297,7 +305,14 @@ function Beranda() {
           )}
         </section>
 
-        {journalOpen && <JournalSheet campaign={ACTIVE_CAMPAIGN} onClose={() => setJournalOpen(false)} />}
+        {journalOpen && (
+          <JournalSheet
+            campaign={ACTIVE_CAMPAIGN}
+            kind={isCampaignClosed && !hasClosingJournal ? "closing" : "daily"}
+            localOnly
+            onClose={() => setJournalOpen(false)}
+          />
+        )}
       </div>
     </PhoneShell>
   );
