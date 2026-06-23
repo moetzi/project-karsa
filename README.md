@@ -31,10 +31,13 @@ Karsa adalah platform donasi dan edukasi untuk gerakan guru Indonesia memberi gi
 ## Menjalankan Proyek
 
 ```bash
-# Install dependencies
+# 1. Install dependencies
 bun install
 
-# Development server
+# 2. Salin file environment dan isi nilainya
+cp .env.example .env
+
+# 3. Development server
 bun dev
 
 # Build production
@@ -53,15 +56,24 @@ bun run format
 
 ## Environment Variables
 
-Copy `.env` lokal dan isi variabel berikut (Lovable Cloud menyediakan nilainya):
+Salin `.env.example` menjadi `.env`, lalu isi nilainya:
 
 ```bash
-VITE_SUPABASE_URL=
-VITE_SUPABASE_PUBLISHABLE_KEY=
-VITE_SUPABASE_PROJECT_ID=
+cp .env.example .env
 ```
 
-Variabel server-side seperti `SUPABASE_SERVICE_ROLE_KEY` tidak perlu diatur secara manual di Lovable Cloud.
+| Variabel | Keterangan |
+|---|---|
+| `SUPABASE_URL` | URL project Supabase kamu |
+| `SUPABASE_PUBLISHABLE_KEY` | Anon/public key dari Supabase (aman di-commit ke *private* repo) |
+| `SUPABASE_PROJECT_ID` | ID project Supabase |
+| `VITE_SUPABASE_URL` | Sama seperti `SUPABASE_URL`, untuk client-side Vite |
+| `VITE_SUPABASE_PUBLISHABLE_KEY` | Sama seperti `SUPABASE_PUBLISHABLE_KEY`, untuk client-side Vite |
+| `VITE_SUPABASE_PROJECT_ID` | Sama seperti `SUPABASE_PROJECT_ID`, untuk client-side Vite |
+
+Semua nilai bisa didapat dari [Supabase Dashboard](https://supabase.com/dashboard) → Project Settings → API.
+
+> **Catatan:** `.env` sudah masuk ke `.gitignore` — jangan di-commit ke repo publik. Variabel server-side seperti `SUPABASE_SERVICE_ROLE_KEY` tidak perlu diatur secara manual di Lovable Cloud.
 
 ## Fitur Utama
 
