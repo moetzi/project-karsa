@@ -1,10 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { ShieldCheck, MapPin, Truck, ChevronRight, ArrowLeft, Share2, Sprout, Clock, Heart } from "lucide-react";
+import { ShieldCheck, MapPin, Truck, ChevronRight, ArrowLeft, Share2, Sprout, Clock, Heart, NotebookPen, Users } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { campaigns, getCountdown } from "@/routes/nutrisi";
 import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations } from "@/lib/donationStore";
+import { useJournals } from "@/lib/journalsStore";
+import { useCampaignClosed } from "@/lib/campaignStatusStore";
 
 const ORIGIN = "https://project-karsa.lovable.app";
 
@@ -94,13 +96,20 @@ function CampaignPublicPage() {
   const { c } = Route.useLoaderData();
   const [donateOpen, setDonateOpen] = useState(false);
   const donations = useDonations(c.id);
+  const journals = useJournals(c.id);
+  const closed = useCampaignClosed(c.id);
+  const closingJournal = journals.find((j) => j.kind === "closing");
+  const dailyJournals = journals.filter((j) => j.kind === "daily");
 
   const newRaised = donations.reduce((s, d) => s + d.amount, 0);
   const totalRaised = c.raised * 1_000_000 + newRaised;
   const targetRp = c.target * 1_000_000;
-  const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const rawPct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const pct = closed ? 100 : rawPct;
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
-  const disbursedAt = ("disbursedAt" in c ? (c as { disbursedAt?: string }).disbursedAt : undefined);
+  const disbursedAt = closed?.closedAt
+    ? new Date(closed.closedAt).toISOString()
+    : ("disbursedAt" in c ? (c as { disbursedAt?: string }).disbursedAt : undefined);
 
   const shareUrl = `${ORIGIN}/k/${c.id}`;
   const onShare = async () => {
