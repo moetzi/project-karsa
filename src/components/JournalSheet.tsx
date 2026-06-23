@@ -257,16 +257,55 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
 
 
             <div>
+              <label className="text-xs font-semibold text-foreground mb-2 block">
+                {t("Jenis Bukti Penyaluran", "Disbursement Proof Type")} <span className="text-accent">*</span>
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setProofType("receipt")}
+                  disabled={submitting}
+                  className={
+                    "rounded-xl border py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-semibold transition " +
+                    (proofType === "receipt"
+                      ? "border-primary bg-primary-soft text-foreground"
+                      : "border-border bg-surface text-muted-foreground hover:bg-muted/50")
+                  }
+                >
+                  <Receipt className="w-4 h-4" /> {t("Struk Belanja", "Shopping Receipt")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setProofType("meal")}
+                  disabled={submitting}
+                  className={
+                    "rounded-xl border py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-semibold transition " +
+                    (proofType === "meal"
+                      ? "border-primary bg-primary-soft text-foreground"
+                      : "border-border bg-surface text-muted-foreground hover:bg-muted/50")
+                  }
+                >
+                  <Users className="w-4 h-4" /> {t("Makan Bersama", "Meal Together")}
+                </button>
+              </div>
+            </div>
+
+            <div>
               <label className="text-xs font-semibold text-foreground flex items-center justify-between mb-2">
-                <span>{t("Foto Makan Bersama", "Group Meal Photo")} <span className="text-accent">*</span></span>
-                <span className="font-mono text-[10px] text-muted-foreground">{photos.length}/4</span>
+                <span>
+                  {proofType === "receipt"
+                    ? t("Foto Struk / Nota", "Receipt / Invoice Photo")
+                    : t("Foto Bukti Makan Bersama", "Meal-Together Proof Photo")}{" "}
+                  <span className="text-accent">*</span>
+                </span>
+                <span className="font-mono text-[10px] text-muted-foreground">{proofPhotos.length}/2</span>
               </label>
               <div className="grid grid-cols-4 gap-2">
-                {photos.map((p, i) => (
+                {proofPhotos.map((p, i) => (
                   <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-muted">
                     <img src={p.previewUrl} alt="" className="w-full h-full object-cover" />
                     <button
-                      onClick={() => removePhoto(i)}
+                      onClick={() => removeFromList(i, setProofPhotos)}
                       disabled={submitting}
                       className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white grid place-items-center"
                     >
@@ -274,9 +313,9 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                     </button>
                   </div>
                 ))}
-                {photos.length < 4 && (
+                {proofPhotos.length < 2 && (
                   <button
-                    onClick={() => fileRef.current?.click()}
+                    onClick={() => proofFileRef.current?.click()}
                     disabled={submitting}
                     className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary-soft/30 transition flex flex-col items-center justify-center gap-1 text-muted-foreground disabled:opacity-50"
                   >
@@ -286,16 +325,56 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 )}
               </div>
               <input
-                ref={fileRef}
+                ref={proofFileRef}
                 type="file"
                 accept="image/*"
                 multiple
                 capture="environment"
                 className="hidden"
-                onChange={(e) => { handleFiles(e.target.files); e.target.value = ""; }}
+                onChange={(e) => { addToList(e.target.files, proofPhotos, setProofPhotos, 2); e.target.value = ""; }}
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-foreground flex items-center justify-between mb-2">
+                <span>{t("Foto Makanan yang Dibuat", "Prepared Food Photo")} <span className="text-accent">*</span></span>
+                <span className="font-mono text-[10px] text-muted-foreground">{foodPhotos.length}/3</span>
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {foodPhotos.map((p, i) => (
+                  <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-muted">
+                    <img src={p.previewUrl} alt="" className="w-full h-full object-cover" />
+                    <button
+                      onClick={() => removeFromList(i, setFoodPhotos)}
+                      disabled={submitting}
+                      className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white grid place-items-center"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                {foodPhotos.length < 3 && (
+                  <button
+                    onClick={() => foodFileRef.current?.click()}
+                    disabled={submitting}
+                    className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary-soft/30 transition flex flex-col items-center justify-center gap-1 text-muted-foreground disabled:opacity-50"
+                  >
+                    <ImagePlus className="w-5 h-5" />
+                    <span className="text-[9px] font-mono uppercase">{t("Tambah", "Add")}</span>
+                  </button>
+                )}
+              </div>
+              <input
+                ref={foodFileRef}
+                type="file"
+                accept="image/*"
+                multiple
+                capture="environment"
+                className="hidden"
+                onChange={(e) => { addToList(e.target.files, foodPhotos, setFoodPhotos, 3); e.target.value = ""; }}
               />
               <button
-                onClick={() => fileRef.current?.click()}
+                onClick={() => foodFileRef.current?.click()}
                 disabled={submitting}
                 className="mt-2 w-full border border-border rounded-xl py-2.5 text-xs font-semibold text-foreground inline-flex items-center justify-center gap-2 hover:bg-muted/50 disabled:opacity-50"
               >
@@ -305,31 +384,35 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
 
             <div>
               <label className="text-xs font-semibold text-foreground mb-2 block">
-                {t("Menu Hari Ini", "Today's Menu")} <span className="text-accent">*</span>
+                {t("Alokasi Pengeluaran", "Expenditure Allocation")} <span className="text-accent">*</span>
               </label>
-              <input
-                value={menu}
-                onChange={(e) => setMenu(e.target.value)}
+              <textarea
+                value={allocation}
+                onChange={(e) => setAllocation(e.target.value)}
                 disabled={submitting}
-                placeholder={t("cth: Nasi, ayam suwir, tumis kangkung, pisang", "e.g. Rice, shredded chicken, sautéed greens, banana")}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary"
+                rows={3}
+                placeholder={t(
+                  "cth: Belanja beras 5 kg, sayur, ayam, dan buah pisang untuk makan siang bersama.",
+                  "e.g. Bought 5 kg rice, vegetables, chicken, and bananas for the shared lunch."
+                )}
+                className="w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary resize-none"
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-foreground mb-2 block">
-                {t("Jumlah Anak Hadir", "Children Attending")}
+              <label className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" /> {t("Tanggal Pelaksanaan", "Date Conducted")} <span className="text-accent">*</span>
               </label>
               <input
-                type="number"
-                inputMode="numeric"
-                value={attendance}
-                onChange={(e) => setAttendance(e.target.value)}
+                type="date"
+                value={date}
+                max={today}
+                onChange={(e) => setDate(e.target.value)}
                 disabled={submitting}
-                placeholder="28"
                 className="w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
               />
             </div>
+
 
             <div>
               <label className="text-xs font-semibold text-foreground mb-2 block">
