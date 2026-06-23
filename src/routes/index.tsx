@@ -189,8 +189,8 @@ function Landing() {
                 </span>
               </div>
               <div className="p-4 flex-1 flex flex-col">
-                <h3 className="font-serif text-base leading-snug text-foreground line-clamp-3">{a.title.id}</h3>
-                <div className="mt-4 flex items-center justify-between text-[11px]">
+                <h3 className="flex-1 font-serif text-base leading-snug text-foreground line-clamp-3">{a.title.id}</h3>
+                <div className="mt-auto pt-4 flex items-center justify-between text-[11px]">
                   <span className="font-mono text-muted-foreground inline-flex items-center gap-1">
                     <Clock className="w-3 h-3" /> {a.read.id}
                   </span>

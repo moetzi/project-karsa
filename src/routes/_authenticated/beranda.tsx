@@ -137,11 +137,11 @@ function Beranda() {
                         {t(a.tag.id, a.tag.en)}
                       </span>
                     </div>
-                    <div className="p-3">
-                      <h3 className="font-serif text-[14px] leading-snug text-foreground line-clamp-3 min-h-[3.6em]">
+                    <div className="p-3 flex flex-col">
+                      <h3 className="flex-1 font-serif text-[14px] leading-snug text-foreground line-clamp-3 min-h-[3.6em]">
                         {t(a.title.id, a.title.en)}
                       </h3>
-                      <div className="mt-2.5 flex items-center justify-between text-[11px]">
+                      <div className="mt-auto pt-2.5 flex items-center justify-between text-[11px]">
                         <span className="font-mono text-muted-foreground inline-flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {t(a.read.id, a.read.en)}
                         </span>
