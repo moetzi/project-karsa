@@ -1,6 +1,24 @@
 import { createServerFn } from "@tanstack/react-start";
-import { generateText, Output } from "ai";
+import { generateText } from "ai";
 import { z } from "zod";
+
+function extractJson(raw: string): unknown {
+  let cleaned = raw
+    .replace(/^```json\s*/im, "")
+    .replace(/^```\s*/im, "")
+    .replace(/```\s*$/im, "")
+    .trim();
+  if (!cleaned.startsWith("{") && !cleaned.startsWith("[")) {
+    const objStart = cleaned.indexOf("{");
+    const arrStart = cleaned.indexOf("[");
+    const isArray = arrStart !== -1 && (objStart === -1 || arrStart < objStart);
+    const start = isArray ? arrStart : objStart;
+    const end = isArray ? cleaned.lastIndexOf("]") : cleaned.lastIndexOf("}");
+    if (start === -1 || end <= start) throw new Error("Output AI bukan JSON valid.");
+    cleaned = cleaned.slice(start, end + 1);
+  }
+  return JSON.parse(cleaned);
+}
 
 const GenerateMaterialInput = z.object({
   kelas: z.string().min(1),
@@ -79,14 +97,13 @@ Wajib sertakan:
 4. konten format (${data.format === "quiz" ? "5-10 soal pilihan ganda" : data.format === "flashcard" ? "6-15 kartu" : "5-10 slide"})`;
 
     try {
-      const { experimental_output } = await generateText({
+      const { text } = await generateText({
         model,
         system,
-        prompt,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        experimental_output: Output.object({ schema: schema as any }),
+        prompt: `${prompt}\n\nKembalikan HANYA JSON valid (tanpa penjelasan, tanpa markdown fence) sesuai struktur yang diminta.`,
       });
-      return { format: data.format, json: JSON.stringify(experimental_output) };
+      const parsed = schema.parse(extractJson(text));
+      return { format: data.format, json: JSON.stringify(parsed) };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes("429")) throw new Error("Batas permintaan tercapai. Coba lagi sebentar.");
@@ -155,14 +172,13 @@ Hasilkan:
 5. tips: 1 kalimat tips memasak/penyajian untuk tim PKK/Posyandu`;
 
     try {
-      const { experimental_output } = await generateText({
+      const { text } = await generateText({
         model,
         system,
-        prompt,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        experimental_output: Output.object({ schema: MealPlanSchema as any }),
+        prompt: `${prompt}\n\nKembalikan HANYA JSON valid (tanpa penjelasan, tanpa markdown fence) sesuai struktur yang diminta.`,
       });
-      return { json: JSON.stringify(experimental_output) };
+      const parsed = MealPlanSchema.parse(extractJson(text));
+      return { json: JSON.stringify(parsed) };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes("429")) throw new Error("Batas permintaan tercapai. Coba lagi sebentar.");
