@@ -223,6 +223,3 @@ function MiniStat({ label, value }: { label: string; value: number }) {
     </div>
   );
 }
-
-// Suppress unused warning for X icon import retained for future close button.
-void X;
