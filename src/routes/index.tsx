@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useRef } from "react";
 import { Heart, GraduationCap, ShieldCheck, X, Sprout, Clock, BookOpen, Brain, HeartHandshake, WifiOff, FileCheck2, Camera, Receipt, ChevronDown, ChevronLeft, ChevronRight, Languages } from "lucide-react";
-import { campaigns, CampaignCard } from "@/routes/nutrisi";
+import { campaigns, CampaignCard } from "@/routes/_authenticated/nutrisi";
 import { INSPIRASI } from "@/lib/inspirasi";
 import { IndonesiaImpactMap } from "@/components/IndonesiaImpactMap";
 import { useClosedMap } from "@/lib/campaignStatusStore";

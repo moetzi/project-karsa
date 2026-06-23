@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { ShieldCheck, MapPin, Truck, ChevronRight, ArrowLeft, Share2, Sprout, Clock, Heart, NotebookPen, Users } from "lucide-react";
 import { useT } from "@/lib/i18n";
-import { campaigns, getCountdown } from "@/routes/nutrisi";
+import { campaigns, getCountdown } from "@/routes/_authenticated/nutrisi";
 import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations } from "@/lib/donationStore";
 import { useJournals } from "@/lib/journalsStore";
