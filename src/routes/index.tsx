@@ -133,9 +133,21 @@ function Landing() {
           </div>
 
           <div className="relative">
-            <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-border/60"
-                 style={{ background: "linear-gradient(135deg, #0D7377 0%, #2d5016 100%)" }}>
-              <div className="h-full w-full grid place-items-center text-7xl">🌱</div>
+            <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-border/60 relative">
+              <img
+                src={campaigns[0].journalPhotos[0]}
+                alt={t("Jurnal Pak Budi — Robinson makan bergizi", "Pak Budi's journal — Robinson eating a nutritious meal")}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              <div className="absolute left-4 right-4 top-4 rounded-2xl border border-white/30 bg-white/15 backdrop-blur-xl p-4 shadow-lg">
+                <p className="font-mono text-[10px] uppercase tracking-widest text-white/90 font-bold">
+                  {t("Jurnal Guru", "Teacher's Journal")} · {campaigns[0].teacher}
+                </p>
+                <p className="mt-2 text-[13px] leading-relaxed text-white line-clamp-5">
+                  {campaigns[0].description}
+                </p>
+              </div>
             </div>
             <div className="absolute -bottom-6 -left-6 bg-surface rounded-2xl border border-border/60 shadow-lg p-4 max-w-[220px]">
               <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">{t("Kampanye Aktif", "Active Campaign")}</p>
@@ -146,6 +158,7 @@ function Landing() {
               <p className="mt-1 text-[10px] font-mono text-muted-foreground">{t("56% dari Rp 15jt", "56% of Rp 15M")}</p>
             </div>
           </div>
+
         </div>
       </section>
 
