@@ -235,7 +235,8 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 <button
                   onClick={async () => {
                     await deleteDraft(campaign.id);
-                    setMenu(""); setStory(""); setMood(null); setAttendance("");
+                    setAllocation(""); setStory(""); setMood(null); setDate(today);
+
                     setHasDraft(false);
                     toast.success(t("Draft dihapus", "Draft cleared"));
                   }}
