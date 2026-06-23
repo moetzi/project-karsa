@@ -229,13 +229,20 @@ Catatan isi:
 - tips: 1 kalimat tips memasak untuk tim PKK/Posyandu`;
 
     try {
-      const { text } = await generateText({
-        model,
-        system,
-        prompt: `${prompt}\n\nKembalikan HANYA JSON valid (tanpa penjelasan, tanpa markdown fence) sesuai struktur yang diminta.`,
-      });
-      const parsed = MealPlanSchema.parse(extractJson(text));
-      return { json: JSON.stringify(parsed) };
+      const { text } = await generateText({ model, system, prompt });
+      let raw: unknown;
+      try {
+        raw = extractJson(text);
+      } catch (e) {
+        console.error("[generateMealPlan] invalid JSON:", text);
+        throw e;
+      }
+      const result = MealPlanSchema.safeParse(raw);
+      if (!result.success) {
+        console.error("[generateMealPlan] schema mismatch. Raw:", text, "Issues:", result.error.issues);
+        throw new Error("Format respons AI tidak sesuai. Silakan coba lagi.");
+      }
+      return { json: JSON.stringify(result.data) };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes("429")) throw new Error("Batas permintaan tercapai. Coba lagi sebentar.");
