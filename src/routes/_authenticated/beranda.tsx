@@ -90,9 +90,14 @@ function Beranda() {
                   {t("Aksi Hari Ini", "Today's Action")}
                 </p>
                 <h2 className="mt-1 text-[15px] font-bold text-foreground leading-snug">
-                  {t("🎉 Kampanye Selesai!", "🎉 Campaign Closed!")}
+                  {hasClosingJournal ? t("🎉 Jurnal Penutup Terbit", "🎉 Closing Journal Published") : t("🎉 Kampanye Selesai!", "🎉 Campaign Closed!")}
                 </h2>
                 <p className="mt-1 text-[13px] text-foreground/80 leading-relaxed">
+                  {hasClosingJournal
+                    ? t("Donatur sudah bisa melihat bukti penutup di halaman kampanye publik.", "Donors can now see the closing proof on the public campaign page.")
+                    : t("Tulis jurnal penutup dengan foto bukti untuk ", "Write the closing journal with proof photos for ")}
+                  {!hasClosingJournal && <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>}
+                </p>
                   {t("Tulis jurnal penutup dengan foto bukti untuk ", "Write the closing journal with proof photos for ")}
                   <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>.
                 </p>
