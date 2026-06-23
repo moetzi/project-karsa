@@ -392,49 +392,9 @@ function Landing() {
 
       {/* Inspirasi */}
       <section id="inspirasi" className="max-w-6xl mx-auto px-6 py-20 border-t border-border/60">
-        <div className="flex items-end justify-between gap-4 mb-8">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">{t("Pojok Inspirasi Guru", "Teachers' Inspiration Corner")}</p>
-            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">{t("Bacaan pilihan", "Curated reads")}</h2>
-            <p className="mt-2 text-sm text-muted-foreground max-w-xl">{t("Pahami konteks gizi anak Indonesia & dampak nyata dari donasi Anda.", "Understand the context of child nutrition in Indonesia & the real impact of your donation.")}</p>
-          </div>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          {INSPIRASI.map((a) => (
-            <Link
-              key={a.id}
-              to="/inspirasi/$id"
-              params={{ id: a.id }}
-              className="group bg-surface rounded-2xl border border-border/60 overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
-            >
-              <div className="relative h-44 sm:h-48 overflow-hidden">
-                <img
-                  src={a.image}
-                  alt={a.title[lang]}
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                <span className="absolute bottom-3 left-3 bg-surface/95 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
-                  {a.tag[lang]}
-                </span>
-              </div>
-              <div className="p-4 flex-1 flex flex-col">
-                <h3 className="flex-1 font-serif text-base leading-snug text-foreground line-clamp-3">{a.title[lang]}</h3>
-                <div className="mt-auto pt-4 flex items-center justify-between text-[11px]">
-                  <span className="font-mono text-muted-foreground inline-flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> {a.read[lang]}
-                  </span>
-                  <span className="text-accent font-semibold inline-flex items-center gap-0.5 group-hover:gap-1.5 transition-all">
-                    <BookOpen className="w-3 h-3" /> {t("Baca", "Read")}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
+        <ArticlesCarousel t={t} lang={lang} />
       </section>
+
 
       {/* FAQ */}
       <section id="faq" className="max-w-5xl mx-auto px-6 py-20 border-t border-border/60">
