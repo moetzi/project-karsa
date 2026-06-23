@@ -307,32 +307,62 @@ function Article() {
   const prev = currentIndex > 0 ? INSPIRASI[currentIndex - 1] : null;
   const next = currentIndex < INSPIRASI.length - 1 ? INSPIRASI[currentIndex + 1] : null;
   const [heroReady, setHeroReady] = useState(false);
+  const [isAuthed, setIsAuthed] = useState(false);
   useEffect(() => {
     const raf = requestAnimationFrame(() => setHeroReady(true));
     return () => cancelAnimationFrame(raf);
   }, [id]);
+  useEffect(() => {
+    let active = true;
+    supabase.auth.getUser().then(({ data }) => {
+      if (active) setIsAuthed(!!data.user);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthed(!!session?.user);
+    });
+    return () => {
+      active = false;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
 
-  return (
+  const inner = (
     <div className="min-h-screen bg-background text-foreground">
       <ReadingProgress />
 
       {/* Navbar */}
       <header className="sticky top-0 z-30 bg-background/85 backdrop-blur border-b border-border/60">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-extrabold tracking-tight">
-            <span className="w-8 h-8 rounded-lg bg-primary text-primary-foreground grid place-items-center">
-              <Sprout className="w-4 h-4" />
-            </span>
-            <span className="text-lg">Karsa</span>
-          </Link>
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" /> Beranda
-          </Link>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
+          {isAuthed ? (
+            <>
+              <Link
+                to="/beranda"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-foreground hover:text-primary transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" /> Beranda
+              </Link>
+              <span className="font-mono text-[10px] tracking-[0.2em] text-primary font-bold">KARSA</span>
+            </>
+          ) : (
+            <>
+              <Link to="/" className="flex items-center gap-2 font-extrabold tracking-tight">
+                <span className="w-8 h-8 rounded-lg bg-primary text-primary-foreground grid place-items-center">
+                  <Sprout className="w-4 h-4" />
+                </span>
+                <span className="text-lg">Karsa</span>
+              </Link>
+              <Link
+                to="/"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" /> Beranda
+              </Link>
+            </>
+          )}
         </div>
       </header>
+
+
 
       {/* Hero */}
       <section className="relative overflow-hidden" style={{ background: a.hero }}>
