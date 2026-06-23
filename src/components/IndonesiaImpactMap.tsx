@@ -248,7 +248,7 @@ export function IndonesiaImpactMap() {
 
         <style>{`
           .leaflet-container { font-family: inherit; }
-          .leaflet-tile-pane { filter: sepia(0.5) saturate(2) hue-rotate(-25deg) brightness(1.03) contrast(1.05); }
+          .leaflet-tile-pane { filter: sepia(0.25) saturate(1.7) hue-rotate(-12deg) brightness(1.02) contrast(1.02); }
           .karsa-marker path,
           .karsa-marker-active path {
             filter:
