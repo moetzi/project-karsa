@@ -351,7 +351,7 @@ export function CampaignDetailSheet({
           </div>
         </div>
 
-        <div className="relative h-40 overflow-hidden">
+        <div className="relative h-40 sm:h-56 overflow-hidden">
           <img src={c.hero} alt={c.title} className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-black/20" />
           <div className="relative z-10 h-full p-4 flex items-end">
