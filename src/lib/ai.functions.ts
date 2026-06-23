@@ -84,26 +84,66 @@ Buat materi pembelajaran yang:
 - Bahasa sederhana, mudah dipahami anak SD
 - Praktis untuk kelas dengan keterbatasan alat`;
 
+    const skeleton =
+      data.format === "quiz"
+        ? `{
+  "judul": "string",
+  "ringkasan_rpp": "string",
+  "cerita_literasi": "string",
+  "selipan_gizi": "string",
+  "soal": [ { "pertanyaan": "string", "pilihan": ["a","b","c","d"], "jawaban_index": 0 } ]
+}`
+        : data.format === "flashcard"
+        ? `{
+  "judul": "string",
+  "ringkasan_rpp": "string",
+  "cerita_literasi": "string",
+  "selipan_gizi": "string",
+  "kartu": [ { "depan": "string", "belakang": "string" } ]
+}`
+        : `{
+  "judul": "string",
+  "ringkasan_rpp": "string",
+  "cerita_literasi": "string",
+  "selipan_gizi": "string",
+  "slide": [ { "judul": "string", "poin": ["string"] } ]
+}`;
+
+    const contentKey =
+      data.format === "quiz" ? "soal (5-10 item)" :
+      data.format === "flashcard" ? "kartu (6-15 item)" : "slide (5-10 item)";
+
     const prompt = `Buat materi format ${data.format.toUpperCase()} untuk:
 - Tingkat: ${data.kelas}
 - Mata Pelajaran: ${data.mapel}
 - Tujuan Pembelajaran: ${data.tujuan}
 ${data.konteks ? `- Konteks Lokal: ${data.konteks}` : ""}
 
-Wajib sertakan:
-1. ringkasan_rpp: ringkasan rencana pembelajaran 3-5 kalimat
-2. cerita_literasi: cerita pendek 2-3 paragraf bertema lokal yang menguatkan tujuan
-3. selipan_gizi: tips gizi sederhana 1-2 kalimat yang relevan dengan cerita
-4. konten format (${data.format === "quiz" ? "5-10 soal pilihan ganda" : data.format === "flashcard" ? "6-15 kartu" : "5-10 slide"})`;
+WAJIB kembalikan HANYA JSON valid (tanpa markdown fence, tanpa penjelasan) dengan struktur PERSIS seperti contoh berikut. Nama field harus identik (dalam bahasa Indonesia), jangan diterjemahkan atau diganti:
+${skeleton}
+
+Catatan isi:
+- judul: judul materi singkat
+- ringkasan_rpp: 3-5 kalimat rencana pembelajaran
+- cerita_literasi: cerita 2-3 paragraf bertema lokal
+- selipan_gizi: 1-2 kalimat tips gizi
+- ${contentKey}`;
 
     try {
-      const { text } = await generateText({
-        model,
-        system,
-        prompt: `${prompt}\n\nKembalikan HANYA JSON valid (tanpa penjelasan, tanpa markdown fence) sesuai struktur yang diminta.`,
-      });
-      const parsed = schema.parse(extractJson(text));
-      return { format: data.format, json: JSON.stringify(parsed) };
+      const { text } = await generateText({ model, system, prompt });
+      let raw: unknown;
+      try {
+        raw = extractJson(text);
+      } catch (e) {
+        console.error("[generateMaterial] invalid JSON:", text);
+        throw e;
+      }
+      const result = schema.safeParse(raw);
+      if (!result.success) {
+        console.error("[generateMaterial] schema mismatch. Raw:", text, "Issues:", result.error.issues);
+        throw new Error("Format respons AI tidak sesuai. Silakan coba lagi.");
+      }
+      return { format: data.format, json: JSON.stringify(result.data) };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes("429")) throw new Error("Batas permintaan tercapai. Coba lagi sebentar.");
