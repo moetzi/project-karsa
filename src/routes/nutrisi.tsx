@@ -133,6 +133,19 @@ export const campaigns = [
     boosts: 132,
     views: "1.2k",
     shares: 450,
+    mealPlan: {
+      ringkasan: "Menu seimbang 5 hari berbasis hasil laut Kolaka & sayur BUMDes Maju Bersama, dimasak PKK Desa.",
+      estimasi_per_porsi: 5500,
+      estimasi_total_5hari: 1292500,
+      menu: [
+        { hari: "Senin" as const, menu: "Nasi + Ikan Cakalang Bumbu Rica + Tumis Kangkung", bahan_lokal: ["Cakalang", "Kangkung", "Cabai"], kandungan_gizi: "Protein 25g, Omega-3" },
+        { hari: "Selasa" as const, menu: "Nasi + Telur Balado + Sayur Bening Bayam", bahan_lokal: ["Telur ayam", "Bayam", "Tomat"], kandungan_gizi: "Protein 18g, Fe 3.5mg" },
+        { hari: "Rabu" as const, menu: "Nasi + Ayam Bakar Bumbu Kuning + Urap Sayur", bahan_lokal: ["Ayam kampung", "Kacang panjang", "Kelapa"], kandungan_gizi: "Protein 23g, Vit A" },
+        { hari: "Kamis" as const, menu: "Nasi + Ikan Layang Goreng + Tumis Pakis", bahan_lokal: ["Ikan layang", "Pakis", "Bawang"], kandungan_gizi: "Protein 22g, Fe 2.8mg" },
+        { hari: "Jumat" as const, menu: "Nasi + Pepes Tahu Tempe + Sayur Asem", bahan_lokal: ["Tahu", "Tempe", "Asam jawa"], kandungan_gizi: "Protein nabati 16g, serat tinggi" },
+      ],
+      tips: "Manfaatkan musim panen jagung Kolaka untuk variasi karbohidrat 2x seminggu.",
+    },
   },
   {
     id: "mahakam-pangan-bergizi",
