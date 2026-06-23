@@ -109,7 +109,6 @@ export const campaigns = [
       tips: "Skenario darurat 1 hari untuk 12 anak (Rp 250.000 ≈ Rp 20.800/porsi). Donasi lanjutan dibutuhkan untuk Selasa–Jumat.",
     },
   },
-  },
   {
     id: "kolaka-gizi-sehat",
     title: "Gizi Sehat Desa Kolaka",
