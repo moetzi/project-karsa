@@ -99,6 +99,19 @@ export const campaigns = [
     boosts: 218,
     views: "3.4k",
     shares: 612,
+    mealPlan: {
+      ringkasan: "Menu 5 hari berbasis ikan segar Laut Timor & sayur KWT Tuamese, dimasak Posyandu Tuamese setiap subuh.",
+      estimasi_per_porsi: 4200,
+      estimasi_total_5hari: 252000,
+      menu: [
+        { hari: "Senin" as const, menu: "Nasi + Ikan Lelusi Bumbu Kuning + Tumis Sawi", bahan_lokal: ["Ikan lelusi", "Sawi KWT", "Kunyit"], kandungan_gizi: "Protein 22g, Fe 3mg, Vit A" },
+        { hari: "Selasa" as const, menu: "Nasi Jagung + Telur Dadar Kelor + Sup Labu", bahan_lokal: ["Telur ayam kampung", "Daun kelor", "Labu kuning"], kandungan_gizi: "Protein 18g, Vit A tinggi, Ca 120mg" },
+        { hari: "Rabu" as const, menu: "Nasi + Ikan Kembung Asam Pedas + Kangkung", bahan_lokal: ["Ikan kembung", "Kangkung", "Cabai lokal"], kandungan_gizi: "Omega-3, Protein 24g, Fe 2.5mg" },
+        { hari: "Kamis" as const, menu: "Bubur Jagung Manis + Ayam Suwir + Kacang Hijau", bahan_lokal: ["Jagung manis", "Ayam kampung", "Kacang hijau"], kandungan_gizi: "Protein 20g, Karbo kompleks" },
+        { hari: "Jumat" as const, menu: "Nasi + Pepes Ikan Teri + Tumis Daun Kelor", bahan_lokal: ["Ikan teri", "Daun kelor", "Bawang merah"], kandungan_gizi: "Ca 180mg, Protein 21g, Fe 4mg" },
+      ],
+      tips: "Beli ikan langsung dari nelayan Tuamese pagi hari untuk harga termurah & paling segar.",
+    },
   },
   {
     id: "kolaka-gizi-sehat",
