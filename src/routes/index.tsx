@@ -23,7 +23,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Navbar */}
-      <header className="sticky top-0 z-30 bg-background/85 backdrop-blur border-b border-border/60">
+      <header className="sticky top-0 z-40 bg-background/85 backdrop-blur border-b border-border/60">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 font-extrabold tracking-tight">
             <span className="w-8 h-8 rounded-lg bg-primary text-primary-foreground grid place-items-center">
