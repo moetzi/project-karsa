@@ -124,12 +124,16 @@ function Beranda() {
                     params={{ id: a.id }}
                     className="block bg-surface rounded-2xl border border-border/60 overflow-hidden hover:shadow-md transition-shadow"
                   >
-                    <div
-                      className="relative h-28 flex items-end p-3"
-                      style={{ background: a.hero }}
-                    >
-                      <span className="absolute top-2.5 right-2.5 text-2xl drop-shadow">{a.emoji}</span>
-                      <span className="bg-surface/90 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                    <div className="relative h-28 overflow-hidden">
+                      <img
+                        src={a.image}
+                        alt={t(a.title.id, a.title.en)}
+                        loading="lazy"
+                        decoding="async"
+                        className="absolute inset-0 w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                      <span className="absolute bottom-2.5 left-2.5 bg-surface/90 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
                         {t(a.tag.id, a.tag.en)}
                       </span>
                     </div>
