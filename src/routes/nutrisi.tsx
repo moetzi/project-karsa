@@ -364,17 +364,19 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
       </button>
 
       <div className="px-4 pb-4 -mt-1 flex items-center gap-2">
-        <button
-          onClick={() => setBoosted((b) => !b)}
-          className={
-            "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border transition-colors " +
-            (boosted
-              ? "bg-accent text-accent-foreground border-accent"
-              : "bg-muted/60 text-foreground border-border")
-          }
-        >
-          <ThumbsUp className="w-4 h-4" /> {t("Boost", "Boost")} <span className="font-mono">{boosts}</span>
-        </button>
+        {pct < 100 && (
+          <button
+            onClick={() => setBoosted((b) => !b)}
+            className={
+              "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border transition-colors " +
+              (boosted
+                ? "bg-accent text-accent-foreground border-accent"
+                : "bg-muted/60 text-foreground border-border")
+            }
+          >
+            <ThumbsUp className="w-4 h-4" /> {t("Boost", "Boost")} <span className="font-mono">{boosts}</span>
+          </button>
+        )}
         <button
           onClick={() => setShareOpen(true)}
           className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border border-primary/30 bg-primary-soft/60 text-primary hover:bg-primary-soft transition-colors"
