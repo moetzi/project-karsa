@@ -2,6 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, Clock, BookOpen, Sprout, ExternalLink, Quote } from "lucide-react";
 import { useEffect, useState } from "react";
 import { INSPIRASI } from "@/lib/inspirasi";
+import { PhoneShell } from "@/components/PhoneShell";
+import { supabase } from "@/integrations/supabase/client";
 import articleStunting from "@/assets/article-stunting.jpg";
 import articleGiziLokal from "@/assets/article-gizi-lokal.jpg";
 import articleBumdes from "@/assets/article-bumdes.jpg";
