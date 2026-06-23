@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { MapPin, Users } from "lucide-react";
 import "leaflet/dist/leaflet.css";
+
 
 type Province = {
   name: string;
@@ -53,62 +54,81 @@ const PROVINCES: Province[] = [
   { name: "Papua Barat Daya", capital: "Sorong", lat: -0.8839, lng: 131.2533, teachers: 1, campaigns: 1, since: "Jun 2024" },
 ];
 
-function LeafletMap({
+// Module-level cache so the leaflet bundle + react-leaflet wrappers
+// are loaded once per browser session and reused across mounts.
+type LeafletMods = {
+  MapContainer: typeof import("react-leaflet").MapContainer;
+  TileLayer: typeof import("react-leaflet").TileLayer;
+  CircleMarker: typeof import("react-leaflet").CircleMarker;
+  Tooltip: typeof import("react-leaflet").Tooltip;
+  useMap: typeof import("react-leaflet").useMap;
+  useMapEvents: typeof import("react-leaflet").useMapEvents;
+};
+let LEAFLET_CACHE: LeafletMods | null = null;
+let LEAFLET_PROMISE: Promise<LeafletMods> | null = null;
+function loadLeaflet(): Promise<LeafletMods> {
+  if (LEAFLET_CACHE) return Promise.resolve(LEAFLET_CACHE);
+  if (LEAFLET_PROMISE) return LEAFLET_PROMISE;
+  LEAFLET_PROMISE = import("react-leaflet").then((mod) => {
+    LEAFLET_CACHE = {
+      MapContainer: mod.MapContainer,
+      TileLayer: mod.TileLayer,
+      CircleMarker: mod.CircleMarker,
+      Tooltip: mod.Tooltip,
+      useMap: mod.useMap,
+      useMapEvents: mod.useMapEvents,
+    };
+    return LEAFLET_CACHE;
+  });
+  return LEAFLET_PROMISE;
+}
+
+function MarkersLayer({
   selectedId,
   onSelect,
+  mods,
 }: {
   selectedId: string;
   onSelect: (name: string) => void;
+  mods: LeafletMods;
 }) {
-  const [Comp, setComp] = useState<null | {
-    MapContainer: typeof import("react-leaflet").MapContainer;
-    TileLayer: typeof import("react-leaflet").TileLayer;
-    CircleMarker: typeof import("react-leaflet").CircleMarker;
-    Tooltip: typeof import("react-leaflet").Tooltip;
-  }>(null);
+  const { CircleMarker, Tooltip, useMap, useMapEvents } = mods;
+  const map = useMap();
+  const [bounds, setBounds] = useState(() => map.getBounds());
+  const [interacting, setInteracting] = useState(false);
+  const rafRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    let mounted = true;
-    import("react-leaflet").then((mod) => {
-      if (mounted) {
-        setComp({
-          MapContainer: mod.MapContainer,
-          TileLayer: mod.TileLayer,
-          CircleMarker: mod.CircleMarker,
-          Tooltip: mod.Tooltip,
-        });
-      }
-    });
-    return () => {
-      mounted = false;
-    };
+  useMapEvents({
+    movestart: () => setInteracting(true),
+    zoomstart: () => setInteracting(true),
+    moveend: () => {
+      setInteracting(false);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => setBounds(map.getBounds()));
+    },
+    zoomend: () => {
+      setInteracting(false);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => setBounds(map.getBounds()));
+    },
+  });
+
+  useEffect(() => () => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
   }, []);
 
-  if (!Comp) {
-    return (
-      <div className="absolute inset-0 grid place-items-center text-xs font-mono text-muted-foreground">
-        Memuat peta…
-      </div>
-    );
-  }
-
-  const { MapContainer, TileLayer, CircleMarker, Tooltip } = Comp;
+  // Viewport culling — only render markers actually inside current bounds.
+  const visible = useMemo(
+    () =>
+      PROVINCES.filter((p) =>
+        bounds.contains([p.lat, p.lng] as [number, number])
+      ),
+    [bounds]
+  );
 
   return (
-    <MapContainer
-      center={[-2.5, 118]}
-      zoom={4}
-      minZoom={4}
-      maxZoom={8}
-      scrollWheelZoom={false}
-      style={{ height: "100%", width: "100%", background: "#021b1e" }}
-      worldCopyJump={false}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-      />
-      {PROVINCES.map((p) => {
+    <>
+      {visible.map((p) => {
         const isActive = p.name === selectedId;
         const radius = Math.min(14, 5 + Math.sqrt(p.teachers) * 1.6);
         return (
@@ -123,21 +143,76 @@ function LeafletMap({
               fillOpacity: isActive ? 0.95 : 0.75,
             }}
             className={isActive ? "karsa-marker-active" : "karsa-marker"}
-            eventHandlers={{
-              click: () => onSelect(p.name),
-            }}
+            eventHandlers={{ click: () => onSelect(p.name) }}
           >
-            <Tooltip direction="top" offset={[0, -radius]} opacity={1}>
-              <span className="font-mono text-[10px] uppercase tracking-wider">
-                {p.name} · {p.teachers} guru
-              </span>
-            </Tooltip>
+            {/* Tooltips are skipped while panning/zooming — they're the
+                most expensive thing to keep alive during interaction. */}
+            {!interacting && (
+              <Tooltip direction="top" offset={[0, -radius]} opacity={1}>
+                <span className="font-mono text-[10px] uppercase tracking-wider">
+                  {p.name} · {p.teachers} guru
+                </span>
+              </Tooltip>
+            )}
           </CircleMarker>
         );
       })}
+    </>
+  );
+}
+
+function LeafletMap({
+  selectedId,
+  onSelect,
+}: {
+  selectedId: string;
+  onSelect: (name: string) => void;
+}) {
+  const [mods, setMods] = useState<LeafletMods | null>(LEAFLET_CACHE);
+
+  useEffect(() => {
+    if (mods) return;
+    let mounted = true;
+    loadLeaflet().then((m) => {
+      if (mounted) setMods(m);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [mods]);
+
+  if (!mods) {
+    return (
+      <div className="absolute inset-0 grid place-items-center text-xs font-mono text-muted-foreground">
+        Memuat peta…
+      </div>
+    );
+  }
+
+  const { MapContainer, TileLayer } = mods;
+
+  return (
+    <MapContainer
+      center={[-2.5, 118]}
+      zoom={4}
+      minZoom={4}
+      maxZoom={8}
+      scrollWheelZoom={false}
+      preferCanvas
+      style={{ height: "100%", width: "100%", background: "#021b1e" }}
+      worldCopyJump={false}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        updateWhenIdle
+        keepBuffer={4}
+      />
+      <MarkersLayer selectedId={selectedId} onSelect={onSelect} mods={mods} />
     </MapContainer>
   );
 }
+
 
 export function IndonesiaImpactMap() {
   const [selectedId, setSelectedId] = useState<string>("DKI Jakarta");
