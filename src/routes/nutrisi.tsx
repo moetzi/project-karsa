@@ -102,6 +102,7 @@ export const campaigns = [
     journal: "Alhamdulillah, dana terkumpul Senin pagi langsung saya teruskan ke Ibu Kristi lalu dibelanjakan ke Kelompok Wanita Tani. Tim Posyandu Tuamese masak sejak subuh — nasi panas, ikan lelusi bumbu kuning, dan tumis sawi segar. Robinson dan 11 temannya makan dengan lahap di kelas hari ini. Robinson bilang ini makanan paling enak yang pernah dia makan. Terima kasih untuk setiap donatur yang telah menyelamatkan anak-anak kami.",
     journalPhotos: [robinsonMakan1, robinsonMakan2] as string[],
     journalDate: "Senin, 22 Jun 2026",
+    disbursedAt: "2026-06-22T05:30:00+08:00",
     boosts: 218,
     views: "3.4k",
     shares: 612,
