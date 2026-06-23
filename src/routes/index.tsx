@@ -229,12 +229,14 @@ function Landing() {
                 ];
               })().map((s) => (
                 <div key={s.l}>
-                  <dt className="text-2xl font-extrabold font-mono">{s.v}</dt>
+                  <dt className="text-2xl font-extrabold font-mono">
+                    <CountUp to={s.v} suffix={s.suffix} format={s.fmt} />
+                  </dt>
                   <dd className="text-xs text-muted-foreground mt-1">{s.l}</dd>
                 </div>
               ))}
             </dl>
-          </div>
+          </Reveal>
 
           <HeroCard hero={campaigns[0]!} t={t} lang={lang} />
 
