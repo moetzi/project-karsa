@@ -133,18 +133,35 @@ function Article() {
 
       {/* Hero */}
       <section
-        className="relative overflow-hidden animate-fade-in"
-        style={{ background: a.hero }}
+        className="relative overflow-hidden"
+        style={{ background: heroReady ? a.hero : undefined }}
       >
+        {/* Skeleton shimmer while hero gradient mounts */}
         <div
-          className="absolute inset-0 opacity-20"
+          aria-hidden
+          className={
+            "absolute inset-0 bg-muted animate-pulse transition-opacity duration-500 " +
+            (heroReady ? "opacity-0" : "opacity-100")
+          }
+        />
+        <div
+          className={
+            "absolute inset-0 opacity-20 transition-opacity duration-700 " +
+            (heroReady ? "opacity-20" : "opacity-0")
+          }
           style={{
             backgroundImage:
               "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.25) 0%, transparent 50%)",
           }}
         />
-        <div className="relative max-w-3xl mx-auto px-6 sm:px-8 pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pt-28 lg:pb-32 text-primary-foreground">
+        <div
+          className={
+            "relative max-w-3xl mx-auto px-6 sm:px-8 pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pt-28 lg:pb-32 text-primary-foreground transition-opacity duration-500 " +
+            (heroReady ? "opacity-100 animate-fade-in" : "opacity-0")
+          }
+        >
           <div className="text-5xl sm:text-6xl mb-5 drop-shadow-lg">{a.emoji}</div>
+
           <p className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] opacity-90">
             {a.kicker}
           </p>
