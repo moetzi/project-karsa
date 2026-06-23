@@ -446,8 +446,8 @@ function HelpSection() {
     {
       q: t("Data apa saja yang perlu atau bisa diunggah ke jurnal?", "What data can or should be uploaded to a journal?"),
       a: t(
-        "Anda bisa mengunggah foto struk atau nota pembelian, foto bahan makanan/menu yang disajikan, serta detail pembelian seperti nama item, jumlah, harga satuan, dan total. Catat juga tanggal pencairan, estimasi jumlah anak terbantu, dan keterangan tambahan agar laporan tetap transparan.",
-        "You can upload photos of purchase receipts, food ingredients, or served menus, plus purchase details such as item name, quantity, unit price, and total. Also record the disbursement date, estimated number of children helped, and any additional notes to keep the report transparent.",
+        "Cukup unggah foto bukti belanja (struk atau nota) dan foto makanan yang dibuat. Lalu isi nominal pengeluaran, tanggal, serta jumlah anak yang terbantu.",
+        "Just upload photos of your shopping proof (receipt) and the prepared meal. Then fill in the amount spent, date, and number of children helped.",
       ),
     },
   ];
