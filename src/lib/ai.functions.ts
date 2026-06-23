@@ -197,6 +197,20 @@ Aturan wajib:
 - Hemat: sesuai anggaran per porsi
 - Variasi 5 hari, tidak boleh menu sama 2 hari berturut-turut`;
 
+    const skeleton = `{
+  "ringkasan": "string",
+  "estimasi_per_porsi": 0,
+  "estimasi_total_5hari": 0,
+  "menu": [
+    { "hari": "Senin", "menu": "string", "bahan_lokal": ["string"], "kandungan_gizi": "string" },
+    { "hari": "Selasa", "menu": "string", "bahan_lokal": ["string"], "kandungan_gizi": "string" },
+    { "hari": "Rabu", "menu": "string", "bahan_lokal": ["string"], "kandungan_gizi": "string" },
+    { "hari": "Kamis", "menu": "string", "bahan_lokal": ["string"], "kandungan_gizi": "string" },
+    { "hari": "Jumat", "menu": "string", "bahan_lokal": ["string"], "kandungan_gizi": "string" }
+  ],
+  "tips": "string"
+}`;
+
     const prompt = `Buat meal plan makan siang sekolah Senin–Jumat:
 - Wilayah: ${data.region}
 - Jumlah penerima: ${data.recipients} siswa
@@ -204,21 +218,31 @@ Aturan wajib:
 ${data.supplier ? `- Pemasok lokal: ${data.supplier}` : ""}
 ${data.catatan ? `- Catatan: ${data.catatan}` : ""}
 
-Hasilkan:
-1. ringkasan: 1-2 kalimat tema meal plan
-2. estimasi_per_porsi: estimasi biaya per porsi/hari (rupiah, angka saja)
-3. estimasi_total_5hari: estimasi total 5 hari untuk semua siswa (rupiah, angka saja)
-4. menu[5]: Senin–Jumat — setiap hari: nama menu lengkap, daftar bahan lokal, ringkasan kandungan gizi
-5. tips: 1 kalimat tips memasak/penyajian untuk tim PKK/Posyandu`;
+WAJIB kembalikan HANYA JSON valid (tanpa markdown fence, tanpa penjelasan) dengan struktur PERSIS seperti contoh berikut. Nama field harus identik (bahasa Indonesia), jangan diterjemahkan atau diganti. Tidak boleh ada field yang undefined/null — isi semua field untuk setiap hari Senin–Jumat:
+${skeleton}
+
+Catatan isi:
+- ringkasan: 1-2 kalimat tema meal plan
+- estimasi_per_porsi: angka rupiah per porsi/hari (number, bukan string)
+- estimasi_total_5hari: angka rupiah total 5 hari untuk semua siswa (number)
+- menu: array berisi 5 objek (Senin–Jumat). Setiap objek WAJIB punya "hari", "menu" (nama menu lengkap), "bahan_lokal" (array string, minimal 3 bahan), "kandungan_gizi" (1 kalimat)
+- tips: 1 kalimat tips memasak untuk tim PKK/Posyandu`;
 
     try {
-      const { text } = await generateText({
-        model,
-        system,
-        prompt: `${prompt}\n\nKembalikan HANYA JSON valid (tanpa penjelasan, tanpa markdown fence) sesuai struktur yang diminta.`,
-      });
-      const parsed = MealPlanSchema.parse(extractJson(text));
-      return { json: JSON.stringify(parsed) };
+      const { text } = await generateText({ model, system, prompt });
+      let raw: unknown;
+      try {
+        raw = extractJson(text);
+      } catch (e) {
+        console.error("[generateMealPlan] invalid JSON:", text);
+        throw e;
+      }
+      const result = MealPlanSchema.safeParse(raw);
+      if (!result.success) {
+        console.error("[generateMealPlan] schema mismatch. Raw:", text, "Issues:", result.error.issues);
+        throw new Error("Format respons AI tidak sesuai. Silakan coba lagi.");
+      }
+      return { json: JSON.stringify(result.data) };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes("429")) throw new Error("Batas permintaan tercapai. Coba lagi sebentar.");
