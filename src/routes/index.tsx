@@ -175,9 +175,16 @@ function Landing() {
               params={{ id: a.id }}
               className="group bg-surface rounded-2xl border border-border/60 overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
             >
-              <div className="relative h-36 flex items-end p-4" style={{ background: a.hero }}>
-                <span className="absolute top-3 right-3 text-3xl drop-shadow">{a.emoji}</span>
-                <span className="bg-surface/95 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
+              <div className="relative h-44 sm:h-48 overflow-hidden">
+                <img
+                  src={a.image}
+                  alt={a.title.id}
+                  loading="lazy"
+                  decoding="async"
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                <span className="absolute bottom-3 left-3 bg-surface/95 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
                   {a.tag.id}
                 </span>
               </div>
