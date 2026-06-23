@@ -608,7 +608,7 @@ export function CampaignDetailSheet({
                     <p className="font-mono font-bold text-foreground">Rp {mp.estimasi_per_porsi.toLocaleString("id-ID")}</p>
                   </div>
                   <div className="rounded-lg bg-surface/70 p-2">
-                    <p className="text-muted-foreground">{t("Total 5 hari", "Total 5 days")}</p>
+                    <p className="text-muted-foreground">{mp.menu.length === 1 ? t("Total hari ini", "Total today") : t("Total 5 hari", "Total 5 days")}</p>
                     <p className="font-mono font-bold text-foreground">Rp {mp.estimasi_total_5hari.toLocaleString("id-ID")}</p>
                   </div>
                 </div>
