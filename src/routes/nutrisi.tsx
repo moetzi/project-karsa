@@ -27,6 +27,8 @@ import { createCampaign, getMyActiveCampaign, closeMyActiveCampaign, updateMyCam
 import { listJournals, deleteJournal } from "@/lib/journals.functions";
 import { generateMealPlan } from "@/lib/ai.functions";
 import { JournalSheet } from "@/components/JournalSheet";
+import { ConnectionBadge } from "@/components/ConnectionBadge";
+import { withSync } from "@/lib/useConnectionStatus";
 
 
 export const Route = createFileRoute("/nutrisi")({
