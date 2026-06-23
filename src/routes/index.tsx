@@ -243,6 +243,27 @@ function Landing() {
         </div>
       </section>
 
+      {/* Neubrutalist transparency ticker */}
+      <div className="border-y-2 border-foreground bg-accent text-accent-foreground py-3">
+        <Marquee speed={45}>
+          {[
+            t("100% donasi sampai ke kelas", "100% of donations reach the classroom"),
+            t("Tanpa potongan platform", "No platform fees"),
+            t("Jurnal guru terbuka untuk semua", "Teacher journals open to all"),
+            t("Diverifikasi NUPTK & NPSN", "Verified via NUPTK & NPSN"),
+            t("Dibuat untuk daerah 3T", "Built for Indonesia's 3T regions"),
+            t("Foto bukti belanja & makan bersama", "Photo proof of shopping & shared meals"),
+          ].map((s, i) => (
+            <span key={i} className="inline-flex items-center gap-3 font-mono text-xs font-bold uppercase tracking-widest">
+              <Sprout className="w-3.5 h-3.5" />
+              {s}
+              <span className="opacity-50">★</span>
+            </span>
+          ))}
+        </Marquee>
+      </div>
+
+
       {/* Dampak */}
       <section id="dampak" className="max-w-6xl mx-auto px-6 py-20 border-t border-border/60">
         <div className="max-w-2xl">
