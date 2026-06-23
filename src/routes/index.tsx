@@ -602,3 +602,116 @@ function FaqItem({ q, a }: { q: string; a: string }) {
     </div>
   );
 }
+
+function ArticlesCarousel({ t, lang }: { t: (id: string, en: string) => string; lang: "id" | "en" }) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
+
+  const updateButtons = () => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  };
+
+  const scrollBy = (dir: 1 | -1) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>("[data-card]");
+    const step = card ? card.offsetWidth + 24 : el.clientWidth * 0.8;
+    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
+
+  return (
+    <>
+      <div className="flex items-end justify-between gap-4 mb-8">
+        <div>
+          <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">{t("Pojok Inspirasi Guru", "Teachers' Inspiration Corner")}</p>
+          <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">{t("Bacaan pilihan", "Curated reads")}</h2>
+          <p className="mt-2 text-sm text-muted-foreground max-w-xl">{t("Pahami konteks gizi anak Indonesia & dampak nyata dari donasi Anda.", "Understand the context of child nutrition in Indonesia & the real impact of your donation.")}</p>
+        </div>
+        <div className="hidden sm:flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => scrollBy(-1)}
+            disabled={!canPrev}
+            aria-label={t("Sebelumnya", "Previous")}
+            className="w-11 h-11 rounded-xl border-2 border-foreground bg-surface grid place-items-center transition-all shadow-[3px_3px_0_0_var(--foreground)] hover:shadow-[5px_5px_0_0_var(--foreground)] hover:-translate-x-0.5 hover:-translate-y-0.5 active:shadow-[1px_1px_0_0_var(--foreground)] active:translate-x-0 active:translate-y-0 disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[3px_3px_0_0_var(--foreground)] disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollBy(1)}
+            disabled={!canNext}
+            aria-label={t("Berikutnya", "Next")}
+            className="w-11 h-11 rounded-xl border-2 border-foreground bg-primary text-primary-foreground grid place-items-center transition-all shadow-[3px_3px_0_0_var(--foreground)] hover:shadow-[5px_5px_0_0_var(--foreground)] hover:-translate-x-0.5 hover:-translate-y-0.5 active:shadow-[1px_1px_0_0_var(--foreground)] active:translate-x-0 active:translate-y-0 disabled:opacity-40 disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-[3px_3px_0_0_var(--foreground)] disabled:cursor-not-allowed"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+      <div
+        ref={scrollerRef}
+        onScroll={updateButtons}
+        className="flex gap-6 overflow-x-auto snap-x snap-mandatory pb-4 -mx-6 px-6 scroll-smooth no-scrollbar"
+      >
+        {INSPIRASI.map((a) => (
+          <Link
+            key={a.id}
+            data-card
+            to="/inspirasi/$id"
+            params={{ id: a.id }}
+            className="group shrink-0 snap-start w-[85%] sm:w-[360px] bg-surface rounded-2xl border-2 border-foreground overflow-hidden transition-all shadow-[4px_4px_0_0_var(--foreground)] hover:shadow-[6px_6px_0_0_var(--foreground)] hover:-translate-x-0.5 hover:-translate-y-0.5 flex flex-col"
+          >
+            <div className="relative h-44 sm:h-48 overflow-hidden border-b-2 border-foreground">
+              <img
+                src={a.image}
+                alt={a.title[lang]}
+                loading="lazy"
+                decoding="async"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+              <span className="absolute bottom-3 left-3 bg-surface border-2 border-foreground text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                {a.tag[lang]}
+              </span>
+            </div>
+            <div className="p-4 flex-1 flex flex-col">
+              <h3 className="flex-1 font-serif text-base leading-snug text-foreground line-clamp-3">{a.title[lang]}</h3>
+              <div className="mt-auto pt-4 flex items-center justify-between text-[11px]">
+                <span className="font-mono text-muted-foreground inline-flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> {a.read[lang]}
+                </span>
+                <span className="text-accent font-semibold inline-flex items-center gap-0.5 group-hover:gap-1.5 transition-all">
+                  <BookOpen className="w-3 h-3" /> {t("Baca", "Read")}
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+      <div className="flex sm:hidden justify-center gap-3 mt-4">
+        <button
+          type="button"
+          onClick={() => scrollBy(-1)}
+          disabled={!canPrev}
+          aria-label={t("Sebelumnya", "Previous")}
+          className="w-11 h-11 rounded-xl border-2 border-foreground bg-surface grid place-items-center shadow-[3px_3px_0_0_var(--foreground)] disabled:opacity-40"
+        >
+          <ChevronLeft className="w-5 h-5" />
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollBy(1)}
+          disabled={!canNext}
+          aria-label={t("Berikutnya", "Next")}
+          className="w-11 h-11 rounded-xl border-2 border-foreground bg-primary text-primary-foreground grid place-items-center shadow-[3px_3px_0_0_var(--foreground)] disabled:opacity-40"
+        >
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
+    </>
+  );
+}
