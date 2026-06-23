@@ -5,6 +5,7 @@ import { INSPIRASI } from "@/lib/inspirasi";
 import articleStunting from "@/assets/article-stunting.jpg";
 import articleGiziLokal from "@/assets/article-gizi-lokal.jpg";
 import articleBumdes from "@/assets/article-bumdes.jpg";
+import articlePosyandu from "@/assets/article-posyandu.jpg";
 
 function ReadingProgress() {
   const [progress, setProgress] = useState(0);
@@ -234,6 +235,64 @@ const ARTICLES: Record<string, ArticleData> = {
       { label: "Investing in Nutrition — World Bank Group 2022", org: "World Bank", url: "https://www.worldbank.org/en/topic/nutrition" },
       { label: "Program Makan Bergizi Gratis & peran sekolah", org: "Kementerian Pendidikan Dasar dan Menengah (Kemendikdasmen)", url: "https://www.kemdikbud.go.id/" },
       { label: "Gerakan Masyarakat Hidup Sehat (Germas)", org: "Kementerian Kesehatan RI", url: "https://promkes.kemkes.go.id/germas" },
+    ],
+  },
+  "4": {
+    title: "Kader Posyandu & PMT Lokal: Pemberdayaan Perempuan Cegah Stunting",
+    kicker: "Pemberdayaan Perempuan",
+    read: "7 menit baca",
+    hero: "linear-gradient(135deg, #2d7d46 0%, #8B4513 100%)",
+    heroImage: articlePosyandu,
+    emoji: "🤱",
+    lede: "Di balik angka stunting turun 21,5% ada jaringan ibu-ibu desa yang bangun pagi lebih dulu: menimbang balita, mencatat pertumbuhan, menyajikan makanan tambahan, dan mengajari tetangga cara masak bergizi. Mereka adalah kader Posyandu — sebagian besar juga anggota PKK, Kelompok Wanita Tani, atau ibu rumah tangga biasa yang menjadi pelopor kesehatan di desanya.",
+    sections: [
+      {
+        kind: "p",
+        text: "Kementerian Kesehatan RI menegaskan bahwa Posyandu adalah garda depan pemantauan tumbuh kembang balita dan pencegahan stunting di tingkat desa. Dalam Buku Saku Kader Kesehatan Pemberian Makanan Tambahan (PMT) Penyuluhan Balita 6–59 Bulan, kader dilatih untuk menimbang berat badan, mengukur tinggi badan, mendeteksi pertumbuhan yang tidak naik, dan memberikan edukasi gizi kepada ibu serta pengasuh.",
+      },
+      {
+        kind: "stat",
+        value: "21,5%",
+        label: "Prevalensi stunting balita Indonesia menurut Survei Kesehatan Indonesia 2023; penurunan ini tidak lepas dari peran Posyandu dan kader dalam deteksi dini serta edukasi gizi di desa.",
+        cite: "Kementerian Kesehatan RI, SKI 2023",
+      },
+      { kind: "h2", text: "Apa itu PMT Lokal dan mengapa penting?" },
+      {
+        kind: "p",
+        text: "Pemberian Makanan Tambahan (PMT) Berbahan Pangan Lokal adalah upaya pemulihan gizi balita dengan memanfaatkan bahan pangan yang tersedia di sekitar desa — telur, ikan, kedelai, kelor, ubi, jagung, dan sayuran. Berdasarkan Peraturan Dirjen Kesehatan Masyarakat No. HK.02.02/B/1622/2023, PMT lokal dirancang untuk meningkatkan asupan gizi, mempercepat pemulihan balita gizi kurang, dan membangun kebiasaan makan bergizi yang berkelanjutan.",
+      },
+      {
+        kind: "figure",
+        src: articlePosyandu,
+        alt: "Kader Posyandu menyiapkan makanan tambahan lokal bersama ibu-ibu dan balita",
+        caption: "Kader Posyandu menyiapkan PMT lokal bersama ibu-ibu di balai desa (Karsa, 2026).",
+      },
+      { kind: "h2", text: "Kader Posyandu sebagai wajah pemberdayaan perempuan" },
+      {
+        kind: "p",
+        text: "Mayoritas kader Posyandu adalah perempuan. Banyak di antaranya juga aktif di Tim Penggerak PKK sebagai ketua seksi kesehatan, atau di Kelompok Wanita Tani (KWT) yang menyuplai bahan pangan segar untuk PMT. Ketiga peran ini saling menguatkan: PKK menggerakkan partisipasi keluarga, KWT menjamin ketersediaan pangan bergizi, dan Posyandu memastikan sasaran tepat serta hasil terukur.",
+      },
+      {
+        kind: "p",
+        text: "Sebuah studi pengabdian masyarakat di Desa Torobulu, Sulawesi Tenggara, menunjukkan bahwa pelatihan kader Posyandu dan ibu-ibu PKK secara signifikan meningkatkan pengetahuan serta praktik pencegahan stunting, termasuk pemberian ASI eksklusif, MPASI bergizi, dan kebersihan lingkungan. Kolaborasi antar-kelompok perempuan inilah yang membuat intervensi gizi tidak lagi sekadar program, tapi budaya desa.",
+      },
+      {
+        kind: "quote",
+        text: "Kesehatan ibu dan anak adalah fondasi pembangunan keluarga. Pemberdayaan perempuan melalui PKK dan Posyandu adalah investasi strategis untuk generasi yang sehat, cerdas, dan berdaya.",
+        by: "Tim Penggerak PKK Pusat",
+      },
+      {
+        kind: "p",
+        text: "Untuk sekolah dan kampanye gizi, kader Posyandu adalah mitra terdekat. Libatkan mereka dalam merancang menu, mengidentifikasi siswa berisiko, dan menyiapkan bahan makanan dari KWT setempat. Jurnal guru yang mencatat kolaborasi ini bukan hanya bukti transparansi — itu adalah catatan bagaimana donasi Anda mengalir menjadi tenaga, pengetahuan, dan hidangan di tangan perempuan-perempuan desa.",
+      },
+    ],
+    sources: [
+      { label: "Buku Saku Kader Kesehatan PMT Penyuluhan Balita 6-59 Bulan", org: "Kementerian Kesehatan RI", url: "https://ayosehat.kemkes.go.id/buku-saku-kader-kesehatan-pemberian-makanan-tambahan-pmt-penyuluhan-balita-6-59-bulan" },
+      { label: "Juknis Pemberian Makanan Tambahan (PMT) Berbahan Pangan Lokal", org: "Kementerian Kesehatan RI", url: "https://ayosehat.kemkes.go.id/juknis-pemberian-makanan-tambahan-pmt-berbahan-pangan-lokal-untuk-balita-dan-ibu-hamil" },
+      { label: "Petunjuk Teknis PMT Berbahan Pangan Lokal Bagi Ibu Hamil dan Balita", org: "Ditjen Kesehatan Masyarakat Kemenkes RI", url: "https://dinaspmk.benermeriahkab.go.id/media/2024.08/perdirjen_juknis_pmt_lokal_v25_20240130_ed_revisi_20241.pdf" },
+      { label: "Survei Kesehatan Indonesia (SKI) 2023", org: "Kementerian Kesehatan RI", url: "https://www.kemkes.go.id/" },
+      { label: "Pemberdayaan Kader Posyandu dan Ibu-Ibu PKK untuk Pencegahan Stunting", org: "Jurnal Mandala Pengabdian Masyarakat", url: "https://jurnal-pharmaconmw.com/jmpm/index.php/jmpm/article/view/291" },
+      { label: "Tentang Tim Penggerak PKK", org: "Tim Penggerak PKK Pusat", url: "https://pkkpusat.id/" },
     ],
   },
 };
