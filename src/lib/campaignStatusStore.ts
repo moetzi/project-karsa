@@ -5,6 +5,7 @@ type ClosedMap = Record<string, { closedAt: number }>;
 const KEY = "karsa-closed-campaigns";
 const listeners = new Set<() => void>();
 let state: ClosedMap = load();
+const EMPTY_CLOSED_MAP: ClosedMap = {};
 
 function load(): ClosedMap {
   if (typeof localStorage === "undefined") return {};
@@ -15,6 +16,7 @@ function load(): ClosedMap {
 }
 function persist() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch {} }
 function emit() { listeners.forEach((l) => l()); }
+function subscribe(cb: () => void) { listeners.add(cb); return () => listeners.delete(cb); }
 
 if (typeof window !== "undefined") {
   window.addEventListener("storage", (e) => {
@@ -31,7 +33,7 @@ export function closeCampaignLocal(campaignId: string) {
 
 export function useCampaignClosed(campaignId: string): { closedAt: number } | null {
   return useSyncExternalStore(
-    (cb) => { listeners.add(cb); return () => listeners.delete(cb); },
+    subscribe,
     () => state[campaignId] ?? null,
     () => null,
   );
@@ -39,8 +41,8 @@ export function useCampaignClosed(campaignId: string): { closedAt: number } | nu
 
 export function useClosedMap(): ClosedMap {
   return useSyncExternalStore(
-    (cb) => { listeners.add(cb); return () => listeners.delete(cb); },
+    subscribe,
     () => state,
-    () => ({}),
+    () => EMPTY_CLOSED_MAP,
   );
 }
