@@ -1478,8 +1478,8 @@ function BuatKampanye() {
           </p>
           <p className="text-[11px] text-muted-foreground leading-snug mt-0.5">
             {t(
-              "Jurnal ini menjadi laporan transparansi yang otomatis dikirim ke semua donatur.",
-              "This journal becomes the transparency report auto-sent to all donors.",
+              "Jurnal ini menjadi laporan transparansi yang otomatis dipubliksikan.",
+              "This journal becomes the transparency report that is automatically published.",
             )}
           </p>
         </div>
