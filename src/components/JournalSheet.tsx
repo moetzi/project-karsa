@@ -1,11 +1,13 @@
-import { useRef, useState } from "react";
-import { X, Camera, ImagePlus, Check, MapPin, Trash2, Sparkles, Send, Loader2 } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { X, Camera, ImagePlus, Check, MapPin, Trash2, Sparkles, Send, Loader2, Save, CloudOff } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createJournal } from "@/lib/journals.functions";
 import { toast } from "sonner";
+import { getDraft, saveDraft, deleteDraft } from "@/lib/draftStore";
+import { useConnectionStatus } from "@/lib/useConnectionStatus";
 
 type Props = {
   campaign: { id: string; title: string; titleEn: string; school: string };
