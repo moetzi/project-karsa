@@ -47,7 +47,10 @@ function Nutrisi() {
   return (
     <PhoneShell>
       <div className="px-6 pt-4 pb-6">
-        <h1 className="text-[28px] font-extrabold text-foreground">{t("Gizi & Kampanye", "Nutrition & Campaigns")}</h1>
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="text-[28px] font-extrabold text-foreground">{t("Gizi & Kampanye", "Nutrition & Campaigns")}</h1>
+          <ConnectionBadge />
+        </div>
 
         <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-2 gap-1">
           {([
