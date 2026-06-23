@@ -5,6 +5,7 @@ import { INSPIRASI } from "@/lib/inspirasi";
 import articleStunting from "@/assets/article-stunting.jpg";
 import articleGiziLokal from "@/assets/article-gizi-lokal.jpg";
 import articleBumdes from "@/assets/article-bumdes.jpg";
+import articlePosyandu from "@/assets/article-posyandu.jpg";
 
 function ReadingProgress() {
   const [progress, setProgress] = useState(0);
