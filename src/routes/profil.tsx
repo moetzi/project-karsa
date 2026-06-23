@@ -234,24 +234,38 @@ function HelpSection() {
 
   const faqs = [
     {
-      q: t("Bagaimana dana disalurkan ke sekolah?", "How are funds delivered to schools?"),
+      q: t("Apa itu Lean Disbursement di Karsa?", "What is Lean Disbursement in Karsa?"),
       a: t(
-        "Dana tidak dipegang oleh sekolah secara tunai. Semua donasi langsung diteruskan ke rekening pemasok lokal (BUMDes/Kelompok Tani) yang terdaftar dan diverifikasi, lalu pemasok mengirim bahan pangan ke sekolah.",
-        "Funds are never held by the school in cash. All donations are forwarded directly to the registered, verified local supplier's account (BUMDes/Farmer Group), who then delivers food supplies to the school.",
+        "Lean Disbursement adalah mekanisme penyaluran dana yang ringkas dan transparan: donasi masuk ke kampanye sekolah, dicatat sebagai saldo terkumpul, lalu guru mencairkan dana tersebut secara bertahap melalui jurnal harian pembelian bahan pangan. Setiap pencairan langsung memperbarui dana tersalurkan dan tercermin real-time di halaman publik.",
+        "Lean Disbursement is a simple and transparent fund distribution mechanism: donations enter a school campaign, are recorded as collected balance, and teachers disburse the funds gradually through daily purchase journals. Every disbursement immediately updates the amount distributed and is reflected in real time on the public campaign page.",
       ),
     },
     {
-      q: t("Apakah aplikasi ini bisa digunakan tanpa kuota?", "Can this app be used without an internet connection?"),
+      q: t("Bagaimana cara kerja Karsa saat offline?", "How does Karsa work offline?"),
       a: t(
-        "Ya. Semua materi yang telah Anda unduh di tab Copilot dapat diakses tanpa internet. Hanya fitur Generator AI dan kampanye baru yang membutuhkan koneksi.",
-        "Yes. All materials you've downloaded in the Copilot tab can be accessed offline. Only the AI Generator and new campaigns require a connection.",
+        "Setelah login pertama kali, Karsa menyimpan data penting di perangkat Anda. Materi yang sudah diunduh dari Edu Co-pilot, daftar kampanye, dan jurnal tersimpan tetap bisa dibaca tanpa internet. Saat Anda menulis jurnal baru tanpa sinyal, Karsa akan menampungnya secara lokal dan otomatis menyinkronkan begitu perangkat kembali online.",
+        "After your first login, Karsa stores essential data on your device. Downloaded Edu Co-pilot materials, campaign lists, and saved journals remain readable without internet. When you write a new journal while offline, Karsa queues it locally and automatically syncs once the device is back online.",
       ),
     },
     {
-      q: t("Bagaimana NPSN saya diverifikasi?", "How is my NPSN verified?"),
+      q: t("Bagaimana prosedur verifikasi guru dan sekolah?", "What is the teacher and school verification procedure?"),
       a: t(
-        "NPSN dicocokkan dengan basis data resmi Kemendikbud secara otomatis dalam 1×24 jam setelah kampanye diajukan.",
-        "Your NPSN is matched against the official Ministry of Education database automatically within 24 hours of submission.",
+        "Akun guru diverifikasi saat pendaftaran melalui email institusi atau dokumen identitas keguruan (NUPTK/NIDN). NPSN sekolah dicocokkan dengan data Kemendikbud untuk memastikan keabsahan. Kampanye baru juga melewati pemeriksaan kelengkapan data sebelum ditampilkan di halaman publik.",
+        "Teacher accounts are verified during registration via institutional email or teaching credentials (NUPTK/NIDN). The school's NPSN is cross-checked with the Ministry of Education database to ensure validity. New campaigns also undergo a completeness review before being shown on the public page.",
+      ),
+    },
+    {
+      q: t("Apa saja fitur unggulan Anti Stunting Micro Campaign?", "What are the key features of the Anti Stunting Micro Campaign?"),
+      a: t(
+        "Kampanye ini menghubungkan guru, donatur, dan pemasok lokal. Guru mengajukan kebutuhan gizi sekolah, menerima donasi, mencatat jurnal harian pembelian/menu, dan menutup kampanye dengan laporan penutup. Publik dapat melihat transparansi dana, jurnal, serta jumlah anak terbantu secara real-time.",
+        "This campaign connects teachers, donors, and local suppliers. Teachers submit school nutrition needs, receive donations, log daily purchase/menu journals, and close the campaign with a final report. The public can view fund transparency, journals, and the number of children helped in real time.",
+      ),
+    },
+    {
+      q: t("Mengapa notifikasi muncul saat kampanye mencapai 100%?", "Why do notifications appear when a campaign reaches 100%?"),
+      a: t(
+        "Notifikasi 100% Dana Tersalurkan adalah pengingat agar guru segera membuat jurnal harian atau jurnal penutup. Dengan satu ketukan, Anda bisa langsung membuka lembar jurnal tanpa menyegarkan halaman, sehingga transparansi kampanye tetap terjaga dan statistik Anak Terbantu dapat diperbarui otomatis.",
+        "The 100% Funds Disbursed notification reminds teachers to create a daily or closing journal immediately. With one tap, you can open the journal sheet without refreshing the page, keeping campaign transparency intact and automatically updating the Children Helped statistics.",
       ),
     },
   ];
@@ -273,7 +287,7 @@ function HelpSection() {
               {t("FAQ / Tanya Jawab", "FAQ / Questions")}
             </p>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              {t("3 pertanyaan populer", "3 popular questions")}
+              {t("5 pertanyaan populer", "5 popular questions")}
             </p>
           </div>
           <ChevronDown className={"w-4 h-4 text-muted-foreground transition-transform " + (openFaq ? "rotate-180" : "")} />
