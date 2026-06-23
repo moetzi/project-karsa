@@ -810,7 +810,7 @@ function BuatKampanye() {
     }
     setAiLoading(true);
     try {
-      const res = await generatePlanFn({
+      const res = await withSync(() => generatePlanFn({
         data: {
           region,
           recipients: Number(recipients),
@@ -818,7 +818,7 @@ function BuatKampanye() {
           supplier: supplierName || tmpGroup || "",
           catatan: desc.slice(0, 400),
         },
-      });
+      }));
       const parsed = JSON.parse(res.json) as MealPlanResult;
       setMealPlan(parsed);
       const next: Record<string, string> = {};
