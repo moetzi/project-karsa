@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useEffect, useRef, useState } from "react";
 import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2, Heart, Lock } from "lucide-react";
-import { donors, ShareSheet, getCountdown, CampaignDetailSheet, campaigns } from "@/routes/nutrisi";
+import { donors, ShareSheet, getCountdown, CampaignDetailSheet, campaigns } from "@/routes/_authenticated/nutrisi";
 import { JournalSheet } from "@/components/JournalSheet";
 import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations, formatRelative as fmtDonRel } from "@/lib/donationStore";
