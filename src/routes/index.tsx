@@ -558,8 +558,8 @@ function Landing() {
           </h3>
           <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             {t(
-              "Anak-anak di pelosok tidak butuh janji besar. Mereka butuh sarapan. Guru mereka sudah hadir setiap pagi — sekarang giliran kita berdiri di samping mereka.",
-              "Children in remote areas don't need grand promises. They need breakfast. Their teachers already show up every morning — now it's our turn to stand beside them."
+              "Anak-anak di pelosok tidak butuh janji besar. Mereka butuh sarapan. Guru mereka sudah hadir setiap pagi dan sekarang giliran kita berdiri di samping mereka.",
+              "Children in remote areas don't need grand promises. They need breakfast. Their teachers already show up every morning and now it's our turn to stand beside them."
             )}
           </p>
           <div className="mt-6 flex flex-wrap gap-3 justify-center">
