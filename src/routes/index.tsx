@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Heart, GraduationCap, ShieldCheck, X, Sprout, Users, TrendingUp, MapPin, Clock, ArrowRight, BookOpen } from "lucide-react";
-import { campaigns, getCountdown } from "@/routes/nutrisi";
+import { Heart, GraduationCap, ShieldCheck, X, Sprout, Users, TrendingUp, Clock, ArrowRight, BookOpen } from "lucide-react";
+import { campaigns, CampaignCard } from "@/routes/nutrisi";
 import { INSPIRASI } from "@/lib/inspirasi";
 
 export const Route = createFileRoute("/")({
@@ -146,52 +146,10 @@ function Landing() {
             Lihat semua <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {campaigns.map((c) => {
-            const pct = Math.min(100, Math.round((c.raised / c.target) * 100));
-            const cd = getCountdown("deadline" in c ? (c as { deadline?: string }).deadline : undefined);
-            return (
-              <Link
-                key={c.id}
-                to="/nutrisi"
-                className="group bg-surface rounded-2xl border border-border/60 overflow-hidden hover:shadow-lg transition-shadow flex flex-col"
-              >
-                <div className="relative h-44 overflow-hidden">
-                  <img src={c.hero} alt={c.title} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                  <span className="absolute top-3 left-3 inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
-                    <ShieldCheck className="w-3 h-3" /> Terverifikasi
-                  </span>
-                  <div className="absolute bottom-3 left-3 right-3 text-white">
-                    <h3 className="text-lg font-extrabold leading-tight drop-shadow">{c.title}</h3>
-                    <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
-                      <MapPin className="w-3 h-3" /> {c.school}
-                    </p>
-                  </div>
-                </div>
-                <div className="p-4 flex-1 flex flex-col">
-                  <p className="text-xs text-muted-foreground line-clamp-2 mb-3">{c.description}</p>
-                  <div className="mt-auto">
-                    <div className="flex justify-between text-xs mb-1.5">
-                      <span className="font-mono font-bold">Rp {c.raised}jt</span>
-                      <span className="font-mono text-muted-foreground">dari Rp {c.target}jt</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-muted overflow-hidden">
-                      <div className="h-full bg-accent rounded-full" style={{ width: `${pct}%` }} />
-                    </div>
-                    <div className="flex items-center justify-between mt-2 text-[11px]">
-                      <span className="text-muted-foreground">{pct}% terkumpul · {c.recipients} anak</span>
-                      {cd && pct < 100 && (
-                        <span className={"inline-flex items-center gap-1 font-mono font-semibold " + (cd.urgent ? "text-accent" : "text-foreground")}>
-                          <Clock className="w-3 h-3" /> {cd.id}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {campaigns.map((c) => (
+            <CampaignCard key={c.id} c={c} />
+          ))}
         </div>
         <div className="mt-8 text-center md:hidden">
           <Link to="/nutrisi" className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
