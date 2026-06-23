@@ -1113,20 +1113,53 @@ function BuatKampanye() {
           "Leave days blank if not scheduled. This menu appears in the donor's 'Story' tab.",
         )}
       >
-        <div className="space-y-2">
-          {DAYS_ID.map((d, i) => (
-            <div key={d} className="flex items-center gap-2">
-              <span className="w-16 shrink-0 font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
-                {t(d, DAYS_EN[i])}
+        {aiError && (
+          <div className="rounded-xl bg-accent/10 border border-accent/30 text-accent text-[11px] px-3 py-2 mb-3 flex items-start gap-2">
+            <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+            <span>{aiError}</span>
+          </div>
+        )}
+
+        {mealPlan && (
+          <div className="mb-4 rounded-xl bg-primary-soft/50 border border-primary/20 p-3 space-y-2">
+            <p className="text-[12px] text-foreground/85 italic">"{mealPlan.ringkasan}"</p>
+            <div className="flex items-center justify-between text-[11px] font-mono">
+              <span className="text-muted-foreground">
+                {t("Per porsi:", "Per portion:")} <span className="text-foreground font-bold">Rp {mealPlan.estimasi_per_porsi.toLocaleString("id-ID")}</span>
               </span>
-              <input
-                value={menu[d] ?? ""}
-                onChange={(e) => setMenu((m) => ({ ...m, [d]: e.target.value }))}
-                placeholder={t("Opsional — kosongkan jika libur", "Optional — leave blank if none")}
-                className="flex-1 bg-muted/60 rounded-lg px-3 py-2.5 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
-              />
+              <span className="text-muted-foreground">
+                {t("Total 5 hari:", "Total 5d:")} <span className="text-foreground font-bold">Rp {mealPlan.estimasi_total_5hari.toLocaleString("id-ID")}</span>
+              </span>
             </div>
-          ))}
+            <p className="text-[11px] text-foreground/75 leading-snug">💡 {mealPlan.tips}</p>
+          </div>
+        )}
+
+        <div className="space-y-3">
+          {DAYS_ID.map((d, i) => {
+            const detail = mealPlan?.menu.find((m) => m.hari === d);
+            return (
+              <div key={d} className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="w-16 shrink-0 font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+                    {t(d, DAYS_EN[i])}
+                  </span>
+                  <input
+                    value={menu[d] ?? ""}
+                    onChange={(e) => setMenu((m) => ({ ...m, [d]: e.target.value }))}
+                    placeholder={t("Opsional — kosongkan jika libur", "Optional — leave blank if none")}
+                    className="flex-1 bg-muted/60 rounded-lg px-3 py-2.5 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
+                  />
+                </div>
+                {detail && (
+                  <div className="ml-[72px] text-[11px] text-muted-foreground space-y-0.5">
+                    <p><span className="font-semibold text-foreground/80">{t("Bahan:", "Ingredients:")}</span> {detail.bahan_lokal.join(", ")}</p>
+                    <p><span className="font-semibold text-foreground/80">{t("Gizi:", "Nutrition:")}</span> {detail.kandungan_gizi}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </SectionCard>
 
