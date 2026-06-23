@@ -142,26 +142,108 @@ function Landing() {
         </div>
       </section>
 
+      {/* Tentang Karsa */}
+      <section id="tentang" className="max-w-6xl mx-auto px-6 py-20 border-t border-border/60">
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          <div>
+            <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">Tentang Karsa</p>
+            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">
+              Bukan platform donasi biasa.<br />
+              <span className="text-primary">Ini ruang kerja para guru.</span>
+            </h2>
+            <p className="mt-5 text-base text-muted-foreground leading-relaxed">
+              Karsa adalah aplikasi web (PWA) ringan yang dirancang khusus untuk guru-guru di
+              wilayah <span className="font-semibold text-foreground">Terdepan, Terluar, dan Tertinggal (3T)</span> —
+              tempat sinyal sering hilang, perangkat terbatas, dan satu guru sering menanggung
+              banyak peran sekaligus.
+            </p>
+            <p className="mt-4 text-base text-muted-foreground leading-relaxed">
+              Kami percaya orang yang paling tahu kebutuhan seorang anak adalah gurunya sendiri.
+              Maka kami serahkan kendalinya: guru yang mengajukan, guru yang membelanjakan,
+              guru yang melaporkan. Karsa hanya menyediakan jembatan paling pendek antara
+              niat baik Anda dan piring murid mereka.
+            </p>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-4">
+            <div className="bg-surface rounded-2xl border border-border/60 p-5">
+              <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary grid place-items-center">
+                <HeartHandshake className="w-5 h-5" />
+              </div>
+              <h3 className="mt-3 font-bold">Kampanye Anti Stunting</h3>
+              <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+                Guru menggalang dana mikro untuk makan bergizi di sekolahnya, dengan laporan
+                transparan yang bisa dipantau siapa pun.
+              </p>
+            </div>
+            <div className="bg-surface rounded-2xl border border-border/60 p-5">
+              <div className="w-10 h-10 rounded-xl bg-accent-soft text-accent grid place-items-center">
+                <Brain className="w-5 h-5" />
+              </div>
+              <h3 className="mt-3 font-bold">Edu Co-pilot</h3>
+              <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+                Pendamping mengajar berbasis AI: RPP, flashcard, dan materi yang bisa diunduh
+                dan tetap berfungsi tanpa internet.
+              </p>
+            </div>
+            <div className="bg-surface rounded-2xl border border-border/60 p-5">
+              <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary grid place-items-center">
+                <ShieldCheck className="w-5 h-5" />
+              </div>
+              <h3 className="mt-3 font-bold">Identitas Terverifikasi</h3>
+              <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+                Setiap guru divalidasi lewat NUPTK/PegID + NPSN. Tidak ada akun anonim,
+                tidak ada kampanye fiktif.
+              </p>
+            </div>
+            <div className="bg-surface rounded-2xl border border-border/60 p-5">
+              <div className="w-10 h-10 rounded-xl bg-accent-soft text-accent grid place-items-center">
+                <WifiOff className="w-5 h-5" />
+              </div>
+              <h3 className="mt-3 font-bold">Dibuat untuk Sinyal Tipis</h3>
+              <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+                Hemat data, bisa dipasang di layar utama, dan tetap bisa diakses
+                meski koneksi datang dan pergi.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Cara Kerja */}
-      <section id="cara" className="max-w-6xl mx-auto px-6 py-20">
+      <section id="cara" className="max-w-6xl mx-auto px-6 py-20 border-t border-border/60">
         <div className="text-center max-w-2xl mx-auto">
           <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">Cara Kerja</p>
-          <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Tiga langkah, dampak langsung</h2>
+          <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">
+            Dari niat baik Anda ke piring anak-anak — dalam lima langkah jelas.
+          </h2>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+            Kami sengaja membuat alurnya pendek dan mudah dipantau, agar setiap donasi
+            bisa Anda ikuti hingga benar-benar menjadi makanan di meja kelas.
+          </p>
         </div>
-        <div className="mt-12 grid md:grid-cols-3 gap-6">
+        <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-5 gap-4">
           {[
-            { icon: Users, t: "Guru mengajukan", d: "Guru terverifikasi NUPTK/PegID membuat kampanye spesifik untuk muridnya." },
-            { icon: Heart, t: "Donatur memberi", d: "Anda berdonasi langsung ke kampanye yang transparan, tanpa potongan platform." },
-            { icon: TrendingUp, t: "Dampak terlapor", d: "Foto, struk belanja, dan jurnal harian dikirim guru langsung ke dashboard." },
+            { icon: ShieldCheck, t: "1. Verifikasi guru", d: "Identitas guru divalidasi lewat NUPTK/PegID dan NPSN sekolahnya sebelum bisa membuat kampanye." },
+            { icon: FileCheck2, t: "2. Kampanye dibuka", d: "Guru menulis cerita murid-muridnya, kebutuhan gizi, target dana, dan jumlah anak yang akan terbantu." },
+            { icon: Heart, t: "3. Anda berdonasi", d: "Donasi mengalir langsung ke kampanye pilihan Anda — tanpa potongan platform, sekecil apa pun nominalnya." },
+            { icon: Receipt, t: "4. Guru belanja", d: "Guru membeli bahan makanan ke pemasok lokal terdekat dan menyimpan bukti belanja atau bukti makan bersama." },
+            { icon: Camera, t: "5. Jurnal terbuka", d: "Foto, deskripsi alokasi, dan kesan anak-anak diunggah ke jurnal dan dipublikasikan otomatis untuk semua orang." },
           ].map((s) => (
-            <div key={s.t} className="bg-surface rounded-2xl border border-border/60 p-6">
-              <div className="w-11 h-11 rounded-xl bg-primary-soft text-primary grid place-items-center">
+            <div key={s.t} className="bg-surface rounded-2xl border border-border/60 p-5">
+              <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary grid place-items-center">
                 <s.icon className="w-5 h-5" />
               </div>
-              <h3 className="mt-4 font-bold text-lg">{s.t}</h3>
-              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{s.d}</p>
+              <h3 className="mt-4 font-bold text-[15px] leading-snug">{s.t}</h3>
+              <p className="mt-2 text-[13px] text-muted-foreground leading-relaxed">{s.d}</p>
             </div>
           ))}
+        </div>
+        <div className="mt-10 rounded-2xl border border-border/60 bg-primary-soft/40 p-6 text-center">
+          <p className="text-sm text-foreground leading-relaxed max-w-3xl mx-auto">
+            <span className="font-bold">Komitmen kami:</span> 100% donasi Anda sampai ke kampanye.
+            Karsa tidak memotong biaya platform. Biaya operasional kami ditanggung terpisah oleh mitra,
+            agar setiap rupiah benar-benar bekerja untuk anak-anak.
+          </p>
         </div>
       </section>
 
