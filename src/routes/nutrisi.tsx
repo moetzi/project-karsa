@@ -29,6 +29,7 @@ import { generateMealPlan } from "@/lib/ai.functions";
 import { JournalSheet } from "@/components/JournalSheet";
 import { ConnectionBadge } from "@/components/ConnectionBadge";
 import { withSync } from "@/lib/useConnectionStatus";
+import { useReach, trackView, trackShare, toggleBoost } from "@/lib/reachStore";
 
 
 export const Route = createFileRoute("/nutrisi")({
@@ -101,6 +102,7 @@ export const campaigns = [
     journal: "Alhamdulillah, dana terkumpul Senin pagi langsung saya teruskan ke Ibu Kristi lalu dibelanjakan ke Kelompok Wanita Tani. Tim Posyandu Tuamese masak sejak subuh — nasi panas, ikan lelusi bumbu kuning, dan tumis sawi segar. Robinson dan 11 temannya makan dengan lahap di kelas hari ini. Robinson bilang ini makanan paling enak yang pernah dia makan. Terima kasih untuk setiap donatur yang telah menyelamatkan anak-anak kami.",
     journalPhotos: [robinsonMakan1, robinsonMakan2] as string[],
     journalDate: "Senin, 22 Jun 2026",
+    disbursedAt: "2026-06-22T05:30:00+08:00",
     boosts: 218,
     views: "3.4k",
     shares: 612,
@@ -303,8 +305,20 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const [donateOpen, setDonateOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const donations = useDonations(c.id);
-  const shares = c.shares;
-  const boosts = c.boosts + (boosted ? 1 : 0);
+  const reach = useReach(c.id);
+
+  useEffect(() => { trackView(c.id); }, [c.id]);
+
+  // Parse baseline "1.2k" / "836" → number, add real tracked count
+  const parseK = (v: string | number) => {
+    if (typeof v === "number") return v;
+    const s = String(v).toLowerCase().trim();
+    if (s.endsWith("k")) return Math.round(parseFloat(s) * 1000);
+    return parseInt(s.replace(/\D/g, ""), 10) || 0;
+  };
+  const viewsTotal = parseK(c.views) + reach.views;
+  const shares = c.shares + reach.shares;
+  const boosts = c.boosts + reach.boosts + (boosted ? 1 : 0);
 
   // Live totals — baseline (in juta) + new donations
   const newRaised = donations.reduce((s, d) => s + d.amount, 0);
@@ -312,6 +326,15 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const targetRp = c.target * 1_000_000;
   const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
   const fmtJt = (n: number) => (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
+
+  const onBoostClick = () => {
+    const next = !boosted;
+    setBoosted(next);
+    toggleBoost(c.id, next);
+  };
+  const openShare = () => { trackShare(c.id); setShareOpen(true); };
+
+  const formatK = (n: number) => (n >= 1000 ? (n / 1000).toFixed(n >= 10_000 ? 0 : 1) + "k" : String(n));
 
 
   return (
@@ -332,20 +355,29 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
               </span>
               {(() => {
                 const hasJournal = !!c.journal;
+                const disbursedAt = ("disbursedAt" in c ? (c as { disbursedAt?: string }).disbursedAt : undefined);
                 const status =
                   pct < 100
                     ? { id: "Pending", en: "Pending", cls: "bg-muted text-muted-foreground" }
                     : hasJournal
-                    ? { id: "Dilaporkan", en: "Reported", cls: "bg-primary text-primary-foreground" }
+                    ? { id: "Dana Tersalurkan", en: "Funds Disbursed", cls: "bg-primary text-primary-foreground" }
                     : { id: "Tersalur", en: "Disbursed", cls: "bg-accent text-accent-foreground" };
+                const ts = disbursedAt
+                  ? new Date(disbursedAt).toLocaleDateString("id-ID", { day: "numeric", month: "short" })
+                  : null;
                 return (
                   <span className={"inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full " + status.cls}>
-                    {t(status.id, status.en)}
+                    {t(status.id, status.en)}{ts && pct >= 100 ? ` · ${ts}` : ""}
                   </span>
                 );
               })()}
             </div>
             <div className="text-white">
+              {c.tmp && (
+                <span className="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/20 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full mb-1.5">
+                  <ShieldCheck className="w-2.5 h-2.5" /> {t("Dimasak oleh", "Cooked by")} {c.tmp}
+                </span>
+              )}
               <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
               <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
                 <MapPin className="w-3 h-3" /> {c.school}
@@ -353,6 +385,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
             </div>
           </div>
         </div>
+
 
         <div className="p-4">
           <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs items-start pb-3 border-b border-border/60">
@@ -410,11 +443,11 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
             <div className="flex items-center gap-3 text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <Eye className="w-3.5 h-3.5" />
-                <span className="font-mono font-semibold text-foreground">{c.views}</span>
+                <span className="font-mono font-semibold text-foreground">{formatK(viewsTotal)}</span>
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <Repeat2 className="w-3.5 h-3.5" />
-                <span className="font-mono font-semibold text-foreground">{shares}</span>
+                <span className="font-mono font-semibold text-foreground">{formatK(shares)}</span>
               </span>
             </div>
             <span className="inline-flex items-center gap-0.5 text-primary font-semibold">
@@ -427,7 +460,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
       <div className="px-4 pb-4 -mt-1 flex items-center gap-2">
         {pct < 100 && (
           <button
-            onClick={() => setBoosted((b) => !b)}
+            onClick={onBoostClick}
             className={
               "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border transition-colors " +
               (boosted
@@ -439,7 +472,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </button>
         )}
         <button
-          onClick={() => setShareOpen(true)}
+          onClick={openShare}
           className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border border-primary/30 bg-primary-soft/60 text-primary hover:bg-primary-soft transition-colors"
         >
           <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
@@ -455,7 +488,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
         )}
       </div>
 
-      {shareOpen && <ShareSheet title={c.title} onClose={() => setShareOpen(false)} />}
+      {shareOpen && <ShareSheet campaignId={c.id} title={c.title} school={c.school} onClose={() => setShareOpen(false)} />}
       {donateOpen && <DonateSheet campaign={{ id: c.id, title: c.title, school: c.school }} onClose={() => setDonateOpen(false)} />}
       {detailOpen && (
         <CampaignDetailSheet
@@ -689,14 +722,62 @@ export function CampaignDetailSheet({
   );
 }
 
-function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) {
+function ShareSheet({
+  campaignId,
+  title,
+  school,
+  onClose,
+}: {
+  campaignId?: string;
+  title: string;
+  school?: string;
+  onClose: () => void;
+}) {
   const t = useT();
   const [copied, setCopied] = useState(false);
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://project-karsa.lovable.app";
+  const shareUrl = campaignId ? `${origin}/?c=${encodeURIComponent(campaignId)}` : origin;
+  const shareText = t(
+    `Dukung kampanye "${title}"${school ? ` — ${school}` : ""} di Karsa. Donasi transparan, dampak nyata.`,
+    `Support "${title}"${school ? ` — ${school}` : ""} on Karsa. Transparent donations, real impact.`,
+  );
+
   const channels = [
-    { id: "wa", label: "WhatsApp", emoji: "💬", bg: "linear-gradient(135deg,#25D366,#128C7E)" },
-    { id: "ig", label: "Instagram Story", emoji: "📸", bg: "linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)" },
-    { id: "tw", label: "Twitter / X", emoji: "𝕏", bg: "linear-gradient(135deg,#0f1419,#1d9bf0)" },
+    {
+      id: "wa",
+      label: "WhatsApp",
+      emoji: "💬",
+      bg: "linear-gradient(135deg,#25D366,#128C7E)",
+      href: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`,
+    },
+    {
+      id: "tg",
+      label: "Telegram",
+      emoji: "✈️",
+      bg: "linear-gradient(135deg,#2AABEE,#229ED9)",
+      href: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
+    },
+    {
+      id: "tw",
+      label: "Twitter / X",
+      emoji: "𝕏",
+      bg: "linear-gradient(135deg,#0f1419,#1d9bf0)",
+      href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+    },
   ];
+
+  const nativeShare = async () => {
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try { await navigator.share({ title, text: shareText, url: shareUrl }); } catch {}
+    }
+  };
+
+  const copyUrl = () => {
+    navigator.clipboard?.writeText(shareUrl).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-foreground/40 backdrop-blur-sm animate-in fade-in duration-200"
@@ -718,7 +799,13 @@ function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) 
 
         <div className="mt-5 grid grid-cols-3 gap-3">
           {channels.map((ch) => (
-            <button key={ch.id} className="flex flex-col items-center gap-2 group">
+            <a
+              key={ch.id}
+              href={ch.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-2 group"
+            >
               <span
                 className="w-14 h-14 rounded-2xl grid place-items-center text-2xl text-white shadow-md group-active:scale-95 transition"
                 style={{ background: ch.bg }}
@@ -726,16 +813,25 @@ function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) 
                 {ch.emoji}
               </span>
               <span className="text-[11px] font-semibold text-foreground text-center leading-tight">{ch.label}</span>
-            </button>
+            </a>
           ))}
         </div>
 
+        {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
+          <button
+            onClick={nativeShare}
+            className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-xl py-3 text-sm font-semibold"
+          >
+            <Share2 className="w-4 h-4" /> {t("Bagikan via aplikasi…", "Share via app…")}
+          </button>
+        )}
+
         <button
-          onClick={() => { setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-          className="mt-5 w-full flex items-center justify-between bg-muted/70 rounded-xl px-4 py-3 text-sm hover:bg-muted transition"
+          onClick={copyUrl}
+          className="mt-3 w-full flex items-center justify-between bg-muted/70 rounded-xl px-4 py-3 text-sm hover:bg-muted transition"
         >
-          <span className="font-mono text-xs text-muted-foreground truncate">karsa.id/k/{title.split(" ")[1]?.toLowerCase() ?? "kampanye"}</span>
-          <span className={"inline-flex items-center gap-1 font-semibold text-xs " + (copied ? "text-primary" : "text-foreground")}>
+          <span className="font-mono text-xs text-muted-foreground truncate">{shareUrl}</span>
+          <span className={"inline-flex items-center gap-1 font-semibold text-xs shrink-0 ml-2 " + (copied ? "text-primary" : "text-foreground")}>
             {copied ? (<><Check className="w-3.5 h-3.5" /> {t("Tersalin", "Copied")}</>) : (<><Link2 className="w-3.5 h-3.5" /> {t("Salin", "Copy")}</>)}
           </span>
         </button>
@@ -743,6 +839,7 @@ function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) 
     </div>
   );
 }
+
 
 const SUPPLIER_GROUPS = [
   "BUMDes",

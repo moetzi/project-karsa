@@ -1,7 +1,17 @@
 import { useState } from "react";
-import { X, Heart, Check, ShieldCheck, Landmark, Smartphone, CreditCard } from "lucide-react";
+import { X, Heart, Check, ShieldCheck, Landmark, Smartphone, CreditCard, Copy, Hash } from "lucide-react";
 import { useT } from "@/lib/i18n";
-import { addDonation } from "@/lib/donationStore";
+import { addDonation, type Donation } from "@/lib/donationStore";
+
+function receiptOf(d: Donation): string {
+  // KRS-YYMMDD-XXXX (last 4 of uuid, uppercase) — short, traceable, public-safe.
+  const dt = new Date(d.createdAt);
+  const yy = String(dt.getFullYear()).slice(2);
+  const mm = String(dt.getMonth() + 1).padStart(2, "0");
+  const dd = String(dt.getDate()).padStart(2, "0");
+  const tail = d.id.replace(/-/g, "").slice(-4).toUpperCase();
+  return `KRS-${yy}${mm}${dd}-${tail}`;
+}
 
 type Campaign = {
   id: string;
@@ -26,6 +36,8 @@ export function DonateSheet({ campaign, onClose }: { campaign: Campaign; onClose
   const [anonymous, setAnonymous] = useState(false);
   const [message, setMessage] = useState("");
   const [method, setMethod] = useState("qris");
+  const [receipt, setReceipt] = useState<{ id: string; createdAt: number } | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const finalAmount = custom ? parseInt(custom.replace(/\D/g, ""), 10) || 0 : amount;
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
@@ -34,7 +46,7 @@ export function DonateSheet({ campaign, onClose }: { campaign: Campaign; onClose
   const canConfirm = canNext && (anonymous || name.trim().length > 1);
 
   const confirm = () => {
-    addDonation({
+    const entry = addDonation({
       campaignId: campaign.id,
       campaignTitle: campaign.title,
       name: anonymous ? `Hamba Allah #${Math.floor(Math.random() * 90 + 10)}` : name.trim(),
@@ -43,6 +55,7 @@ export function DonateSheet({ campaign, onClose }: { campaign: Campaign; onClose
       method,
       message: message.trim() || undefined,
     });
+    setReceipt({ id: receiptOf(entry), createdAt: entry.createdAt });
     setStep("success");
   };
 
@@ -209,7 +222,7 @@ export function DonateSheet({ campaign, onClose }: { campaign: Campaign; onClose
           </>
         )}
 
-        {step === "success" && (
+        {step === "success" && receipt && (
           <div className="mt-5 text-center py-4">
             <div className="w-16 h-16 mx-auto rounded-full bg-primary-soft text-primary grid place-items-center">
               <Check className="w-8 h-8" strokeWidth={3} />
@@ -219,10 +232,39 @@ export function DonateSheet({ campaign, onClose }: { campaign: Campaign; onClose
             </h4>
             <p className="mt-1 text-sm text-muted-foreground leading-relaxed px-4">
               {t(
-                `Donasi ${fmt(finalAmount)} sedang diproses. Anda akan menerima laporan penggunaan dana dari guru.`,
-                `Your ${fmt(finalAmount)} donation is being processed. You will receive a usage report from the teacher.`,
+                `Donasi ${fmt(finalAmount)} sedang diproses. Setiap transaksi dicatat di laporan transparansi publik.`,
+                `Your ${fmt(finalAmount)} donation is being processed. Every transaction is recorded in the public transparency report.`,
               )}
             </p>
+
+            <div className="mt-5 rounded-xl border border-primary/30 bg-primary-soft/30 p-3.5 text-left">
+              <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
+                <Hash className="w-3 h-3" /> {t("Nomor Bukti Transaksi", "Transaction Receipt No.")}
+              </p>
+              <div className="mt-2 flex items-center justify-between gap-2">
+                <code className="font-mono font-extrabold text-foreground text-[15px] tracking-wider break-all">
+                  {receipt.id}
+                </code>
+                <button
+                  onClick={() => {
+                    navigator.clipboard?.writeText(receipt.id).catch(() => {});
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 1500);
+                  }}
+                  className="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold text-primary bg-surface border border-primary/30 rounded-lg px-2.5 py-1.5"
+                >
+                  {copied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                  {copied ? t("Tersalin", "Copied") : t("Salin", "Copy")}
+                </button>
+              </div>
+              <p className="mt-2 text-[10px] text-muted-foreground leading-relaxed">
+                {t(
+                  "Simpan nomor ini. Donasi Anda dapat ditelusuri di laporan kampanye dan rantai akuntabilitas.",
+                  "Save this number. Your donation is traceable in the campaign report and accountability chain.",
+                )}
+              </p>
+            </div>
+
             <button
               onClick={onClose}
               className="mt-5 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm"
