@@ -305,8 +305,20 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const [donateOpen, setDonateOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const donations = useDonations(c.id);
-  const shares = c.shares;
-  const boosts = c.boosts + (boosted ? 1 : 0);
+  const reach = useReach(c.id);
+
+  useEffect(() => { trackView(c.id); }, [c.id]);
+
+  // Parse baseline "1.2k" / "836" → number, add real tracked count
+  const parseK = (v: string | number) => {
+    if (typeof v === "number") return v;
+    const s = String(v).toLowerCase().trim();
+    if (s.endsWith("k")) return Math.round(parseFloat(s) * 1000);
+    return parseInt(s.replace(/\D/g, ""), 10) || 0;
+  };
+  const viewsTotal = parseK(c.views) + reach.views;
+  const shares = c.shares + reach.shares;
+  const boosts = c.boosts + reach.boosts + (boosted ? 1 : 0);
 
   // Live totals — baseline (in juta) + new donations
   const newRaised = donations.reduce((s, d) => s + d.amount, 0);
@@ -314,6 +326,15 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const targetRp = c.target * 1_000_000;
   const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
   const fmtJt = (n: number) => (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
+
+  const onBoostClick = () => {
+    const next = !boosted;
+    setBoosted(next);
+    toggleBoost(c.id, next);
+  };
+  const openShare = () => { trackShare(c.id); setShareOpen(true); };
+
+  const formatK = (n: number) => (n >= 1000 ? (n / 1000).toFixed(n >= 10_000 ? 0 : 1) + "k" : String(n));
 
 
   return (
