@@ -125,14 +125,6 @@ function HeroCard({ hero, t, lang }: { hero: (typeof campaigns)[number]; t: Retu
         )}
       </div>
 
-      <div className="absolute -bottom-6 -left-6 bg-surface rounded-2xl border border-border/60 shadow-lg p-4 max-w-[220px]">
-        <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">{t("Kampanye Aktif", "Active Campaign")}</p>
-        <p className="mt-1 text-sm font-bold leading-snug">{t("Gizi Sehat Desa Kolaka", "Healthy Meals, Kolaka Village")}</p>
-        <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden">
-          <div className="h-full bg-accent" style={{ width: "56%" }} />
-        </div>
-        <p className="mt-1 text-[10px] font-mono text-muted-foreground">{t("56% dari Rp 15jt", "56% of Rp 15M")}</p>
-      </div>
     </div>
   );
 }
