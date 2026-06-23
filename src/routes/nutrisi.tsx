@@ -736,7 +736,7 @@ function ShareSheet({
   const t = useT();
   const [copied, setCopied] = useState(false);
   const origin = typeof window !== "undefined" ? window.location.origin : "https://project-karsa.lovable.app";
-  const shareUrl = campaignId ? `${origin}/?c=${encodeURIComponent(campaignId)}` : origin;
+  const shareUrl = campaignId ? `${origin}/k/${encodeURIComponent(campaignId)}` : origin;
   const shareText = t(
     `Dukung kampanye "${title}"${school ? ` — ${school}` : ""} di Karsa. Donasi transparan, dampak nyata.`,
     `Support "${title}"${school ? ` — ${school}` : ""} on Karsa. Transparent donations, real impact.`,
