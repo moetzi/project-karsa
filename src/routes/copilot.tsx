@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useEffect, useState, useCallback } from "react";
-import { Sparkles, Layers, Wifi, Download, Check, BookOpen, HelpCircle, Presentation, ChevronRight, Loader2, Clock, Trash2, AlertCircle } from "lucide-react";
+import { Sparkles, Layers, Wifi, Download, Check, BookOpen, HelpCircle, Presentation, ChevronRight, Loader2, Clock, Trash2, AlertCircle, RotateCw } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { useServerFn } from "@tanstack/react-start";
 import { generateMaterial } from "@/lib/ai.functions";
@@ -208,7 +208,21 @@ function Generator({ online, onSaved }: { online: boolean; onSaved: () => void |
         {error && (
           <div className="flex items-start gap-2 bg-destructive/10 text-destructive rounded-xl p-3 text-xs">
             <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span>{error}</span>
+            <div className="flex-1 space-y-2">
+              <p>{error}</p>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={loading || !canSubmit}
+                className="inline-flex items-center gap-1.5 bg-destructive text-destructive-foreground rounded-lg px-3 py-1.5 font-semibold disabled:opacity-50 hover:opacity-95 transition"
+              >
+                {loading ? (
+                  <><Loader2 className="w-3 h-3 animate-spin" /> {t("Mencoba ulang...", "Retrying...")}</>
+                ) : (
+                  <><RotateCw className="w-3 h-3" /> {t("Coba lagi", "Retry")}</>
+                )}
+              </button>
+            </div>
           </div>
         )}
 
