@@ -426,9 +426,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
                     : hasJournal
                     ? { id: "Dana Tersalurkan", en: "Funds Disbursed", cls: "bg-primary text-primary-foreground" }
                     : { id: "Tersalur", en: "Disbursed", cls: "bg-accent text-accent-foreground" };
-                const ts = disbursedAt
-                  ? new Date(disbursedAt).toLocaleDateString("id-ID", { day: "numeric", month: "short" })
-                  : null;
+                const ts = disbursedAt ? formatDisbursedDate(disbursedAt) : null;
                 return (
                   <span className={"inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full " + status.cls}>
                     {t(status.id, status.en)}{ts && pct >= 100 ? ` · ${ts}` : ""}
