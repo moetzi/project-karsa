@@ -6,6 +6,7 @@ import { INSPIRASI } from "@/lib/inspirasi";
 import { IndonesiaImpactMap } from "@/components/IndonesiaImpactMap";
 import { useClosedMap } from "@/lib/campaignStatusStore";
 import { useLang, useT } from "@/lib/i18n";
+import { Reveal, CountUp, Marquee } from "@/components/Motion";
 
 export const Route = createFileRoute("/")({
   head: () => ({
