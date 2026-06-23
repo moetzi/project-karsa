@@ -103,9 +103,16 @@ function Article() {
   const { id } = Route.useParams();
   const a = ARTICLES[id] ?? ARTICLES["1"];
   const others = INSPIRASI.filter((x) => x.id !== id);
+  const [heroReady, setHeroReady] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setHeroReady(true));
+    return () => cancelAnimationFrame(raf);
+  }, [id]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ReadingProgress />
+
       {/* Navbar */}
       <header className="sticky top-0 z-30 bg-background/85 backdrop-blur border-b border-border/60">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
