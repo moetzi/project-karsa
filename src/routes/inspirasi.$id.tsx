@@ -37,46 +37,6 @@ function ReadingProgress() {
   );
 }
 
-function HeroMedia({ background, emoji }: { background: string; emoji: string }) {
-  const [ready, setReady] = useState(false);
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setReady(true));
-    return () => cancelAnimationFrame(id);
-  }, []);
-  return (
-    <div className="relative overflow-hidden">
-      {/* Skeleton */}
-      <div
-        aria-hidden
-        className={
-          "absolute inset-0 bg-muted animate-pulse transition-opacity duration-500 " +
-          (ready ? "opacity-0" : "opacity-100")
-        }
-      />
-      <div
-        className={
-          "relative transition-opacity duration-500 " + (ready ? "opacity-100" : "opacity-0")
-        }
-        style={{ background }}
-      >
-        <div
-          className="absolute inset-0 opacity-20"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.25) 0%, transparent 50%)",
-          }}
-        />
-        <div className="relative max-w-3xl mx-auto px-6 sm:px-8 pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pt-28 lg:pb-32 text-primary-foreground">
-          <div className="text-5xl sm:text-6xl mb-5 drop-shadow-lg" aria-hidden>
-            {emoji}
-          </div>
-          <slot />
-        </div>
-      </div>
-    </div>
-  );
-}
-
 
 export const Route = createFileRoute("/inspirasi/$id")({
   head: () => ({
