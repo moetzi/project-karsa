@@ -100,17 +100,13 @@ export const campaigns = [
     views: "3.4k",
     shares: 612,
     mealPlan: {
-      ringkasan: "Menu 5 hari berbasis ikan segar Laut Timor & sayur KWT Tuamese, dimasak Posyandu Tuamese setiap subuh.",
-      estimasi_per_porsi: 4200,
-      estimasi_total_5hari: 252000,
+      ringkasan: "Menu darurat 1 hari (Senin) untuk 12 anak — ikan lelusi segar dari nelayan Tuamese & sawi KWT, dimasak Posyandu Tuamese subuh hari.",
+      estimasi_per_porsi: 20833,
+      estimasi_total_5hari: 250000,
       menu: [
-        { hari: "Senin" as const, menu: "Nasi + Ikan Lelusi Bumbu Kuning + Tumis Sawi", bahan_lokal: ["Ikan lelusi", "Sawi KWT", "Kunyit"], kandungan_gizi: "Protein 22g, Fe 3mg, Vit A" },
-        { hari: "Selasa" as const, menu: "Nasi Jagung + Telur Dadar Kelor + Sup Labu", bahan_lokal: ["Telur ayam kampung", "Daun kelor", "Labu kuning"], kandungan_gizi: "Protein 18g, Vit A tinggi, Ca 120mg" },
-        { hari: "Rabu" as const, menu: "Nasi + Ikan Kembung Asam Pedas + Kangkung", bahan_lokal: ["Ikan kembung", "Kangkung", "Cabai lokal"], kandungan_gizi: "Omega-3, Protein 24g, Fe 2.5mg" },
-        { hari: "Kamis" as const, menu: "Bubur Jagung Manis + Ayam Suwir + Kacang Hijau", bahan_lokal: ["Jagung manis", "Ayam kampung", "Kacang hijau"], kandungan_gizi: "Protein 20g, Karbo kompleks" },
-        { hari: "Jumat" as const, menu: "Nasi + Pepes Ikan Teri + Tumis Daun Kelor", bahan_lokal: ["Ikan teri", "Daun kelor", "Bawang merah"], kandungan_gizi: "Ca 180mg, Protein 21g, Fe 4mg" },
+        { hari: "Senin" as const, menu: "Nasi Panas + Ikan Lelusi Bumbu Kuning + Tahu Goreng + Tumis Sawi", bahan_lokal: ["Ikan lelusi", "Tahu", "Sawi KWT Tuamese", "Kunyit"], kandungan_gizi: "Protein 24g, Fe 3mg, Vit A" },
       ],
-      tips: "Beli ikan langsung dari nelayan Tuamese pagi hari untuk harga termurah & paling segar.",
+      tips: "Skenario darurat 1 hari untuk 12 anak (Rp 250.000 ≈ Rp 20.800/porsi). Donasi lanjutan dibutuhkan untuk Selasa–Jumat.",
     },
   },
   {
@@ -595,7 +591,7 @@ export function CampaignDetailSheet({
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
-                      <Sparkles className="w-3 h-3" /> {t("Rencana Menu Sen–Jumat", "Meal Plan Mon–Fri")}
+                      <Sparkles className="w-3 h-3" /> {mp.menu.length === 1 ? t(`Rencana Menu ${mp.menu[0].hari}`, `Meal Plan ${mp.menu[0].hari}`) : t("Rencana Menu Sen–Jumat", "Meal Plan Mon–Fri")}
                     </p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
                       {t("Disusun bersama", "Co-planned with")} {c.tmp || c.supplier}
@@ -612,7 +608,7 @@ export function CampaignDetailSheet({
                     <p className="font-mono font-bold text-foreground">Rp {mp.estimasi_per_porsi.toLocaleString("id-ID")}</p>
                   </div>
                   <div className="rounded-lg bg-surface/70 p-2">
-                    <p className="text-muted-foreground">{t("Total 5 hari", "Total 5 days")}</p>
+                    <p className="text-muted-foreground">{mp.menu.length === 1 ? t("Total hari ini", "Total today") : t("Total 5 hari", "Total 5 days")}</p>
                     <p className="font-mono font-bold text-foreground">Rp {mp.estimasi_total_5hari.toLocaleString("id-ID")}</p>
                   </div>
                 </div>
