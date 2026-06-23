@@ -54,9 +54,7 @@ function Copilot() {
               {t("Buat RPP & materi interaktif siap offline.", "Build lesson plans & interactive materials, offline-ready.")}
             </p>
           </div>
-          <span className={"inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full " + (online ? "bg-primary-soft text-primary" : "bg-muted text-muted-foreground")}>
-            <Wifi className="w-3 h-3" /> {online ? t("Online", "Online") : t("Offline", "Offline")}
-          </span>
+          <ConnectionBadge />
         </div>
 
         <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-2 gap-1">
