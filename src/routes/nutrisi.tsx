@@ -336,6 +336,13 @@ export function getCountdown(deadline?: string) {
   return { id: `${hours} jam lagi`, en: `${hours}h left`, urgent, ended: false };
 }
 
+export function formatDisbursedDate(iso: string) {
+  const [datePart] = iso.split("T");
+  const [, m, d] = datePart.split("-");
+  const months = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  return `${parseInt(d, 10)} ${months[parseInt(m, 10) - 1]}`;
+}
+
 function Feed() {
   const sorted = [...campaigns].sort((a, b) => {
     const aDone = a.pct >= 100 ? 1 : 0;
