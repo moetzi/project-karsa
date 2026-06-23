@@ -235,40 +235,7 @@ function Landing() {
             </dl>
           </div>
 
-          <div className="relative">
-            {(() => {
-              const hero = campaigns[0]!;
-              const photo = hero.journalPhotos?.[0];
-              return (
-                <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-border/60 relative">
-                  {photo && (
-                    <img
-                      src={photo}
-                      alt={t("Jurnal Pak Budi — Robinson makan bergizi", "Pak Budi's journal — Robinson eating a nutritious meal")}
-                      className="absolute inset-0 h-full w-full object-cover"
-                    />
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-                  <div className="absolute left-4 right-4 top-4 rounded-2xl border border-white/30 bg-white/15 backdrop-blur-xl p-4 shadow-lg">
-                    <p className="font-mono text-[10px] uppercase tracking-widest text-white/90 font-bold">
-                      {t("Jurnal Guru", "Teacher's Journal")} · {hero.teacher}
-                    </p>
-                    <p className="mt-2 text-[13px] leading-relaxed text-white line-clamp-5">
-                      {hero.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })()}
-            <div className="absolute -bottom-6 -left-6 bg-surface rounded-2xl border border-border/60 shadow-lg p-4 max-w-[220px]">
-              <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">{t("Kampanye Aktif", "Active Campaign")}</p>
-              <p className="mt-1 text-sm font-bold leading-snug">{t("Gizi Sehat Desa Kolaka", "Healthy Meals, Kolaka Village")}</p>
-              <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden">
-                <div className="h-full bg-accent" style={{ width: "56%" }} />
-              </div>
-              <p className="mt-1 text-[10px] font-mono text-muted-foreground">{t("56% dari Rp 15jt", "56% of Rp 15M")}</p>
-            </div>
-          </div>
+          <HeroCard hero={campaigns[0]!} t={t} lang={lang} />
 
         </div>
       </section>
