@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createCampaign, getMyActiveCampaign, closeMyActiveCampaign, updateMyCampaign } from "@/lib/campaigns.functions";
 import { listJournals, deleteJournal } from "@/lib/journals.functions";
+import { generateMealPlan } from "@/lib/ai.functions";
 import { JournalSheet } from "@/components/JournalSheet";
 
 
@@ -664,13 +665,19 @@ const REGIONS = [
 const DAYS_ID = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
 const DAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-const AI_MENU_SAMPLE: Record<string, string> = {
-  Senin: "Nasi Jagung, Ikan Tongkol Bumbu Kuning, Tumis Kangkung",
-  Selasa: "Bubur Kacang Hijau, Telur Rebus, Pisang",
-  Rabu: "Nasi Merah, Ayam Suwir Kemangi, Sup Bayam",
-  Kamis: "Nasi Putih, Tempe Orek, Sayur Asem, Pepaya",
-  Jumat: "Nasi Uduk, Perkedel Tahu, Tumis Buncis Wortel",
+type MealPlanResult = {
+  ringkasan: string;
+  estimasi_per_porsi: number;
+  estimasi_total_5hari: number;
+  menu: Array<{
+    hari: "Senin" | "Selasa" | "Rabu" | "Kamis" | "Jumat";
+    menu: string;
+    bahan_lokal: string[];
+    kandungan_gizi: string;
+  }>;
+  tips: string;
 };
+
 
 function BuatKampanye() {
   const t = useT();
@@ -696,6 +703,8 @@ function BuatKampanye() {
 
   const [menu, setMenu] = useState<Record<string, string>>({});
   const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [mealPlan, setMealPlan] = useState<MealPlanResult | null>(null);
   const [journalCommit, setJournalCommit] = useState(false);
 
   const handlePhotos = (files: FileList | null) => {
@@ -704,12 +713,37 @@ function BuatKampanye() {
     setPhotos((p) => [...p, ...urls].slice(0, 4));
   };
 
-  const autoGenerateMenu = () => {
+  const generatePlanFn = useServerFn(generateMealPlan);
+  const autoGenerateMenu = async () => {
+    setAiError(null);
+    if (!region || !recipients || !target) {
+      setAiError(t(
+        "Isi Provinsi, Jumlah Penerima, dan Target Dana dulu sebelum generate.",
+        "Fill Province, Recipients, and Target before generating.",
+      ));
+      return;
+    }
     setAiLoading(true);
-    setTimeout(() => {
-      setMenu({ ...AI_MENU_SAMPLE });
+    try {
+      const res = await generatePlanFn({
+        data: {
+          region,
+          recipients: Number(recipients),
+          target_amount: Number(target),
+          supplier: supplierName || tmpGroup || "",
+          catatan: desc.slice(0, 400),
+        },
+      });
+      const parsed = JSON.parse(res.json) as MealPlanResult;
+      setMealPlan(parsed);
+      const next: Record<string, string> = {};
+      parsed.menu.forEach((m) => { next[m.hari] = m.menu; });
+      setMenu(next);
+    } catch (err) {
+      setAiError(err instanceof Error ? err.message : String(err));
+    } finally {
       setAiLoading(false);
-    }, 700);
+    }
   };
 
   const groupLabels: Record<string, string> = {
@@ -1079,20 +1113,53 @@ function BuatKampanye() {
           "Leave days blank if not scheduled. This menu appears in the donor's 'Story' tab.",
         )}
       >
-        <div className="space-y-2">
-          {DAYS_ID.map((d, i) => (
-            <div key={d} className="flex items-center gap-2">
-              <span className="w-16 shrink-0 font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
-                {t(d, DAYS_EN[i])}
+        {aiError && (
+          <div className="rounded-xl bg-accent/10 border border-accent/30 text-accent text-[11px] px-3 py-2 mb-3 flex items-start gap-2">
+            <Info className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+            <span>{aiError}</span>
+          </div>
+        )}
+
+        {mealPlan && (
+          <div className="mb-4 rounded-xl bg-primary-soft/50 border border-primary/20 p-3 space-y-2">
+            <p className="text-[12px] text-foreground/85 italic">"{mealPlan.ringkasan}"</p>
+            <div className="flex items-center justify-between text-[11px] font-mono">
+              <span className="text-muted-foreground">
+                {t("Per porsi:", "Per portion:")} <span className="text-foreground font-bold">Rp {mealPlan.estimasi_per_porsi.toLocaleString("id-ID")}</span>
               </span>
-              <input
-                value={menu[d] ?? ""}
-                onChange={(e) => setMenu((m) => ({ ...m, [d]: e.target.value }))}
-                placeholder={t("Opsional — kosongkan jika libur", "Optional — leave blank if none")}
-                className="flex-1 bg-muted/60 rounded-lg px-3 py-2.5 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
-              />
+              <span className="text-muted-foreground">
+                {t("Total 5 hari:", "Total 5d:")} <span className="text-foreground font-bold">Rp {mealPlan.estimasi_total_5hari.toLocaleString("id-ID")}</span>
+              </span>
             </div>
-          ))}
+            <p className="text-[11px] text-foreground/75 leading-snug">💡 {mealPlan.tips}</p>
+          </div>
+        )}
+
+        <div className="space-y-3">
+          {DAYS_ID.map((d, i) => {
+            const detail = mealPlan?.menu.find((m) => m.hari === d);
+            return (
+              <div key={d} className="space-y-1.5">
+                <div className="flex items-center gap-2">
+                  <span className="w-16 shrink-0 font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+                    {t(d, DAYS_EN[i])}
+                  </span>
+                  <input
+                    value={menu[d] ?? ""}
+                    onChange={(e) => setMenu((m) => ({ ...m, [d]: e.target.value }))}
+                    placeholder={t("Opsional — kosongkan jika libur", "Optional — leave blank if none")}
+                    className="flex-1 bg-muted/60 rounded-lg px-3 py-2.5 text-sm text-foreground border border-transparent focus:border-primary outline-none placeholder:text-muted-foreground/70"
+                  />
+                </div>
+                {detail && (
+                  <div className="ml-[72px] text-[11px] text-muted-foreground space-y-0.5">
+                    <p><span className="font-semibold text-foreground/80">{t("Bahan:", "Ingredients:")}</span> {detail.bahan_lokal.join(", ")}</p>
+                    <p><span className="font-semibold text-foreground/80">{t("Gizi:", "Nutrition:")}</span> {detail.kandungan_gizi}</p>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </SectionCard>
 
