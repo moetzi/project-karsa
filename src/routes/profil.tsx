@@ -2,9 +2,10 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useEffect, useState } from "react";
 import { useLang, useT } from "@/lib/i18n";
-import { Settings, Languages, ShieldCheck, HelpCircle, ChevronRight, ChevronDown, Lock, LogOut, Award, MessageCircle, Mail, X, Send, Phone, ExternalLink, CheckCircle2, LifeBuoy, Bell, PartyPopper, NotebookPen, Info } from "lucide-react";
+import { Settings, Languages, ShieldCheck, HelpCircle, ChevronRight, ChevronDown, Lock, LogOut, Award, MessageCircle, Mail, X, Send, Phone, ExternalLink, CheckCircle2, LifeBuoy, Bell, PartyPopper, NotebookPen, Info, Wifi, WifiOff, Download, RefreshCw, Image as ImageIcon, CloudOff, Database } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNotifications, useUnreadCount, markAllRead, markRead, clearNotifications, type AppNotification } from "@/lib/notificationsStore";
+import { useDataSaver } from "@/lib/dataSaverStore";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/profil")({
@@ -166,6 +167,8 @@ function SectionHeader({ icon, title }: { icon: React.ReactNode; title: string }
 function SettingsSection({ onOpenNotifications }: { onOpenNotifications: () => void }) {
   const t = useT();
   const { lang, setLang } = useLang();
+  const [dataSaverOpen, setDataSaverOpen] = useState(false);
+  const [dataSaver] = useDataSaver();
 
   return (
     <section>
@@ -218,12 +221,184 @@ function SettingsSection({ onOpenNotifications }: { onOpenNotifications: () => v
           </span>
           <ChevronRight className="w-4 h-4 text-muted-foreground" />
         </button>
-        <div className="border-t border-border/60 px-4 py-3.5 flex items-center justify-between hover:bg-muted/40 transition-colors cursor-pointer">
-          <span className="text-[13px] text-foreground">{t("Mode Hemat Data", "Data Saver Mode")}</span>
-          <ChevronRight className="w-4 h-4 text-muted-foreground" />
-        </div>
+        <button
+          type="button"
+          onClick={() => setDataSaverOpen(true)}
+          className="w-full border-t border-border/60 px-4 py-3.5 flex items-center justify-between hover:bg-muted/40 transition-colors text-left"
+        >
+          <span className="text-[13px] text-foreground inline-flex items-center gap-2">
+            <WifiOff className="w-4 h-4 text-primary" /> {t("Mode Hemat Data", "Data Saver Mode")}
+          </span>
+          <span className="flex items-center gap-2">
+            <span
+              className={
+                "text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full " +
+                (dataSaver
+                  ? "bg-primary-soft text-primary"
+                  : "bg-muted text-muted-foreground")
+              }
+            >
+              {dataSaver ? t("Aktif", "On") : t("Nonaktif", "Off")}
+            </span>
+            <ChevronRight className="w-4 h-4 text-muted-foreground" />
+          </span>
+        </button>
       </div>
+      {dataSaverOpen && <DataSaverSheet onClose={() => setDataSaverOpen(false)} />}
     </section>
+  );
+}
+
+function DataSaverSheet({ onClose }: { onClose: () => void }) {
+  const t = useT();
+  const [enabled, setEnabled] = useDataSaver();
+  const [online, setOnline] = useState(true);
+
+  useEffect(() => {
+    setOnline(typeof navigator !== "undefined" ? navigator.onLine : true);
+    const on = () => setOnline(true);
+    const off = () => setOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => {
+      window.removeEventListener("online", on);
+      window.removeEventListener("offline", off);
+    };
+  }, []);
+
+  const steps: { icon: React.ReactNode; title: string; desc: string }[] = [
+    {
+      icon: <Download className="w-4 h-4" />,
+      title: t("Unduh materi saat ada Wi-Fi", "Download materials on Wi-Fi"),
+      desc: t(
+        "Buka Edu Co-pilot lalu ketuk ikon unduh pada modul yang ingin dipakai offline. Materi tersimpan permanen di perangkat sampai Anda menghapusnya.",
+        "Open Edu Co-pilot and tap the download icon on the modules you want offline. Materials stay on your device until you delete them.",
+      ),
+    },
+    {
+      icon: <NotebookPen className="w-4 h-4" />,
+      title: t("Tulis jurnal tanpa sinyal", "Write journals without signal"),
+      desc: t(
+        "Jurnal harian yang Anda simpan saat offline akan masuk antrean lokal dan otomatis tersinkron ke kampanye publik begitu perangkat kembali online.",
+        "Daily journals saved while offline are queued locally and automatically sync to the public campaign once the device reconnects.",
+      ),
+    },
+    {
+      icon: <RefreshCw className="w-4 h-4" />,
+      title: t("Sinkron otomatis saat online", "Auto-sync when back online"),
+      desc: t(
+        "Karsa mendeteksi koneksi pulih dan mengirim antrean jurnal, status kampanye, serta statistik Anak Terbantu tanpa perlu tindakan tambahan.",
+        "Karsa detects when the connection returns and pushes queued journals, campaign status, and Children Helped stats automatically.",
+      ),
+    },
+    {
+      icon: <ImageIcon className="w-4 h-4" />,
+      title: t("Hemat gambar & video", "Save images & video"),
+      desc: t(
+        "Saat Mode Hemat Data aktif, foto kampanye dimuat dalam resolusi rendah dan video pratinjau dimatikan untuk menghemat kuota.",
+        "When Data Saver is on, campaign photos load at low resolution and video previews are disabled to save bandwidth.",
+      ),
+    },
+  ];
+
+  return (
+    <BottomSheet onClose={onClose} title={t("Mode Hemat Data", "Data Saver Mode")} icon={<WifiOff className="w-4 h-4" />}>
+      <div className="px-5 py-5 space-y-5">
+        {/* Status */}
+        <div
+          className={
+            "rounded-2xl border p-4 flex items-center gap-3 " +
+            (online
+              ? "bg-emerald-50 border-emerald-200"
+              : "bg-amber-50 border-amber-200")
+          }
+        >
+          <div
+            className={
+              "w-10 h-10 rounded-full grid place-items-center shrink-0 " +
+              (online ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700")
+            }
+          >
+            {online ? <Wifi className="w-5 h-5" /> : <CloudOff className="w-5 h-5" />}
+          </div>
+          <div className="flex-1">
+            <p className="text-[13px] font-bold text-foreground">
+              {online ? t("Perangkat Online", "Device Online") : t("Perangkat Offline", "Device Offline")}
+            </p>
+            <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+              {online
+                ? t("Sinkronisasi jurnal & kampanye berjalan normal.", "Journal & campaign sync running normally.")
+                : t("Jurnal akan tersimpan lokal dan terkirim saat online.", "Journals are saved locally and sent once online.")}
+            </p>
+          </div>
+        </div>
+
+        {/* Toggle */}
+        <div className="bg-surface rounded-2xl border border-border/60 p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary grid place-items-center shrink-0">
+            <Database className="w-5 h-5" />
+          </div>
+          <div className="flex-1">
+            <p className="text-[14px] font-bold text-foreground">
+              {t("Aktifkan Mode Hemat Data", "Enable Data Saver")}
+            </p>
+            <p className="text-[11px] text-muted-foreground mt-0.5 leading-snug">
+              {t(
+                "Memuat gambar resolusi rendah, mematikan autoplay video, & menunda pre-fetch.",
+                "Loads low-res images, disables video autoplay & pauses pre-fetch.",
+              )}
+            </p>
+          </div>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={enabled}
+            onClick={() => setEnabled(!enabled)}
+            className={
+              "w-12 h-7 rounded-full relative transition-colors shrink-0 " +
+              (enabled ? "bg-primary" : "bg-muted-foreground/30")
+            }
+          >
+            <span
+              className={
+                "absolute top-0.5 left-0.5 w-6 h-6 rounded-full bg-white shadow transition-transform " +
+                (enabled ? "translate-x-5" : "translate-x-0")
+              }
+            />
+          </button>
+        </div>
+
+        {/* Offline guide */}
+        <div>
+          <h4 className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold mb-2 px-1">
+            {t("Panduan Offline", "Offline Guide")}
+          </h4>
+          <ol className="space-y-2">
+            {steps.map((s, i) => (
+              <li key={i} className="bg-surface rounded-2xl border border-border/60 p-3.5 flex items-start gap-3">
+                <div className="w-8 h-8 rounded-xl bg-primary-soft text-primary grid place-items-center shrink-0 relative">
+                  {s.icon}
+                  <span className="absolute -top-1.5 -left-1.5 w-5 h-5 rounded-full bg-primary text-primary-foreground text-[10px] font-bold grid place-items-center">
+                    {i + 1}
+                  </span>
+                </div>
+                <div className="flex-1">
+                  <p className="text-[13px] font-bold text-foreground leading-snug">{s.title}</p>
+                  <p className="font-serif text-[12px] text-muted-foreground leading-relaxed mt-1">{s.desc}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <p className="text-[11px] text-muted-foreground leading-relaxed px-1">
+          {t(
+            "Tips: untuk pengalaman offline terbaik, unduh materi & buka kampanye Anda minimal sekali saat tersambung internet.",
+            "Tip: for the best offline experience, download materials and open your campaigns at least once while connected.",
+          )}
+        </p>
+      </div>
+    </BottomSheet>
   );
 }
 
