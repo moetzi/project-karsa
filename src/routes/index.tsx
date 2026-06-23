@@ -463,3 +463,24 @@ function TeacherPortalModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+
+function FaqItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="bg-surface rounded-2xl border border-border/60 overflow-hidden">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-muted/40 transition"
+        aria-expanded={open}
+      >
+        <span className="font-semibold text-[14px] leading-snug">{q}</span>
+        <ChevronDown className={`w-4 h-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && (
+        <div className="px-5 pb-4 -mt-1 text-[13px] text-muted-foreground leading-relaxed">
+          {a}
+        </div>
+      )}
+    </div>
+  );
+}
