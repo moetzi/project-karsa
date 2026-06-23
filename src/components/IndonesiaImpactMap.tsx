@@ -275,7 +275,7 @@ export function IndonesiaImpactMap() {
         <div className="grid grid-cols-3 gap-2">
           <MiniStat label="Provinsi" value={totals.provinces} />
           <MiniStat label="Guru" value={totals.teachers} />
-          <MiniStat label="Kampanye Aktif" value={totals.campaigns} />
+          <MiniStat label="Kampanye" value={totals.campaigns} />
         </div>
 
         <div className="rounded-2xl border border-primary/30 bg-primary-soft/40 p-5 relative">
