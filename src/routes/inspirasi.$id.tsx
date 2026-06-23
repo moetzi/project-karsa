@@ -1,6 +1,42 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Clock, BookOpen, Sprout } from "lucide-react";
+import { useEffect, useState } from "react";
 import { INSPIRASI } from "@/lib/inspirasi";
+
+function ReadingProgress() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const update = () => {
+      const doc = document.documentElement;
+      const scrollTop = window.scrollY || doc.scrollTop;
+      const height = doc.scrollHeight - doc.clientHeight;
+      setProgress(height > 0 ? Math.min(100, (scrollTop / height) * 100) : 0);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+  return (
+    <div
+      className="fixed top-0 left-0 right-0 z-40 h-1 bg-transparent pointer-events-none"
+      role="progressbar"
+      aria-label="Reading progress"
+      aria-valuenow={Math.round(progress)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      <div
+        className="h-full progress-gradient transition-[width] duration-150 ease-out"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+  );
+}
+
 
 export const Route = createFileRoute("/inspirasi/$id")({
   head: () => ({
@@ -67,9 +103,16 @@ function Article() {
   const { id } = Route.useParams();
   const a = ARTICLES[id] ?? ARTICLES["1"];
   const others = INSPIRASI.filter((x) => x.id !== id);
+  const [heroReady, setHeroReady] = useState(false);
+  useEffect(() => {
+    const raf = requestAnimationFrame(() => setHeroReady(true));
+    return () => cancelAnimationFrame(raf);
+  }, [id]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ReadingProgress />
+
       {/* Navbar */}
       <header className="sticky top-0 z-30 bg-background/85 backdrop-blur border-b border-border/60">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -90,18 +133,35 @@ function Article() {
 
       {/* Hero */}
       <section
-        className="relative overflow-hidden animate-fade-in"
-        style={{ background: a.hero }}
+        className="relative overflow-hidden"
+        style={{ background: heroReady ? a.hero : undefined }}
       >
+        {/* Skeleton shimmer while hero gradient mounts */}
         <div
-          className="absolute inset-0 opacity-20"
+          aria-hidden
+          className={
+            "absolute inset-0 bg-muted animate-pulse transition-opacity duration-500 " +
+            (heroReady ? "opacity-0" : "opacity-100")
+          }
+        />
+        <div
+          className={
+            "absolute inset-0 opacity-20 transition-opacity duration-700 " +
+            (heroReady ? "opacity-20" : "opacity-0")
+          }
           style={{
             backgroundImage:
               "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.25) 0%, transparent 50%)",
           }}
         />
-        <div className="relative max-w-3xl mx-auto px-6 sm:px-8 pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pt-28 lg:pb-32 text-primary-foreground">
+        <div
+          className={
+            "relative max-w-3xl mx-auto px-6 sm:px-8 pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pt-28 lg:pb-32 text-primary-foreground transition-opacity duration-500 " +
+            (heroReady ? "opacity-100 animate-fade-in" : "opacity-0")
+          }
+        >
           <div className="text-5xl sm:text-6xl mb-5 drop-shadow-lg">{a.emoji}</div>
+
           <p className="font-mono text-[11px] sm:text-xs uppercase tracking-[0.2em] opacity-90">
             {a.kicker}
           </p>
