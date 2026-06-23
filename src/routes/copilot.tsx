@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useEffect, useState, useCallback } from "react";
-import { Sparkles, Layers, Wifi, Download, Check, BookOpen, HelpCircle, Presentation, ChevronRight, Loader2, Clock, Trash2, AlertCircle, RotateCw } from "lucide-react";
+import { Sparkles, Layers, Download, Check, BookOpen, HelpCircle, Presentation, ChevronRight, Loader2, Clock, Trash2, AlertCircle, RotateCw } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { useServerFn } from "@tanstack/react-start";
 import { generateMaterial } from "@/lib/ai.functions";
 import { listMateri, saveMateri, deleteMateri, type StoredMateri, type MateriFormat } from "@/lib/materiStore";
+import { ConnectionBadge } from "@/components/ConnectionBadge";
+import { withSync } from "@/lib/useConnectionStatus";
 
 export const Route = createFileRoute("/copilot")({
   ssr: false,
