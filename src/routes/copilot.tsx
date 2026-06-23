@@ -113,7 +113,7 @@ function Generator({ online, onSaved }: { online: boolean; onSaved: () => void |
     setLoading(true);
     setError(null);
     try {
-      const res = await generate({ data: { kelas, mapel, format, tujuan, konteks } });
+      const res = await withSync(() => generate({ data: { kelas, mapel, format, tujuan, konteks } }));
       const parsed = JSON.parse(res.json) as Record<string, unknown>;
       await saveMateri({
         format: res.format,
