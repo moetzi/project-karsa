@@ -301,6 +301,9 @@ function Article() {
   const { id } = Route.useParams();
   const a = ARTICLES[id] ?? ARTICLES["1"];
   const others = INSPIRASI.filter((x) => x.id !== id);
+  const currentIndex = INSPIRASI.findIndex((x) => x.id === id);
+  const prev = currentIndex > 0 ? INSPIRASI[currentIndex - 1] : null;
+  const next = currentIndex < INSPIRASI.length - 1 ? INSPIRASI[currentIndex + 1] : null;
   const [heroReady, setHeroReady] = useState(false);
   useEffect(() => {
     const raf = requestAnimationFrame(() => setHeroReady(true));
