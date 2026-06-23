@@ -179,11 +179,6 @@ function Landing() {
             return sorted.map((c) => <CampaignCard key={c.id} c={c} />);
           })()}
         </div>
-        <div className="mt-8 text-center md:hidden">
-          <Link to="/nutrisi" className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
-            Lihat semua kampanye <ArrowRight className="w-4 h-4" />
-          </Link>
-        </div>
       </section>
 
       {/* Pojok Inspirasi */}
