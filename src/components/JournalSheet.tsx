@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { X, Camera, ImagePlus, Check, MapPin, Trash2, Sparkles, Send, Loader2, Save, CloudOff } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { X, Camera, ImagePlus, Check, MapPin, Trash2, Sparkles, Send, Loader2, Save, CloudOff, Receipt, Users, Calendar } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
@@ -12,6 +12,7 @@ import { addJournal, fileToDataUrl } from "@/lib/journalsStore";
 import { closeCampaignLocal } from "@/lib/campaignStatusStore";
 
 type Props = {
+
   campaign: { id: string; title: string; titleEn: string; school: string };
   onClose: () => void;
   /** "closing" marks this as the campaign's closing journal (auto-closes campaign). */
