@@ -377,7 +377,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   // Live totals — baseline (in juta) + new donations
   const newRaised = donations.reduce((s, d) => s + d.amount, 0);
   const closed = useCampaignClosed(c.id);
-  const liveJournals = useJournals(c.id);
+  void useJournals(c.id); // subscribe so card re-renders when journals stream in
   const totalRaised = c.raised * 1_000_000 + newRaised;
   const targetRp = c.target * 1_000_000;
   const rawPct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
