@@ -267,6 +267,23 @@ export function IndonesiaImpactMap() {
             box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
           }
           .leaflet-tooltip-top:before { border-top-color: hsl(var(--foreground)) !important; }
+          .leaflet-control-zoom {
+            top: 0.75rem !important;
+            right: 0.75rem !important;
+            left: auto !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+          }
+          .leaflet-control-zoom a {
+            border-radius: 0.5rem !important;
+            background: hsl(var(--background)) !important;
+            color: hsl(var(--foreground)) !important;
+            border: 1px solid hsl(var(--border) / 0.6) !important;
+          }
+          .leaflet-control-zoom a:hover {
+            background: hsl(var(--muted)) !important;
+          }
+          .leaflet-control-zoom-in { border-bottom: none !important; }
         `}</style>
       </div>
 
