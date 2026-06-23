@@ -1,4 +1,6 @@
-import indonesiaMap from "@/assets/indonesia-map.png";
+import indonesiaMapAsset from "@/assets/indonesia-map.png.asset.json";
+
+const indonesiaMap = indonesiaMapAsset.url;
 
 type Point = {
   name: string;
