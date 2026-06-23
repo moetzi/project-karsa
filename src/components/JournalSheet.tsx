@@ -29,7 +29,7 @@ const MOOD = [
   { emoji: "🤔", id: "Kurang Selera", en: "Picky" },
 ];
 
-export function JournalSheet({ campaign, onClose }: Props) {
+export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = false }: Props) {
   const t = useT();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [photos, setPhotos] = useState<LocalPhoto[]>([]);
@@ -77,36 +77,56 @@ export function JournalSheet({ campaign, onClose }: Props) {
 
   const submitMutation = useMutation({
     mutationFn: async () => {
-      const { data: userRes, error: userErr } = await supabase.auth.getUser();
-      if (userErr || !userRes.user) throw new Error("Not signed in");
-      const userId = userRes.user.id;
+      let urls: string[] = [];
 
-      // Upload each file to storage and collect public URLs.
-      const urls: string[] = [];
-      for (const p of photos) {
-        const ext = p.file.name.split(".").pop()?.toLowerCase() || "jpg";
-        const path = `${userId}/${campaign.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-        const { error: upErr } = await supabase.storage
-          .from("journal-photos")
-          .upload(path, p.file, { contentType: p.file.type, upsert: false });
-        if (upErr) throw new Error(upErr.message);
-        const { data: signed, error: sErr } = await supabase.storage
-          .from("journal-photos")
-          .createSignedUrl(path, 60 * 60 * 24 * 365); // 1 year
-        if (sErr) throw new Error(sErr.message);
-        urls.push(signed.signedUrl);
+      if (localOnly) {
+        // Static-demo campaigns: store photos as data URLs in localStorage.
+        for (const p of photos) {
+          urls.push(await fileToDataUrl(p.file));
+        }
+      } else {
+        const { data: userRes, error: userErr } = await supabase.auth.getUser();
+        if (userErr || !userRes.user) throw new Error("Not signed in");
+        const userId = userRes.user.id;
+
+        for (const p of photos) {
+          const ext = p.file.name.split(".").pop()?.toLowerCase() || "jpg";
+          const path = `${userId}/${campaign.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+          const { error: upErr } = await supabase.storage
+            .from("journal-photos")
+            .upload(path, p.file, { contentType: p.file.type, upsert: false });
+          if (upErr) throw new Error(upErr.message);
+          const { data: signed, error: sErr } = await supabase.storage
+            .from("journal-photos")
+            .createSignedUrl(path, 60 * 60 * 24 * 365);
+          if (sErr) throw new Error(sErr.message);
+          urls.push(signed.signedUrl);
+        }
+
+        await createJournalFn({
+          data: {
+            campaign_id: campaign.id,
+            menu: menu.trim(),
+            story: story.trim(),
+            mood,
+            attendance: attendance ? Number(attendance) : null,
+            photos: urls,
+          },
+        });
       }
 
-      await createJournalFn({
-        data: {
-          campaign_id: campaign.id,
-          menu: menu.trim(),
-          story: story.trim(),
-          mood,
-          attendance: attendance ? Number(attendance) : null,
-          photos: urls,
-        },
+      // Mirror to local store → public web sees it in real-time.
+      addJournal({
+        campaignId: campaign.id,
+        menu: menu.trim(),
+        story: story.trim(),
+        mood,
+        attendance: attendance ? Number(attendance) : null,
+        photos: urls,
+        kind,
       });
+
+      if (kind === "closing") closeCampaignLocal(campaign.id);
     },
     onSuccess: async () => {
       await deleteDraft(campaign.id);
