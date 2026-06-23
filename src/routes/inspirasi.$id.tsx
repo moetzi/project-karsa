@@ -478,14 +478,11 @@ function Article() {
           aria-labelledby="sumber-heading"
           className="mt-14 rounded-2xl border border-border/60 bg-surface/60 p-6 sm:p-8"
         >
-          <p className="font-mono text-[11px] uppercase tracking-widest text-primary font-bold">
-            Referensi
-          </p>
           <h2
             id="sumber-heading"
-            className="mt-1 text-xl sm:text-2xl font-extrabold tracking-tight"
+            className="font-mono text-base sm:text-lg uppercase tracking-widest text-primary font-bold"
           >
-            Sumber kredibel
+            Referensi
           </h2>
           <ol className="mt-5 space-y-3 list-decimal list-inside marker:font-mono marker:text-muted-foreground">
             {a.sources.map((s, i) => (
