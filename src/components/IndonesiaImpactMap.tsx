@@ -228,7 +228,7 @@ export function IndonesiaImpactMap() {
   return (
     <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-stretch min-h-[460px]">
       {/* Map */}
-      <div className="relative rounded-2xl border border-border/60 bg-[#021b1e] overflow-hidden h-full min-h-[360px]">
+      <div className="relative rounded-2xl border border-border/60 bg-[#FFF7ED] overflow-hidden h-full min-h-[360px]">
         <div className="relative h-full w-full">
           <LeafletMap selectedId={selectedId} onSelect={setSelectedId} />
 
