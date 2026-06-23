@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { X, Camera, ImagePlus, Check, MapPin, Trash2, Sparkles, Send, Loader2, Save, CloudOff } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { X, Camera, ImagePlus, Check, MapPin, Trash2, Sparkles, Send, Loader2, Save, CloudOff, Receipt, Users, Calendar } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
@@ -12,6 +12,7 @@ import { addJournal, fileToDataUrl } from "@/lib/journalsStore";
 import { closeCampaignLocal } from "@/lib/campaignStatusStore";
 
 type Props = {
+
   campaign: { id: string; title: string; titleEn: string; school: string };
   onClose: () => void;
   /** "closing" marks this as the campaign's closing journal (auto-closes campaign). */
@@ -31,12 +32,16 @@ const MOOD = [
 
 export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = false }: Props) {
   const t = useT();
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const [photos, setPhotos] = useState<LocalPhoto[]>([]);
-  const [menu, setMenu] = useState("");
+  const proofFileRef = useRef<HTMLInputElement | null>(null);
+  const foodFileRef = useRef<HTMLInputElement | null>(null);
+  const [proofType, setProofType] = useState<"receipt" | "meal">("receipt");
+  const [proofPhotos, setProofPhotos] = useState<LocalPhoto[]>([]);
+  const [foodPhotos, setFoodPhotos] = useState<LocalPhoto[]>([]);
+  const [allocation, setAllocation] = useState("");
   const [story, setStory] = useState("");
   const [mood, setMood] = useState<string | null>(null);
-  const [attendance, setAttendance] = useState("");
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const [date, setDate] = useState(today);
   const [sent, setSent] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
   const [hasDraft, setHasDraft] = useState(false);
@@ -50,10 +55,10 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
     let cancelled = false;
     getDraft(campaign.id).then((d) => {
       if (cancelled || !d) { setDraftLoaded(true); return; }
-      setMenu(d.menu);
+      setAllocation(d.menu);
       setStory(d.story);
       setMood(d.mood);
-      setAttendance(d.attendance);
+      if (d.attendance) setDate(d.attendance);
       setHasDraft(true);
       setDraftLoaded(true);
     });
@@ -63,25 +68,28 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
   // Auto-save text fields (debounced) once draft has been loaded.
   useEffect(() => {
     if (!draftLoaded) return;
-    const hasContent = menu.trim() || story.trim() || mood || attendance;
+    const hasContent = allocation.trim() || story.trim() || mood;
     if (!hasContent) return;
     const t = setTimeout(() => {
       saveDraft({
         campaign_id: campaign.id,
-        menu, story, mood, attendance,
+        menu: allocation, story, mood, attendance: date,
         savedAt: Date.now(),
       }).then(() => setHasDraft(true));
     }, 600);
     return () => clearTimeout(t);
-  }, [draftLoaded, menu, story, mood, attendance, campaign.id]);
+  }, [draftLoaded, allocation, story, mood, date, campaign.id]);
+
+
+  const allPhotos = useMemo(() => [...proofPhotos, ...foodPhotos], [proofPhotos, foodPhotos]);
 
   const submitMutation = useMutation({
     mutationFn: async () => {
-      let urls: string[] = [];
+      const urls: string[] = [];
+      const storyWithDate = `[${date}] ${story.trim()}`;
 
       if (localOnly) {
-        // Static-demo campaigns: store photos as data URLs in localStorage.
-        for (const p of photos) {
+        for (const p of allPhotos) {
           urls.push(await fileToDataUrl(p.file));
         }
       } else {
@@ -89,7 +97,7 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
         if (userErr || !userRes.user) throw new Error("Not signed in");
         const userId = userRes.user.id;
 
-        for (const p of photos) {
+        for (const p of allPhotos) {
           const ext = p.file.name.split(".").pop()?.toLowerCase() || "jpg";
           const path = `${userId}/${campaign.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
           const { error: upErr } = await supabase.storage
@@ -106,22 +114,21 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
         await createJournalFn({
           data: {
             campaign_id: campaign.id,
-            menu: menu.trim(),
-            story: story.trim(),
+            menu: allocation.trim(),
+            story: storyWithDate,
             mood,
-            attendance: attendance ? Number(attendance) : null,
+            attendance: null,
             photos: urls,
           },
         });
       }
 
-      // Mirror to local store → public web sees it in real-time.
       addJournal({
         campaignId: campaign.id,
-        menu: menu.trim(),
-        story: story.trim(),
+        menu: allocation.trim(),
+        story: storyWithDate,
         mood,
-        attendance: attendance ? Number(attendance) : null,
+        attendance: null,
         photos: urls,
         kind,
       });
@@ -140,24 +147,38 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
     },
   });
 
-  const handleFiles = (files: FileList | null) => {
+  const addToList = (
+    files: FileList | null,
+    list: LocalPhoto[],
+    setList: (updater: (p: LocalPhoto[]) => LocalPhoto[]) => void,
+    max: number,
+  ) => {
     if (!files) return;
     const next = Array.from(files)
-      .slice(0, 4 - photos.length)
+      .slice(0, max - list.length)
       .map((file) => ({ file, previewUrl: URL.createObjectURL(file) }));
-    setPhotos((p) => [...p, ...next].slice(0, 4));
+    setList((p) => [...p, ...next].slice(0, max));
   };
 
-  const removePhoto = (idx: number) => {
-    setPhotos((p) => {
+  const removeFromList = (
+    idx: number,
+    setList: (updater: (p: LocalPhoto[]) => LocalPhoto[]) => void,
+  ) => {
+    setList((p) => {
       const removed = p[idx];
       if (removed) URL.revokeObjectURL(removed.previewUrl);
       return p.filter((_, i) => i !== idx);
     });
   };
 
-  const valid = photos.length > 0 && story.trim().length >= 10 && menu.trim().length > 0;
+  const valid =
+    proofPhotos.length > 0 &&
+    foodPhotos.length > 0 &&
+    story.trim().length >= 10 &&
+    allocation.trim().length > 0 &&
+    !!date;
   const submitting = submitMutation.isPending;
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
@@ -214,7 +235,8 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 <button
                   onClick={async () => {
                     await deleteDraft(campaign.id);
-                    setMenu(""); setStory(""); setMood(null); setAttendance("");
+                    setAllocation(""); setStory(""); setMood(null); setDate(today);
+
                     setHasDraft(false);
                     toast.success(t("Draft dihapus", "Draft cleared"));
                   }}
@@ -235,16 +257,55 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
 
 
             <div>
+              <label className="text-xs font-semibold text-foreground mb-2 block">
+                {t("Jenis Bukti Penyaluran", "Disbursement Proof Type")} <span className="text-accent">*</span>
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setProofType("receipt")}
+                  disabled={submitting}
+                  className={
+                    "rounded-xl border py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-semibold transition " +
+                    (proofType === "receipt"
+                      ? "border-primary bg-primary-soft text-foreground"
+                      : "border-border bg-surface text-muted-foreground hover:bg-muted/50")
+                  }
+                >
+                  <Receipt className="w-4 h-4" /> {t("Struk Belanja", "Shopping Receipt")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setProofType("meal")}
+                  disabled={submitting}
+                  className={
+                    "rounded-xl border py-2.5 px-3 flex items-center justify-center gap-2 text-xs font-semibold transition " +
+                    (proofType === "meal"
+                      ? "border-primary bg-primary-soft text-foreground"
+                      : "border-border bg-surface text-muted-foreground hover:bg-muted/50")
+                  }
+                >
+                  <Users className="w-4 h-4" /> {t("Makan Bersama", "Meal Together")}
+                </button>
+              </div>
+            </div>
+
+            <div>
               <label className="text-xs font-semibold text-foreground flex items-center justify-between mb-2">
-                <span>{t("Foto Makan Bersama", "Group Meal Photo")} <span className="text-accent">*</span></span>
-                <span className="font-mono text-[10px] text-muted-foreground">{photos.length}/4</span>
+                <span>
+                  {proofType === "receipt"
+                    ? t("Foto Struk / Nota", "Receipt / Invoice Photo")
+                    : t("Foto Bukti Makan Bersama", "Meal-Together Proof Photo")}{" "}
+                  <span className="text-accent">*</span>
+                </span>
+                <span className="font-mono text-[10px] text-muted-foreground">{proofPhotos.length}/2</span>
               </label>
               <div className="grid grid-cols-4 gap-2">
-                {photos.map((p, i) => (
+                {proofPhotos.map((p, i) => (
                   <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-muted">
                     <img src={p.previewUrl} alt="" className="w-full h-full object-cover" />
                     <button
-                      onClick={() => removePhoto(i)}
+                      onClick={() => removeFromList(i, setProofPhotos)}
                       disabled={submitting}
                       className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white grid place-items-center"
                     >
@@ -252,9 +313,9 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                     </button>
                   </div>
                 ))}
-                {photos.length < 4 && (
+                {proofPhotos.length < 2 && (
                   <button
-                    onClick={() => fileRef.current?.click()}
+                    onClick={() => proofFileRef.current?.click()}
                     disabled={submitting}
                     className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary-soft/30 transition flex flex-col items-center justify-center gap-1 text-muted-foreground disabled:opacity-50"
                   >
@@ -264,16 +325,56 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 )}
               </div>
               <input
-                ref={fileRef}
+                ref={proofFileRef}
                 type="file"
                 accept="image/*"
                 multiple
                 capture="environment"
                 className="hidden"
-                onChange={(e) => { handleFiles(e.target.files); e.target.value = ""; }}
+                onChange={(e) => { addToList(e.target.files, proofPhotos, setProofPhotos, 2); e.target.value = ""; }}
+              />
+            </div>
+
+            <div>
+              <label className="text-xs font-semibold text-foreground flex items-center justify-between mb-2">
+                <span>{t("Foto Makanan yang Dibuat", "Prepared Food Photo")} <span className="text-accent">*</span></span>
+                <span className="font-mono text-[10px] text-muted-foreground">{foodPhotos.length}/3</span>
+              </label>
+              <div className="grid grid-cols-4 gap-2">
+                {foodPhotos.map((p, i) => (
+                  <div key={i} className="relative aspect-square rounded-xl overflow-hidden bg-muted">
+                    <img src={p.previewUrl} alt="" className="w-full h-full object-cover" />
+                    <button
+                      onClick={() => removeFromList(i, setFoodPhotos)}
+                      disabled={submitting}
+                      className="absolute top-1 right-1 w-6 h-6 rounded-full bg-black/60 text-white grid place-items-center"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+                {foodPhotos.length < 3 && (
+                  <button
+                    onClick={() => foodFileRef.current?.click()}
+                    disabled={submitting}
+                    className="aspect-square rounded-xl border-2 border-dashed border-border hover:border-primary hover:bg-primary-soft/30 transition flex flex-col items-center justify-center gap-1 text-muted-foreground disabled:opacity-50"
+                  >
+                    <ImagePlus className="w-5 h-5" />
+                    <span className="text-[9px] font-mono uppercase">{t("Tambah", "Add")}</span>
+                  </button>
+                )}
+              </div>
+              <input
+                ref={foodFileRef}
+                type="file"
+                accept="image/*"
+                multiple
+                capture="environment"
+                className="hidden"
+                onChange={(e) => { addToList(e.target.files, foodPhotos, setFoodPhotos, 3); e.target.value = ""; }}
               />
               <button
-                onClick={() => fileRef.current?.click()}
+                onClick={() => foodFileRef.current?.click()}
                 disabled={submitting}
                 className="mt-2 w-full border border-border rounded-xl py-2.5 text-xs font-semibold text-foreground inline-flex items-center justify-center gap-2 hover:bg-muted/50 disabled:opacity-50"
               >
@@ -283,31 +384,35 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
 
             <div>
               <label className="text-xs font-semibold text-foreground mb-2 block">
-                {t("Menu Hari Ini", "Today's Menu")} <span className="text-accent">*</span>
+                {t("Alokasi Pengeluaran", "Expenditure Allocation")} <span className="text-accent">*</span>
               </label>
-              <input
-                value={menu}
-                onChange={(e) => setMenu(e.target.value)}
+              <textarea
+                value={allocation}
+                onChange={(e) => setAllocation(e.target.value)}
                 disabled={submitting}
-                placeholder={t("cth: Nasi, ayam suwir, tumis kangkung, pisang", "e.g. Rice, shredded chicken, sautéed greens, banana")}
-                className="w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary"
+                rows={3}
+                placeholder={t(
+                  "cth: Belanja beras 5 kg, sayur, ayam, dan buah pisang untuk makan siang bersama.",
+                  "e.g. Bought 5 kg rice, vegetables, chicken, and bananas for the shared lunch."
+                )}
+                className="w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm placeholder:text-muted-foreground/70 focus:outline-none focus:border-primary resize-none"
               />
             </div>
 
             <div>
-              <label className="text-xs font-semibold text-foreground mb-2 block">
-                {t("Jumlah Anak Hadir", "Children Attending")}
+              <label className="text-xs font-semibold text-foreground mb-2 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" /> {t("Tanggal Pelaksanaan", "Date Conducted")} <span className="text-accent">*</span>
               </label>
               <input
-                type="number"
-                inputMode="numeric"
-                value={attendance}
-                onChange={(e) => setAttendance(e.target.value)}
+                type="date"
+                value={date}
+                max={today}
+                onChange={(e) => setDate(e.target.value)}
                 disabled={submitting}
-                placeholder="28"
                 className="w-full rounded-xl border border-border bg-surface px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
               />
             </div>
+
 
             <div>
               <label className="text-xs font-semibold text-foreground mb-2 block">
@@ -337,7 +442,7 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
 
             <div>
               <label className="text-xs font-semibold text-foreground flex items-center justify-between mb-2">
-                <span>{t("Cerita Hari Ini", "Today's Story")} <span className="text-accent">*</span></span>
+                <span>{t("Kesan Anak yang Terbantu", "Children's Impressions")} <span className="text-accent">*</span></span>
                 <span className="font-mono text-[10px] text-muted-foreground">{story.length}/280</span>
               </label>
               <textarea
@@ -346,8 +451,8 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 disabled={submitting}
                 rows={4}
                 placeholder={t(
-                  "Tulis momen hangat hari ini — bagaimana anak-anak menikmati makanannya?",
-                  "Share today's warm moment — how did the children enjoy their meal?"
+                  "Ceritakan kesan anak-anak — ekspresi, semangat, atau momen hangat saat makan bersama.",
+                  "Describe the children's impressions — expressions, energy, or warm moments during the shared meal."
                 )}
                 className="w-full font-serif rounded-xl border border-border bg-surface px-3 py-2.5 text-sm leading-relaxed focus:outline-none focus:border-primary resize-none"
               />
@@ -355,8 +460,8 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 onClick={() =>
                   setStory(
                     t(
-                      "Hari ini anak-anak makan dengan lahap. Mereka sangat senang menikmati menu bergizi bersama teman-teman.",
-                      "The children ate heartily today, joyfully sharing a nutritious meal with their friends."
+                      "Anak-anak terlihat sangat antusias. Banyak yang tersenyum lebar saat menerima makanannya dan berterima kasih ke teman-teman donatur.",
+                      "The children looked thrilled — big smiles when receiving their meals and warm thanks to the donor friends."
                     )
                   )
                 }
@@ -366,6 +471,7 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 <Sparkles className="w-3 h-3" /> {t("Bantu tulis dengan AI", "Help me write with AI")}
               </button>
             </div>
+
 
             <button
               onClick={() => {
