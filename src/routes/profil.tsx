@@ -136,6 +136,7 @@ function Profil() {
 
         <SettingsSection onOpenNotifications={() => setNotifOpen(true)} />
         <HelpSection />
+        <AboutSection />
 
         <button
           onClick={handleSignOut}
