@@ -32,7 +32,7 @@ const PROVINCES: Province[] = [
   { name: "Banten", capital: "Serang", lat: -6.1136, lng: 106.1492, teachers: 3, campaigns: 0, since: "Jun 2026" },
   { name: "Bali", capital: "Denpasar", lat: -8.65, lng: 115.2167, teachers: 4, campaigns: 0, since: "Jun 2026" },
   { name: "Nusa Tenggara Barat", capital: "Mataram", lat: -8.5833, lng: 116.1167, teachers: 3, campaigns: 0, since: "Jun 2026" },
-  { name: "Nusa Tenggara Timur", capital: "Kupang", lat: -10.1667, lng: 123.5833, teachers: 6, campaigns: 0, since: "Jun 2026" },
+  { name: "Nusa Tenggara Timur", capital: "Kupang", lat: -10.1667, lng: 123.5833, teachers: 6, campaigns: 1, since: "Jun 2026" },
   { name: "Kalimantan Barat", capital: "Pontianak", lat: -0.0263, lng: 109.3425, teachers: 3, campaigns: 0, since: "Jun 2026" },
   { name: "Kalimantan Tengah", capital: "Palangka Raya", lat: -2.21, lng: 113.9153, teachers: 3, campaigns: 0, since: "Jun 2026" },
   { name: "Kalimantan Selatan", capital: "Banjarbaru", lat: -3.45, lng: 114.8, teachers: 3, campaigns: 0, since: "Jun 2026" },
