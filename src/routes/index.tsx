@@ -162,14 +162,11 @@ function Landing() {
 
       {/* Kampanye Aktif */}
       <section id="kampanye" className="max-w-6xl mx-auto px-6 py-20 border-t border-border/60">
-        <div className="flex items-end justify-between gap-4 mb-8">
+        <div className="mb-8">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">Kampanye Aktif</p>
             <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Pilih kampanye yang ingin kamu dukung</h2>
           </div>
-          <Link to="/nutrisi" className="hidden md:inline-flex items-center gap-1 text-sm font-semibold text-primary hover:opacity-80">
-            Lihat semua <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {(() => {
