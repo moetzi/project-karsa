@@ -342,17 +342,23 @@ export function JournalSheet({ campaign, onClose }: Props) {
             </div>
 
             <button
-              onClick={() => submitMutation.mutate()}
-              disabled={!valid || submitting}
+              onClick={() => {
+                if (isOffline) {
+                  toast.info(t("Draft sudah tersimpan. Kirim saat online kembali.", "Draft saved. Submit when you're back online."));
+                  return;
+                }
+                submitMutation.mutate();
+              }}
+              disabled={!valid || submitting || isOffline}
               className={
                 "w-full rounded-xl py-3.5 font-semibold text-sm inline-flex items-center justify-center gap-2 transition " +
-                (valid && !submitting
+                (valid && !submitting && !isOffline
                   ? "bg-primary text-primary-foreground hover:opacity-95"
                   : "bg-muted text-muted-foreground cursor-not-allowed")
               }
             >
-              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-              {submitting ? t("Mengirim…", "Sending…") : t("Kirim Jurnal", "Submit Journal")}
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : isOffline ? <CloudOff className="w-4 h-4" /> : <Send className="w-4 h-4" />}
+              {submitting ? t("Mengirim…", "Sending…") : isOffline ? t("Offline — Tersimpan sebagai Draft", "Offline — Saved as Draft") : t("Kirim Jurnal", "Submit Journal")}
             </button>
             <p className="text-[10px] text-center text-muted-foreground font-mono">
               {t("Jurnal akan dibagikan ke donatur kampanye ini.", "This journal will be shared with the campaign's donors.")}
