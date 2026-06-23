@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, Clock, BookOpen, Sprout, ExternalLink, Quote } from "lucide-react";
+import { ArrowLeft, ArrowRight, Clock, BookOpen, Sprout, ExternalLink, Quote } from "lucide-react";
 import { useEffect, useState } from "react";
 import { INSPIRASI } from "@/lib/inspirasi";
 import articleStunting from "@/assets/article-stunting.jpg";
