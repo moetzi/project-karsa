@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Heart, GraduationCap, ShieldCheck, X, Sprout, Clock, BookOpen, Brain, HeartHandshake, WifiOff, FileCheck2, Camera, Receipt, ChevronDown, ChevronLeft, ChevronRight, Languages } from "lucide-react";
 import { campaigns, CampaignCard } from "@/routes/nutrisi";
 import { INSPIRASI } from "@/lib/inspirasi";
