@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Heart, GraduationCap, ShieldCheck, X, Sprout, Users, TrendingUp, Clock, ArrowRight, BookOpen } from "lucide-react";
 import { campaigns, CampaignCard } from "@/routes/nutrisi";
 import { INSPIRASI } from "@/lib/inspirasi";
+import { IndonesiaImpactMap } from "@/components/IndonesiaImpactMap";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -112,13 +113,27 @@ function Landing() {
         </div>
       </section>
 
+      {/* Dampak — Dashboard sebaran */}
+      <section id="dampak" className="max-w-6xl mx-auto px-6 py-20 border-t border-border/60">
+        <div className="max-w-2xl">
+          <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">Dampak Karsa</p>
+          <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Sebaran kampanye di seluruh Nusantara</h2>
+          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+            Setiap titik bercahaya adalah seorang guru Karsa yang sedang memimpin kampanye gizi di provinsinya. Hover pada titik untuk melihat detail.
+          </p>
+        </div>
+        <div className="mt-10">
+          <IndonesiaImpactMap />
+        </div>
+      </section>
+
       {/* Cara Kerja */}
       <section id="cara" className="max-w-6xl mx-auto px-6 py-20">
         <div className="text-center max-w-2xl mx-auto">
           <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">Cara Kerja</p>
           <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Tiga langkah, dampak langsung</h2>
         </div>
-        <div id="dampak" className="mt-12 grid md:grid-cols-3 gap-6">
+        <div className="mt-12 grid md:grid-cols-3 gap-6">
           {[
             { icon: Users, t: "Guru mengajukan", d: "Guru terverifikasi NUPTK/PegID membuat kampanye spesifik untuk muridnya." },
             { icon: Heart, t: "Donatur memberi", d: "Anda berdonasi langsung ke kampanye yang transparan, tanpa potongan platform." },
