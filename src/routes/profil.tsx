@@ -320,6 +320,34 @@ function HelpSection() {
   );
 }
 
+function AboutSection() {
+  const t = useT();
+  return (
+    <section>
+      <SectionHeader icon={<Info className="w-3.5 h-3.5" />} title={t("Tentang Aplikasi", "About the App")} />
+      <div className="bg-surface rounded-2xl border border-border/60 overflow-hidden">
+        <Link
+          to="/tentang"
+          className="w-full px-4 py-4 flex items-center gap-3 hover:bg-muted/40 transition-colors text-left"
+        >
+          <div className="w-9 h-9 rounded-xl bg-primary-soft text-primary grid place-items-center shrink-0">
+            <Info className="w-4 h-4" />
+          </div>
+          <div className="flex-1">
+            <p className="text-[14px] font-bold text-foreground">
+              {t("Tentang Karsa", "About Karsa")}
+            </p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {t("Misi, visi, dan cara kerja aplikasi", "Mission, vision, and how the app works")}
+            </p>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground" />
+        </Link>
+      </div>
+    </section>
+  );
+}
+
 function ContactRows() {
   const t = useT();
   const [chatOpen, setChatOpen] = useState(false);
