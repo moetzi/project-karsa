@@ -167,6 +167,19 @@ export const campaigns = [
     boosts: 84,
     views: "836",
     shares: 211,
+    mealPlan: {
+      ringkasan: "Menu 5 hari memanfaatkan sayur Kelompok Tani Harapan Jaya & ikan sungai Mahakam, dimasak Posyandu.",
+      estimasi_per_porsi: 4800,
+      estimasi_total_5hari: 1512000,
+      menu: [
+        { hari: "Senin" as const, menu: "Nasi + Ikan Patin Bakar + Tumis Daun Singkong", bahan_lokal: ["Ikan patin", "Daun singkong", "Bawang putih"], kandungan_gizi: "Protein 22g, Fe 3mg" },
+        { hari: "Selasa" as const, menu: "Nasi + Telur Rebus Bumbu Bali + Sayur Bening Labu", bahan_lokal: ["Telur", "Labu siam", "Tomat"], kandungan_gizi: "Protein 18g, Vit C" },
+        { hari: "Rabu" as const, menu: "Nasi + Ayam Kuah Kuning + Tumis Kacang Panjang", bahan_lokal: ["Ayam kampung", "Kacang panjang", "Kunyit"], kandungan_gizi: "Protein 24g, Vit A" },
+        { hari: "Kamis" as const, menu: "Nasi + Ikan Baung Asam Pedas + Sayur Genjer", bahan_lokal: ["Ikan baung", "Genjer", "Cabai"], kandungan_gizi: "Protein 23g, Omega-3" },
+        { hari: "Jumat" as const, menu: "Nasi + Tempe Orek + Sayur Sop Wortel-Kentang", bahan_lokal: ["Tempe", "Wortel", "Kentang"], kandungan_gizi: "Protein nabati 17g, serat" },
+      ],
+      tips: "Beli sayur dua kali seminggu (Senin & Kamis) untuk jaga kesegaran di hulu Mahakam.",
+    },
   },
   {
     id: "nabire-gizi-pegunungan",
