@@ -41,7 +41,7 @@ function Landing() {
             className="inline-flex items-center gap-2 rounded-xl bg-foreground text-background px-4 py-2 text-sm font-semibold hover:opacity-90 transition"
           >
             <GraduationCap className="w-4 h-4" />
-            Portal Guru <span className="opacity-70 font-normal">(Masuk/Daftar)</span>
+            Portal Guru <span className="opacity-70 font-normal">{"\n"}</span>
           </button>
         </div>
       </header>
