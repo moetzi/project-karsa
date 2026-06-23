@@ -1,11 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useEffect, useState, useCallback } from "react";
-import { Sparkles, Layers, Wifi, Download, Check, BookOpen, HelpCircle, Presentation, ChevronRight, Loader2, Clock, Trash2, AlertCircle, RotateCw } from "lucide-react";
+import { Sparkles, Layers, Download, Check, BookOpen, HelpCircle, Presentation, ChevronRight, Loader2, Clock, Trash2, AlertCircle, RotateCw } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { useServerFn } from "@tanstack/react-start";
 import { generateMaterial } from "@/lib/ai.functions";
 import { listMateri, saveMateri, deleteMateri, type StoredMateri, type MateriFormat } from "@/lib/materiStore";
+import { ConnectionBadge } from "@/components/ConnectionBadge";
+import { withSync } from "@/lib/useConnectionStatus";
 
 export const Route = createFileRoute("/copilot")({
   ssr: false,
@@ -52,9 +54,7 @@ function Copilot() {
               {t("Buat RPP & materi interaktif siap offline.", "Build lesson plans & interactive materials, offline-ready.")}
             </p>
           </div>
-          <span className={"inline-flex items-center gap-1.5 text-[11px] font-semibold px-2.5 py-1 rounded-full " + (online ? "bg-primary-soft text-primary" : "bg-muted text-muted-foreground")}>
-            <Wifi className="w-3 h-3" /> {online ? t("Online", "Online") : t("Offline", "Offline")}
-          </span>
+          <ConnectionBadge />
         </div>
 
         <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-2 gap-1">
@@ -113,7 +113,7 @@ function Generator({ online, onSaved }: { online: boolean; onSaved: () => void |
     setLoading(true);
     setError(null);
     try {
-      const res = await generate({ data: { kelas, mapel, format, tujuan, konteks } });
+      const res = await withSync(() => generate({ data: { kelas, mapel, format, tujuan, konteks } }));
       const parsed = JSON.parse(res.json) as Record<string, unknown>;
       await saveMateri({
         format: res.format,

@@ -27,6 +27,8 @@ import { createCampaign, getMyActiveCampaign, closeMyActiveCampaign, updateMyCam
 import { listJournals, deleteJournal } from "@/lib/journals.functions";
 import { generateMealPlan } from "@/lib/ai.functions";
 import { JournalSheet } from "@/components/JournalSheet";
+import { ConnectionBadge } from "@/components/ConnectionBadge";
+import { withSync } from "@/lib/useConnectionStatus";
 
 
 export const Route = createFileRoute("/nutrisi")({
@@ -47,7 +49,10 @@ function Nutrisi() {
   return (
     <PhoneShell>
       <div className="px-6 pt-4 pb-6">
-        <h1 className="text-[28px] font-extrabold text-foreground">{t("Gizi & Kampanye", "Nutrition & Campaigns")}</h1>
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="text-[28px] font-extrabold text-foreground">{t("Gizi & Kampanye", "Nutrition & Campaigns")}</h1>
+          <ConnectionBadge />
+        </div>
 
         <div className="mt-5 bg-muted/70 rounded-2xl p-1 grid grid-cols-2 gap-1">
           {([
@@ -325,6 +330,20 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
               <span className="inline-flex items-center gap-1.5 bg-surface/95 text-primary text-[11px] font-semibold px-2.5 py-1 rounded-full">
                 <ShieldCheck className="w-3 h-3" /> {t("Terverifikasi", "Verified")}
               </span>
+              {(() => {
+                const hasJournal = !!c.journal;
+                const status =
+                  pct < 100
+                    ? { id: "Pending", en: "Pending", cls: "bg-muted text-muted-foreground" }
+                    : hasJournal
+                    ? { id: "Dilaporkan", en: "Reported", cls: "bg-primary text-primary-foreground" }
+                    : { id: "Tersalur", en: "Disbursed", cls: "bg-accent text-accent-foreground" };
+                return (
+                  <span className={"inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full " + status.cls}>
+                    {t(status.id, status.en)}
+                  </span>
+                );
+              })()}
             </div>
             <div className="text-white">
               <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
@@ -805,7 +824,7 @@ function BuatKampanye() {
     }
     setAiLoading(true);
     try {
-      const res = await generatePlanFn({
+      const res = await withSync(() => generatePlanFn({
         data: {
           region,
           recipients: Number(recipients),
@@ -813,7 +832,7 @@ function BuatKampanye() {
           supplier: supplierName || tmpGroup || "",
           catatan: desc.slice(0, 400),
         },
-      });
+      }));
       const parsed = JSON.parse(res.json) as MealPlanResult;
       setMealPlan(parsed);
       const next: Record<string, string> = {};
