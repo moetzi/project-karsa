@@ -162,7 +162,7 @@ function SectionHeader({ icon, title }: { icon: React.ReactNode; title: string }
   );
 }
 
-function SettingsSection() {
+function SettingsSection({ onOpenNotifications }: { onOpenNotifications: () => void }) {
   const t = useT();
   const { lang, setLang } = useLang();
 
