@@ -47,8 +47,15 @@ function HeroCard({ hero, t, lang }: { hero: (typeof campaigns)[number]; t: Retu
 
   return (
     <div className="relative">
+      {/* Neubrutalist sticker badges */}
+      <div className="pointer-events-none absolute -top-4 -right-3 z-20 rotate-[8deg] rounded-xl border-2 border-foreground bg-accent px-3 py-1.5 text-[11px] font-mono font-bold uppercase tracking-wider text-accent-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] animate-fade-in">
+        100% sampai
+      </div>
+      <div className="pointer-events-none absolute -bottom-3 -left-3 z-20 -rotate-[6deg] rounded-xl border-2 border-foreground bg-primary px-3 py-1.5 text-[11px] font-mono font-bold uppercase tracking-wider text-primary-foreground shadow-[4px_4px_0_0_hsl(var(--foreground))] animate-fade-in">
+        Jurnal terbuka
+      </div>
       <div
-        className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-border/60 relative select-none"
+        className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-2 border-foreground relative select-none transition-transform duration-300 hover:-translate-y-0.5"
         onTouchStart={(e) => { startX.current = e.changedTouches[0]?.clientX ?? null; }}
         onTouchEnd={(e) => {
           const endX = e.changedTouches[0]?.clientX ?? null;
