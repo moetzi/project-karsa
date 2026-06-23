@@ -315,6 +315,114 @@ function Landing() {
         </div>
       </section>
 
+      {/* FAQ */}
+      <section id="faq" className="max-w-5xl mx-auto px-6 py-20 border-t border-border/60">
+        <div className="text-center max-w-2xl mx-auto">
+          <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">Pertanyaan yang sering ditanyakan</p>
+          <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Hal yang mungkin ingin Anda tahu sebelum ikut</h2>
+          <p className="mt-3 text-sm text-muted-foreground">Pilih sudut pandang Anda — kami siapkan jawaban yang berbeda untuk donatur dan guru.</p>
+        </div>
+
+        <div className="mt-12 grid md:grid-cols-2 gap-10">
+          {/* Donatur */}
+          <div>
+            <div className="flex items-center gap-2 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-primary-soft text-primary grid place-items-center">
+                <Heart className="w-4 h-4" />
+              </div>
+              <h3 className="font-extrabold text-lg">Untuk Donatur</h3>
+            </div>
+            <div className="space-y-3">
+              {[
+                {
+                  q: "Apakah benar 100% donasi saya sampai ke anak-anak?",
+                  a: "Ya. Karsa tidak memotong biaya platform sama sekali. Yang Anda transfer adalah yang dibelanjakan guru. Biaya operasional kami ditanggung mitra di luar kanal donasi.",
+                },
+                {
+                  q: "Bagaimana saya bisa yakin uangnya tidak disalahgunakan?",
+                  a: "Setiap kampanye dibuat oleh guru yang identitasnya sudah diverifikasi (NUPTK/PegID + NPSN). Guru wajib mengunggah jurnal berisi foto bukti belanja atau bukti makan bersama, foto makanan, deskripsi alokasi, dan kesan murid — semuanya bisa Anda baca langsung di halaman kampanye.",
+                },
+                {
+                  q: "Berapa donasi minimum?",
+                  a: "Tidak ada minimum yang menyakitkan. Mulai dari nominal yang Anda nyaman — bahkan Rp 10.000 sudah cukup untuk satu porsi makan bergizi di banyak daerah.",
+                },
+                {
+                  q: "Apakah saya dapat bukti donasi?",
+                  a: "Ya. Anda akan menerima konfirmasi donasi, dan ketika jurnal kampanye diperbarui, laporannya bisa diakses publik — termasuk oleh Anda.",
+                },
+                {
+                  q: "Apakah saya bisa memilih kampanye tertentu?",
+                  a: "Tentu. Anda bebas memilih kampanye di provinsi atau sekolah yang dekat di hati Anda — bukan dana umum yang acak.",
+                },
+              ].map((f, i) => (
+                <FaqItem key={i} q={f.q} a={f.a} />
+              ))}
+            </div>
+          </div>
+
+          {/* Guru */}
+          <div>
+            <div className="flex items-center gap-2 mb-5">
+              <div className="w-9 h-9 rounded-xl bg-accent-soft text-accent grid place-items-center">
+                <GraduationCap className="w-4 h-4" />
+              </div>
+              <h3 className="font-extrabold text-lg">Untuk Guru</h3>
+            </div>
+            <div className="space-y-3">
+              {[
+                {
+                  q: "Siapa yang boleh membuat kampanye di Karsa?",
+                  a: "Guru aktif di Indonesia yang memiliki NUPTK atau PegID dan terdaftar di sekolah ber-NPSN. Verifikasi dilakukan sebelum kampanye pertama Anda terbit.",
+                },
+                {
+                  q: "Apa saja yang perlu saya laporkan?",
+                  a: "Cukup unggah foto bukti belanja (struk/nota) atau bukti makan bersama dan foto makanan yang dibuat. Lalu isi jurnal dengan deskripsi alokasi pengeluaran, tanggal, serta kesan anak yang terbantu. Tidak perlu laporan formal yang panjang.",
+                },
+                {
+                  q: "Apakah saya butuh internet stabil?",
+                  a: "Tidak. Karsa adalah aplikasi web yang ringan, bisa dipasang di layar utama HP, dan banyak fitur — termasuk materi Edu Co-pilot — tetap bisa diakses tanpa koneksi.",
+                },
+                {
+                  q: "Apakah ada biaya bagi guru?",
+                  a: "Tidak ada. Karsa gratis untuk guru, baik untuk membuka kampanye gizi maupun memakai Edu Co-pilot.",
+                },
+                {
+                  q: "Bagaimana jika target donasi tidak tercapai?",
+                  a: "Dana yang sudah terkumpul tetap bisa Anda salurkan untuk anak-anak sesuai skala yang memungkinkan. Yang penting setiap rupiah tetap tercatat dan terlapor di jurnal.",
+                },
+              ].map((f, i) => (
+                <FaqItem key={i} q={f.q} a={f.a} />
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* CTA terakhir */}
+        <div className="mt-16 rounded-3xl border border-border/60 bg-surface p-8 md:p-10 text-center">
+          <h3 className="text-2xl md:text-3xl font-extrabold tracking-tight">
+            Satu donasi hari ini = satu piring nasi panas besok.
+          </h3>
+          <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Anak-anak di pelosok tidak butuh janji besar. Mereka butuh sarapan. Guru mereka sudah hadir setiap pagi —
+            sekarang giliran kita berdiri di samping mereka.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3 justify-center">
+            <a
+              href="#kampanye"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-95 transition shadow-lg shadow-primary/20"
+            >
+              <Heart className="w-4 h-4" /> Donasi sekarang
+            </a>
+            <button
+              onClick={() => setPortalOpen(true)}
+              className="inline-flex items-center gap-2 rounded-xl border border-border bg-background px-6 py-3.5 text-sm font-semibold hover:bg-muted transition"
+            >
+              <GraduationCap className="w-4 h-4" /> Saya seorang guru
+            </button>
+          </div>
+        </div>
+      </section>
+
       <footer className="border-t border-border/60 py-10 text-center text-xs text-muted-foreground">
         © 2026 Karsa · Untuk anak-anak Indonesia
       </footer>
