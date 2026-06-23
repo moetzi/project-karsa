@@ -135,7 +135,7 @@ function Landing() {
           <div className="relative">
             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-border/60 relative">
               <img
-                src={campaigns[0].journalPhotos[0]}
+                src={campaigns[0]!.journalPhotos[0]}
                 alt={t("Jurnal Pak Budi — Robinson makan bergizi", "Pak Budi's journal — Robinson eating a nutritious meal")}
                 className="absolute inset-0 h-full w-full object-cover"
               />
