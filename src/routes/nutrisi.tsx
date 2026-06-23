@@ -99,6 +99,19 @@ export const campaigns = [
     boosts: 218,
     views: "3.4k",
     shares: 612,
+    mealPlan: {
+      ringkasan: "Menu 5 hari berbasis ikan segar Laut Timor & sayur KWT Tuamese, dimasak Posyandu Tuamese setiap subuh.",
+      estimasi_per_porsi: 4200,
+      estimasi_total_5hari: 252000,
+      menu: [
+        { hari: "Senin" as const, menu: "Nasi + Ikan Lelusi Bumbu Kuning + Tumis Sawi", bahan_lokal: ["Ikan lelusi", "Sawi KWT", "Kunyit"], kandungan_gizi: "Protein 22g, Fe 3mg, Vit A" },
+        { hari: "Selasa" as const, menu: "Nasi Jagung + Telur Dadar Kelor + Sup Labu", bahan_lokal: ["Telur ayam kampung", "Daun kelor", "Labu kuning"], kandungan_gizi: "Protein 18g, Vit A tinggi, Ca 120mg" },
+        { hari: "Rabu" as const, menu: "Nasi + Ikan Kembung Asam Pedas + Kangkung", bahan_lokal: ["Ikan kembung", "Kangkung", "Cabai lokal"], kandungan_gizi: "Omega-3, Protein 24g, Fe 2.5mg" },
+        { hari: "Kamis" as const, menu: "Bubur Jagung Manis + Ayam Suwir + Kacang Hijau", bahan_lokal: ["Jagung manis", "Ayam kampung", "Kacang hijau"], kandungan_gizi: "Protein 20g, Karbo kompleks" },
+        { hari: "Jumat" as const, menu: "Nasi + Pepes Ikan Teri + Tumis Daun Kelor", bahan_lokal: ["Ikan teri", "Daun kelor", "Bawang merah"], kandungan_gizi: "Ca 180mg, Protein 21g, Fe 4mg" },
+      ],
+      tips: "Beli ikan langsung dari nelayan Tuamese pagi hari untuk harga termurah & paling segar.",
+    },
   },
   {
     id: "kolaka-gizi-sehat",
@@ -120,6 +133,19 @@ export const campaigns = [
     boosts: 132,
     views: "1.2k",
     shares: 450,
+    mealPlan: {
+      ringkasan: "Menu seimbang 5 hari berbasis hasil laut Kolaka & sayur BUMDes Maju Bersama, dimasak PKK Desa.",
+      estimasi_per_porsi: 5500,
+      estimasi_total_5hari: 1292500,
+      menu: [
+        { hari: "Senin" as const, menu: "Nasi + Ikan Cakalang Bumbu Rica + Tumis Kangkung", bahan_lokal: ["Cakalang", "Kangkung", "Cabai"], kandungan_gizi: "Protein 25g, Omega-3" },
+        { hari: "Selasa" as const, menu: "Nasi + Telur Balado + Sayur Bening Bayam", bahan_lokal: ["Telur ayam", "Bayam", "Tomat"], kandungan_gizi: "Protein 18g, Fe 3.5mg" },
+        { hari: "Rabu" as const, menu: "Nasi + Ayam Bakar Bumbu Kuning + Urap Sayur", bahan_lokal: ["Ayam kampung", "Kacang panjang", "Kelapa"], kandungan_gizi: "Protein 23g, Vit A" },
+        { hari: "Kamis" as const, menu: "Nasi + Ikan Layang Goreng + Tumis Pakis", bahan_lokal: ["Ikan layang", "Pakis", "Bawang"], kandungan_gizi: "Protein 22g, Fe 2.8mg" },
+        { hari: "Jumat" as const, menu: "Nasi + Pepes Tahu Tempe + Sayur Asem", bahan_lokal: ["Tahu", "Tempe", "Asam jawa"], kandungan_gizi: "Protein nabati 16g, serat tinggi" },
+      ],
+      tips: "Manfaatkan musim panen jagung Kolaka untuk variasi karbohidrat 2x seminggu.",
+    },
   },
   {
     id: "mahakam-pangan-bergizi",
@@ -141,6 +167,19 @@ export const campaigns = [
     boosts: 84,
     views: "836",
     shares: 211,
+    mealPlan: {
+      ringkasan: "Menu 5 hari memanfaatkan sayur Kelompok Tani Harapan Jaya & ikan sungai Mahakam, dimasak Posyandu.",
+      estimasi_per_porsi: 4800,
+      estimasi_total_5hari: 1512000,
+      menu: [
+        { hari: "Senin" as const, menu: "Nasi + Ikan Patin Bakar + Tumis Daun Singkong", bahan_lokal: ["Ikan patin", "Daun singkong", "Bawang putih"], kandungan_gizi: "Protein 22g, Fe 3mg" },
+        { hari: "Selasa" as const, menu: "Nasi + Telur Rebus Bumbu Bali + Sayur Bening Labu", bahan_lokal: ["Telur", "Labu siam", "Tomat"], kandungan_gizi: "Protein 18g, Vit C" },
+        { hari: "Rabu" as const, menu: "Nasi + Ayam Kuah Kuning + Tumis Kacang Panjang", bahan_lokal: ["Ayam kampung", "Kacang panjang", "Kunyit"], kandungan_gizi: "Protein 24g, Vit A" },
+        { hari: "Kamis" as const, menu: "Nasi + Ikan Baung Asam Pedas + Sayur Genjer", bahan_lokal: ["Ikan baung", "Genjer", "Cabai"], kandungan_gizi: "Protein 23g, Omega-3" },
+        { hari: "Jumat" as const, menu: "Nasi + Tempe Orek + Sayur Sop Wortel-Kentang", bahan_lokal: ["Tempe", "Wortel", "Kentang"], kandungan_gizi: "Protein nabati 17g, serat" },
+      ],
+      tips: "Beli sayur dua kali seminggu (Senin & Kamis) untuk jaga kesegaran di hulu Mahakam.",
+    },
   },
   {
     id: "nabire-gizi-pegunungan",
@@ -548,6 +587,51 @@ export function CampaignDetailSheet({
               )}
             </div>
           )}
+
+          {"mealPlan" in c && (c as { mealPlan?: MealPlanResult }).mealPlan && (() => {
+            const mp = (c as { mealPlan: MealPlanResult }).mealPlan;
+            return (
+              <div className="rounded-xl border border-primary/30 bg-primary-soft/30 p-3.5 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3" /> {t("Rencana Menu Sen–Jumat", "Meal Plan Mon–Fri")}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      {t("Disusun bersama", "Co-planned with")} {c.tmp || c.supplier}
+                    </p>
+                  </div>
+                  <span className="text-[9px] font-mono uppercase tracking-wider bg-surface text-primary border border-primary/40 px-2 py-0.5 rounded-full shrink-0">
+                    AI-Assisted
+                  </span>
+                </div>
+                <p className="font-serif italic text-[12px] text-foreground/85 leading-relaxed">"{mp.ringkasan}"</p>
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  <div className="rounded-lg bg-surface/70 p-2">
+                    <p className="text-muted-foreground">{t("Per porsi", "Per portion")}</p>
+                    <p className="font-mono font-bold text-foreground">Rp {mp.estimasi_per_porsi.toLocaleString("id-ID")}</p>
+                  </div>
+                  <div className="rounded-lg bg-surface/70 p-2">
+                    <p className="text-muted-foreground">{t("Total 5 hari", "Total 5 days")}</p>
+                    <p className="font-mono font-bold text-foreground">Rp {mp.estimasi_total_5hari.toLocaleString("id-ID")}</p>
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  {mp.menu.map((m) => (
+                    <div key={m.hari} className="rounded-lg bg-surface/60 border border-border/40 p-2.5">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">{m.hari}</p>
+                        <p className="text-[10px] text-muted-foreground">{m.kandungan_gizi}</p>
+                      </div>
+                      <p className="text-[12px] font-semibold text-foreground mt-0.5 leading-snug">{m.menu}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">🌿 {m.bahan_lokal.join(" • ")}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[11px] text-foreground/75 bg-surface/60 rounded-lg p-2 leading-snug">💡 {mp.tips}</p>
+              </div>
+            );
+          })()}
 
           <div className="rounded-xl border border-border/60 p-3 space-y-1.5 text-[12px]">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1">
