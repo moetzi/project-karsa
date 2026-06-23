@@ -34,7 +34,7 @@ function Landing() {
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
             <a href="#dampak" className="hover:text-foreground">Dampak</a>
             <a href="#cara" className="hover:text-foreground">Cara Kerja</a>
-            <Link to="/nutrisi" className="hover:text-foreground">Kampanye</Link>
+            <a href="#kampanye" className="hover:text-foreground">Kampanye</a>
           </nav>
           <button
             onClick={() => setPortalOpen(true)}
@@ -69,12 +69,12 @@ function Landing() {
               untuk anak-anak Indonesia di pelosok — dikelola oleh guru-guru terverifikasi.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/nutrisi"
+              <a
+                href="#kampanye"
                 className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-95 transition shadow-lg shadow-primary/20"
               >
                 <Heart className="w-4 h-4" /> Mulai Berdonasi
-              </Link>
+              </a>
               <a
                 href="#cara"
                 className="inline-flex items-center gap-2 rounded-xl border border-border bg-surface px-6 py-3.5 text-sm font-semibold hover:bg-muted transition"
