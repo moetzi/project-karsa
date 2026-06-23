@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { Heart, GraduationCap, ShieldCheck, X, Sprout, Users, TrendingUp, Clock, ArrowRight, BookOpen } from "lucide-react";
+import { Heart, GraduationCap, ShieldCheck, X, Sprout, Users, TrendingUp, Clock, BookOpen } from "lucide-react";
 import { campaigns, CampaignCard } from "@/routes/nutrisi";
 import { INSPIRASI } from "@/lib/inspirasi";
 import { IndonesiaImpactMap } from "@/components/IndonesiaImpactMap";
