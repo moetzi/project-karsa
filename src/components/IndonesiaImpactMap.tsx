@@ -233,7 +233,7 @@ export function IndonesiaImpactMap() {
           <LeafletMap selectedId={selectedId} onSelect={setSelectedId} />
 
           {/* Legend overlay */}
-          <div className="absolute bottom-3 left-3 z-[400] rounded-xl border border-border/60 bg-background/85 backdrop-blur px-3 py-2 pointer-events-none">
+          <div className="absolute top-4 left-3 z-[400] rounded-xl border border-border/60 bg-background/85 backdrop-blur px-3 py-2 pointer-events-none shadow-sm">
             <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">Legenda</p>
             <div className="mt-1.5 flex items-center gap-2">
               <span
