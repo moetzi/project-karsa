@@ -476,12 +476,16 @@ function Article() {
                   params={{ id: o.id }}
                   className="group bg-surface rounded-2xl border border-border/60 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 flex"
                 >
-                  <div
-                    className="relative w-32 sm:w-40 shrink-0 flex items-end p-4"
-                    style={{ background: o.hero }}
-                  >
-                    <span className="absolute top-3 right-3 text-2xl drop-shadow">{o.emoji}</span>
-                    <span className="bg-surface/95 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                  <div className="relative w-32 sm:w-40 shrink-0 overflow-hidden">
+                    <img
+                      src={o.image}
+                      alt={o.title.id}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                    <span className="absolute bottom-3 left-3 bg-surface/95 backdrop-blur text-primary text-[10px] font-mono font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full">
                       {o.tag.id}
                     </span>
                   </div>
