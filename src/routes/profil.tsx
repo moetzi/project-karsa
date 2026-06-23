@@ -207,10 +207,16 @@ function SettingsSection({ onOpenNotifications }: { onOpenNotifications: () => v
           </div>
         </div>
 
-        <div className="border-t border-border/60 px-4 py-3.5 flex items-center justify-between hover:bg-muted/40 transition-colors cursor-pointer">
-          <span className="text-[13px] text-foreground">{t("Notifikasi", "Notifications")}</span>
+        <button
+          type="button"
+          onClick={onOpenNotifications}
+          className="w-full border-t border-border/60 px-4 py-3.5 flex items-center justify-between hover:bg-muted/40 transition-colors text-left"
+        >
+          <span className="text-[13px] text-foreground inline-flex items-center gap-2">
+            <Bell className="w-4 h-4 text-primary" /> {t("Notifikasi", "Notifications")}
+          </span>
           <ChevronRight className="w-4 h-4 text-muted-foreground" />
-        </div>
+        </button>
         <div className="border-t border-border/60 px-4 py-3.5 flex items-center justify-between hover:bg-muted/40 transition-colors cursor-pointer">
           <span className="text-[13px] text-foreground">{t("Mode Hemat Data", "Data Saver Mode")}</span>
           <ChevronRight className="w-4 h-4 text-muted-foreground" />
