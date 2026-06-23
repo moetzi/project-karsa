@@ -98,9 +98,6 @@ function Beranda() {
                     : t("Tulis jurnal penutup dengan foto bukti untuk ", "Write the closing journal with proof photos for ")}
                   {!hasClosingJournal && <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>}
                 </p>
-                  {t("Tulis jurnal penutup dengan foto bukti untuk ", "Write the closing journal with proof photos for ")}
-                  <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>.
-                </p>
               </div>
             </div>
             <button onClick={() => setJournalOpen(true)} className="mt-4 w-full bg-foreground text-background rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-90 transition">
