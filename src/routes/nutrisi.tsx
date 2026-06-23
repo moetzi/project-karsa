@@ -722,14 +722,62 @@ export function CampaignDetailSheet({
   );
 }
 
-function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) {
+function ShareSheet({
+  campaignId,
+  title,
+  school,
+  onClose,
+}: {
+  campaignId?: string;
+  title: string;
+  school?: string;
+  onClose: () => void;
+}) {
   const t = useT();
   const [copied, setCopied] = useState(false);
+  const origin = typeof window !== "undefined" ? window.location.origin : "https://project-karsa.lovable.app";
+  const shareUrl = campaignId ? `${origin}/?c=${encodeURIComponent(campaignId)}` : origin;
+  const shareText = t(
+    `Dukung kampanye "${title}"${school ? ` — ${school}` : ""} di Karsa. Donasi transparan, dampak nyata.`,
+    `Support "${title}"${school ? ` — ${school}` : ""} on Karsa. Transparent donations, real impact.`,
+  );
+
   const channels = [
-    { id: "wa", label: "WhatsApp", emoji: "💬", bg: "linear-gradient(135deg,#25D366,#128C7E)" },
-    { id: "ig", label: "Instagram Story", emoji: "📸", bg: "linear-gradient(135deg,#F58529,#DD2A7B,#8134AF)" },
-    { id: "tw", label: "Twitter / X", emoji: "𝕏", bg: "linear-gradient(135deg,#0f1419,#1d9bf0)" },
+    {
+      id: "wa",
+      label: "WhatsApp",
+      emoji: "💬",
+      bg: "linear-gradient(135deg,#25D366,#128C7E)",
+      href: `https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`,
+    },
+    {
+      id: "tg",
+      label: "Telegram",
+      emoji: "✈️",
+      bg: "linear-gradient(135deg,#2AABEE,#229ED9)",
+      href: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`,
+    },
+    {
+      id: "tw",
+      label: "Twitter / X",
+      emoji: "𝕏",
+      bg: "linear-gradient(135deg,#0f1419,#1d9bf0)",
+      href: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
+    },
   ];
+
+  const nativeShare = async () => {
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try { await navigator.share({ title, text: shareText, url: shareUrl }); } catch {}
+    }
+  };
+
+  const copyUrl = () => {
+    navigator.clipboard?.writeText(shareUrl).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-foreground/40 backdrop-blur-sm animate-in fade-in duration-200"
@@ -751,7 +799,13 @@ function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) 
 
         <div className="mt-5 grid grid-cols-3 gap-3">
           {channels.map((ch) => (
-            <button key={ch.id} className="flex flex-col items-center gap-2 group">
+            <a
+              key={ch.id}
+              href={ch.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center gap-2 group"
+            >
               <span
                 className="w-14 h-14 rounded-2xl grid place-items-center text-2xl text-white shadow-md group-active:scale-95 transition"
                 style={{ background: ch.bg }}
@@ -759,16 +813,25 @@ function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) 
                 {ch.emoji}
               </span>
               <span className="text-[11px] font-semibold text-foreground text-center leading-tight">{ch.label}</span>
-            </button>
+            </a>
           ))}
         </div>
 
+        {typeof navigator !== "undefined" && typeof navigator.share === "function" && (
+          <button
+            onClick={nativeShare}
+            className="mt-4 w-full inline-flex items-center justify-center gap-2 bg-primary text-primary-foreground rounded-xl py-3 text-sm font-semibold"
+          >
+            <Share2 className="w-4 h-4" /> {t("Bagikan via aplikasi…", "Share via app…")}
+          </button>
+        )}
+
         <button
-          onClick={() => { setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-          className="mt-5 w-full flex items-center justify-between bg-muted/70 rounded-xl px-4 py-3 text-sm hover:bg-muted transition"
+          onClick={copyUrl}
+          className="mt-3 w-full flex items-center justify-between bg-muted/70 rounded-xl px-4 py-3 text-sm hover:bg-muted transition"
         >
-          <span className="font-mono text-xs text-muted-foreground truncate">karsa.id/k/{title.split(" ")[1]?.toLowerCase() ?? "kampanye"}</span>
-          <span className={"inline-flex items-center gap-1 font-semibold text-xs " + (copied ? "text-primary" : "text-foreground")}>
+          <span className="font-mono text-xs text-muted-foreground truncate">{shareUrl}</span>
+          <span className={"inline-flex items-center gap-1 font-semibold text-xs shrink-0 ml-2 " + (copied ? "text-primary" : "text-foreground")}>
             {copied ? (<><Check className="w-3.5 h-3.5" /> {t("Tersalin", "Copied")}</>) : (<><Link2 className="w-3.5 h-3.5" /> {t("Salin", "Copy")}</>)}
           </span>
         </button>
@@ -776,6 +839,7 @@ function ShareSheet({ title, onClose }: { title: string; onClose: () => void }) 
     </div>
   );
 }
+
 
 const SUPPLIER_GROUPS = [
   "BUMDes",
