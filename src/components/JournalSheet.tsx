@@ -32,8 +32,42 @@ export function JournalSheet({ campaign, onClose }: Props) {
   const [mood, setMood] = useState<string | null>(null);
   const [attendance, setAttendance] = useState("");
   const [sent, setSent] = useState(false);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+  const [hasDraft, setHasDraft] = useState(false);
   const qc = useQueryClient();
   const createJournalFn = useServerFn(createJournal);
+  const conn = useConnectionStatus();
+  const isOffline = conn === "offline";
+
+  // Load draft on mount.
+  useEffect(() => {
+    let cancelled = false;
+    getDraft(campaign.id).then((d) => {
+      if (cancelled || !d) { setDraftLoaded(true); return; }
+      setMenu(d.menu);
+      setStory(d.story);
+      setMood(d.mood);
+      setAttendance(d.attendance);
+      setHasDraft(true);
+      setDraftLoaded(true);
+    });
+    return () => { cancelled = true; };
+  }, [campaign.id]);
+
+  // Auto-save text fields (debounced) once draft has been loaded.
+  useEffect(() => {
+    if (!draftLoaded) return;
+    const hasContent = menu.trim() || story.trim() || mood || attendance;
+    if (!hasContent) return;
+    const t = setTimeout(() => {
+      saveDraft({
+        campaign_id: campaign.id,
+        menu, story, mood, attendance,
+        savedAt: Date.now(),
+      }).then(() => setHasDraft(true));
+    }, 600);
+    return () => clearTimeout(t);
+  }, [draftLoaded, menu, story, mood, attendance, campaign.id]);
 
   const submitMutation = useMutation({
     mutationFn: async () => {
