@@ -1,6 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PartyPopper, NotebookPen, MapPin, TrendingUp, Clock, ArrowRight, BarChart3, Eye, Repeat2, ThumbsUp, Users, Share2, Heart, Lock } from "lucide-react";
 import { donors, ShareSheet, getCountdown, CampaignDetailSheet, campaigns } from "@/routes/nutrisi";
 import { JournalSheet } from "@/components/JournalSheet";
@@ -8,6 +8,8 @@ import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations, formatRelative as fmtDonRel } from "@/lib/donationStore";
 import { useCampaignClosed } from "@/lib/campaignStatusStore";
 import { useJournals } from "@/lib/journalsStore";
+import { pushNotification } from "@/lib/notificationsStore";
+import { toast } from "sonner";
 import { useT } from "@/lib/i18n";
 import { INSPIRASI } from "@/lib/inspirasi";
 
