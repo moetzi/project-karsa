@@ -226,7 +226,7 @@ export const campaigns = [
     school: "SDN 015 Wamena",
     recipients: 35,
     supplier: "Petani Lokal Wamena",
-    tmp: "Dinas Pangan Wamena",
+    tmp: "Posyandu Wamena",
     region: "Papua Pegunungan",
     raised: 13.1,
     target: 32,
