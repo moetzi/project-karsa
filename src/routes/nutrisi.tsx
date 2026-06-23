@@ -106,7 +106,7 @@ export const campaigns = [
       menu: [
         { hari: "Senin" as const, menu: "Nasi Panas + Ikan Lelusi Bumbu Kuning + Tahu Goreng + Tumis Sawi", bahan_lokal: ["Ikan lelusi", "Tahu", "Sawi KWT Tuamese", "Kunyit"], kandungan_gizi: "Protein 24g, Fe 3mg, Vit A" },
       ],
-      tips: "Skenario darurat 1 hari untuk 12 anak (Rp 250.000 ≈ Rp 20.800/porsi). Donasi lanjutan dibutuhkan untuk Selasa–Jumat.",
+      tips: "Skenario darurat 1 hari untuk 12 anak (Rp 250.000 ≈ Rp 20.800/porsi)",
     },
   },
   {
