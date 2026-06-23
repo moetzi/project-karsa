@@ -681,3 +681,100 @@ function PrivacySheet({ onClose }: { onClose: () => void }) {
     </BottomSheet>
   );
 }
+
+function fmtNotifTime(ts: number, lang: "id" | "en") {
+  const diff = Math.floor((Date.now() - ts) / 1000);
+  if (diff < 60) return lang === "id" ? "baru saja" : "just now";
+  if (diff < 3600) return `${Math.floor(diff / 60)}m`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}j`;
+  return `${Math.floor(diff / 86400)}h`;
+}
+
+function NotificationsSheet({ onClose }: { onClose: () => void }) {
+  const t = useT();
+  const { lang } = useLang();
+  const items = useNotifications();
+
+  useEffect(() => {
+    const id = setTimeout(() => markAllRead(), 400);
+    return () => clearTimeout(id);
+  }, []);
+
+  return (
+    <BottomSheet onClose={onClose} title={t("Notifikasi", "Notifications")} icon={<Bell className="w-4 h-4" />}>
+      <div className="p-4 space-y-3">
+        {items.length === 0 ? (
+          <div className="py-10 text-center">
+            <div className="w-14 h-14 mx-auto rounded-full bg-muted grid place-items-center text-muted-foreground">
+              <Bell className="w-6 h-6" />
+            </div>
+            <p className="mt-3 text-sm font-semibold text-foreground">
+              {t("Belum ada notifikasi", "No notifications yet")}
+            </p>
+            <p className="mt-1 text-[12px] text-muted-foreground">
+              {t(
+                "Pemberitahuan saat kampanye 100% akan muncul di sini.",
+                "You'll be notified here when a campaign reaches 100%.",
+              )}
+            </p>
+          </div>
+        ) : (
+          <>
+            <ul className="space-y-2">
+              {items.map((n) => (
+                <NotificationRow key={n.id} n={n} lang={lang} onClose={onClose} />
+              ))}
+            </ul>
+            <button
+              type="button"
+              onClick={() => clearNotifications()}
+              className="w-full mt-2 text-[12px] text-muted-foreground hover:text-foreground py-2"
+            >
+              {t("Hapus semua", "Clear all")}
+            </button>
+          </>
+        )}
+      </div>
+    </BottomSheet>
+  );
+}
+
+function NotificationRow({ n, lang, onClose }: { n: AppNotification; lang: "id" | "en"; onClose: () => void }) {
+  const isFunded = n.kind === "campaign_funded";
+  const Icon = isFunded ? PartyPopper : Bell;
+  return (
+    <li
+      className={
+        "rounded-xl border p-3 flex items-start gap-3 " +
+        (n.read ? "bg-surface border-border/60" : "bg-primary-soft/30 border-primary/30")
+      }
+    >
+      <div
+        className={
+          "w-9 h-9 rounded-full grid place-items-center shrink-0 " +
+          (isFunded ? "bg-accent text-accent-foreground" : "bg-primary-soft text-primary")
+        }
+      >
+        <Icon className="w-4 h-4" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <p className="text-[13px] font-bold text-foreground truncate">{n.title}</p>
+          <span className="text-[10px] font-mono text-muted-foreground shrink-0">{fmtNotifTime(n.createdAt, lang)}</span>
+        </div>
+        <p className="mt-0.5 text-[12px] text-muted-foreground leading-snug">{n.body}</p>
+        {isFunded && n.campaignId && (
+          <Link
+            to="/beranda"
+            search={{ journal: "1" } as never}
+            onClick={() => { markRead(n.id); onClose(); }}
+            className="mt-2 inline-flex items-center gap-1.5 text-[12px] font-semibold text-primary hover:underline"
+          >
+            <NotebookPen className="w-3.5 h-3.5" />
+            {lang === "id" ? "Buat Jurnal Harian" : "Create Daily Journal"}
+          </Link>
+        )}
+      </div>
+    </li>
+  );
+}
