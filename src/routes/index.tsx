@@ -34,9 +34,11 @@ function Landing() {
             <span className="text-lg">Karsa</span>
           </Link>
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
-            <a href="#dampak" className="hover:text-foreground">Dampak</a>
+            <a href="#tentang" className="hover:text-foreground">Tentang</a>
             <a href="#cara" className="hover:text-foreground">Cara Kerja</a>
+            <a href="#dampak" className="hover:text-foreground">Dampak</a>
             <a href="#kampanye" className="hover:text-foreground">Kampanye</a>
+            <a href="#faq" className="hover:text-foreground">FAQ</a>
           </nav>
           <button
             onClick={() => setPortalOpen(true)}
