@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Heart, GraduationCap, ShieldCheck, X, Sprout, Users, TrendingUp, MapPin, Clock, ArrowRight, BookOpen } from "lucide-react";
-import { campaigns, getCountdown } from "@/routes/nutrisi";
+import { campaigns, CampaignCard } from "@/routes/nutrisi";
 import { INSPIRASI } from "@/lib/inspirasi";
 
 export const Route = createFileRoute("/")({
