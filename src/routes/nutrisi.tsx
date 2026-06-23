@@ -588,6 +588,51 @@ export function CampaignDetailSheet({
             </div>
           )}
 
+          {"mealPlan" in c && (c as { mealPlan?: MealPlanResult }).mealPlan && (() => {
+            const mp = (c as { mealPlan: MealPlanResult }).mealPlan;
+            return (
+              <div className="rounded-xl border border-primary/30 bg-primary-soft/30 p-3.5 space-y-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
+                      <Sparkles className="w-3 h-3" /> {t("Rencana Menu Sen–Jumat", "Meal Plan Mon–Fri")}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      {t("Disusun bersama", "Co-planned with")} {c.tmp || c.supplier}
+                    </p>
+                  </div>
+                  <span className="text-[9px] font-mono uppercase tracking-wider bg-surface text-primary border border-primary/40 px-2 py-0.5 rounded-full shrink-0">
+                    AI-Assisted
+                  </span>
+                </div>
+                <p className="font-serif italic text-[12px] text-foreground/85 leading-relaxed">"{mp.ringkasan}"</p>
+                <div className="grid grid-cols-2 gap-2 text-[11px]">
+                  <div className="rounded-lg bg-surface/70 p-2">
+                    <p className="text-muted-foreground">{t("Per porsi", "Per portion")}</p>
+                    <p className="font-mono font-bold text-foreground">Rp {mp.estimasi_per_porsi.toLocaleString("id-ID")}</p>
+                  </div>
+                  <div className="rounded-lg bg-surface/70 p-2">
+                    <p className="text-muted-foreground">{t("Total 5 hari", "Total 5 days")}</p>
+                    <p className="font-mono font-bold text-foreground">Rp {mp.estimasi_total_5hari.toLocaleString("id-ID")}</p>
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  {mp.menu.map((m) => (
+                    <div key={m.hari} className="rounded-lg bg-surface/60 border border-border/40 p-2.5">
+                      <div className="flex items-baseline justify-between gap-2">
+                        <p className="font-mono text-[10px] uppercase tracking-wider text-primary font-bold">{m.hari}</p>
+                        <p className="text-[10px] text-muted-foreground">{m.kandungan_gizi}</p>
+                      </div>
+                      <p className="text-[12px] font-semibold text-foreground mt-0.5 leading-snug">{m.menu}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1">🌿 {m.bahan_lokal.join(" • ")}</p>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-[11px] text-foreground/75 bg-surface/60 rounded-lg p-2 leading-snug">💡 {mp.tips}</p>
+              </div>
+            );
+          })()}
+
           <div className="rounded-xl border border-border/60 p-3 space-y-1.5 text-[12px]">
             <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground font-bold mb-1">
               {t("Rantai Akuntabilitas", "Accountability Chain")}
