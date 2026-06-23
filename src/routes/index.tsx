@@ -311,7 +311,7 @@ function Landing() {
               { icon: ShieldCheck, color: "primary", t: t("Identitas Terverifikasi", "Verified Identity"), d: t("Setiap guru divalidasi lewat NUPTK/PegID + NPSN. Tidak ada akun anonim, tidak ada kampanye fiktif.", "Every teacher is validated via NUPTK/PegID + NPSN. No anonymous accounts, no fictitious campaigns.") },
               { icon: WifiOff, color: "accent", t: t("Dibuat untuk Sinyal Tipis", "Built for Weak Signal"), d: t("Hemat data, bisa dipasang di layar utama, dan tetap bisa diakses meski koneksi datang dan pergi.", "Data-light, installable on the home screen, and still accessible when the connection comes and goes.") },
             ].map((card) => (
-              <div key={card.t} className="bg-surface rounded-2xl border border-border/60 p-5">
+              <div key={card.t} className="group bg-surface rounded-2xl border-2 border-foreground p-5 transition-all duration-300 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--foreground)]">
                 <div className={`w-10 h-10 rounded-xl ${card.color === "primary" ? "bg-primary-soft text-primary" : "bg-accent-soft text-accent"} grid place-items-center`}>
                   <card.icon className="w-5 h-5" />
                 </div>
@@ -348,7 +348,7 @@ function Landing() {
             { icon: Receipt, t: t("4. Guru belanja", "4. Teacher shops"), d: t("Guru membeli bahan makanan ke pemasok lokal terdekat dan menyimpan bukti belanja atau bukti makan bersama.", "The teacher buys food from the nearest local supplier and keeps the shopping receipt or proof of the shared meal.") },
             { icon: Camera, t: t("5. Jurnal terbuka", "5. Open journal"), d: t("Foto, deskripsi alokasi, dan kesan anak-anak diunggah ke jurnal dan dipublikasikan otomatis untuk semua orang.", "Photos, allocation notes, and the children's impressions are uploaded to the journal and published automatically for everyone.") },
           ].map((s) => (
-            <div key={s.t} className="bg-surface rounded-2xl border border-border/60 p-5">
+            <div key={s.t} className="group bg-surface rounded-2xl border-2 border-foreground p-5 transition-all duration-300 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--foreground)]">
               <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary grid place-items-center">
                 <s.icon className="w-5 h-5" />
               </div>
