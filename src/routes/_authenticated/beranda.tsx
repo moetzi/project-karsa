@@ -58,7 +58,49 @@ function Beranda() {
   const isCampaignClosed = !!closed || rawPct >= 100;
   const hasClosingJournal = journals.some((j) => j.kind === "closing");
   const fmtJt = (n: number) => (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
-  return (
+
+  // Fire toast + persistent notification on transition to funded/closed.
+  const prevClosedRef = useRef<boolean | null>(null);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const prev = prevClosedRef.current;
+    if (prev === false && isCampaignClosed) {
+      const title = t("Dana Tersalurkan 🎉", "Funds Disbursed 🎉");
+      const body = t(
+        `Kampanye "${ACTIVE_CAMPAIGN.title}" mencapai 100%. Saatnya tulis jurnal harian.`,
+        `Campaign "${ACTIVE_CAMPAIGN.titleEn}" reached 100%. Time to write a daily journal.`,
+      );
+      pushNotification({
+        id: `funded-${ACTIVE_CAMPAIGN.id}`,
+        kind: "campaign_funded",
+        title,
+        body,
+        campaignId: ACTIVE_CAMPAIGN.id,
+      });
+      toast.success(title, {
+        description: body,
+        duration: 8000,
+        action: {
+          label: t("Buat Jurnal", "Write Journal"),
+          onClick: () => setJournalOpen(true),
+        },
+      });
+    }
+    prevClosedRef.current = isCampaignClosed;
+  }, [isCampaignClosed, t]);
+
+  // Deep-link from notifications sheet (?journal=1).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("journal") === "1" && isCampaignClosed) {
+      setJournalOpen(true);
+      params.delete("journal");
+      const qs = params.toString();
+      navigate({ to: "/beranda", search: qs ? Object.fromEntries(params) : {}, replace: true });
+    }
+  }, [isCampaignClosed, navigate]);
+
     <PhoneShell>
       <div className="px-6 pt-4 pb-6 space-y-6">
         <header>
