@@ -233,7 +233,7 @@ export function IndonesiaImpactMap() {
           <LeafletMap selectedId={selectedId} onSelect={setSelectedId} />
 
           {/* Legend overlay */}
-          <div className="absolute bottom-3 left-3 z-[400] rounded-xl border border-border/60 bg-background/85 backdrop-blur px-3 py-2 pointer-events-none">
+          <div className="absolute top-4 left-3 z-[400] rounded-xl border border-border/60 bg-background/85 backdrop-blur px-3 py-2 pointer-events-none shadow-sm">
             <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">Legenda</p>
             <div className="mt-1.5 flex items-center gap-2">
               <span
@@ -267,6 +267,25 @@ export function IndonesiaImpactMap() {
             box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
           }
           .leaflet-tooltip-top:before { border-top-color: hsl(var(--foreground)) !important; }
+          .leaflet-top.leaflet-left {
+            left: auto !important;
+            right: 0.75rem !important;
+            top: 0.75rem !important;
+          }
+          .leaflet-control-zoom {
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+          }
+          .leaflet-control-zoom a {
+            border-radius: 0.5rem !important;
+            background: hsl(var(--background)) !important;
+            color: hsl(var(--foreground)) !important;
+            border: 1px solid hsl(var(--border) / 0.6) !important;
+          }
+          .leaflet-control-zoom a:hover {
+            background: hsl(var(--muted)) !important;
+          }
+          .leaflet-control-zoom-in { border-bottom: none !important; }
         `}</style>
       </div>
 
