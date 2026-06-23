@@ -355,20 +355,29 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
               </span>
               {(() => {
                 const hasJournal = !!c.journal;
+                const disbursedAt = ("disbursedAt" in c ? (c as { disbursedAt?: string }).disbursedAt : undefined);
                 const status =
                   pct < 100
                     ? { id: "Pending", en: "Pending", cls: "bg-muted text-muted-foreground" }
                     : hasJournal
-                    ? { id: "Dilaporkan", en: "Reported", cls: "bg-primary text-primary-foreground" }
+                    ? { id: "Dana Tersalurkan", en: "Funds Disbursed", cls: "bg-primary text-primary-foreground" }
                     : { id: "Tersalur", en: "Disbursed", cls: "bg-accent text-accent-foreground" };
+                const ts = disbursedAt
+                  ? new Date(disbursedAt).toLocaleDateString("id-ID", { day: "numeric", month: "short" })
+                  : null;
                 return (
                   <span className={"inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-1 rounded-full " + status.cls}>
-                    {t(status.id, status.en)}
+                    {t(status.id, status.en)}{ts && pct >= 100 ? ` · ${ts}` : ""}
                   </span>
                 );
               })()}
             </div>
             <div className="text-white">
+              {c.tmp && (
+                <span className="inline-flex items-center gap-1 bg-black/40 backdrop-blur-sm border border-white/20 text-white text-[10px] font-semibold px-2 py-0.5 rounded-full mb-1.5">
+                  <ShieldCheck className="w-2.5 h-2.5" /> {t("Dimasak oleh", "Cooked by")} {c.tmp}
+                </span>
+              )}
               <h2 className="text-xl font-extrabold drop-shadow leading-tight">{c.title}</h2>
               <p className="text-xs flex items-center gap-1 mt-1 opacity-90">
                 <MapPin className="w-3 h-3" /> {c.school}
@@ -376,6 +385,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
             </div>
           </div>
         </div>
+
 
         <div className="p-4">
           <div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs items-start pb-3 border-b border-border/60">
@@ -433,11 +443,11 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
             <div className="flex items-center gap-3 text-muted-foreground">
               <span className="inline-flex items-center gap-1.5">
                 <Eye className="w-3.5 h-3.5" />
-                <span className="font-mono font-semibold text-foreground">{c.views}</span>
+                <span className="font-mono font-semibold text-foreground">{formatK(viewsTotal)}</span>
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <Repeat2 className="w-3.5 h-3.5" />
-                <span className="font-mono font-semibold text-foreground">{shares}</span>
+                <span className="font-mono font-semibold text-foreground">{formatK(shares)}</span>
               </span>
             </div>
             <span className="inline-flex items-center gap-0.5 text-primary font-semibold">
@@ -450,7 +460,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
       <div className="px-4 pb-4 -mt-1 flex items-center gap-2">
         {pct < 100 && (
           <button
-            onClick={() => setBoosted((b) => !b)}
+            onClick={onBoostClick}
             className={
               "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border transition-colors " +
               (boosted
@@ -462,7 +472,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
           </button>
         )}
         <button
-          onClick={() => setShareOpen(true)}
+          onClick={openShare}
           className="inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold border border-primary/30 bg-primary-soft/60 text-primary hover:bg-primary-soft transition-colors"
         >
           <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
@@ -478,7 +488,7 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
         )}
       </div>
 
-      {shareOpen && <ShareSheet title={c.title} onClose={() => setShareOpen(false)} />}
+      {shareOpen && <ShareSheet campaignId={c.id} title={c.title} school={c.school} onClose={() => setShareOpen(false)} />}
       {donateOpen && <DonateSheet campaign={{ id: c.id, title: c.title, school: c.school }} onClose={() => setDonateOpen(false)} />}
       {detailOpen && (
         <CampaignDetailSheet
