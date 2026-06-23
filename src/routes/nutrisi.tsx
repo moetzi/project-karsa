@@ -161,7 +161,7 @@ function Feed() {
   );
 }
 
-function CampaignCard({ c }: { c: typeof campaigns[number] }) {
+export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
   const t = useT();
   const [boosted, setBoosted] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
