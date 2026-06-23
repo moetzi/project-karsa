@@ -252,7 +252,8 @@ function Landing() {
         <div className="mb-8">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">Kampanye Aktif</p>
-            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Pilih kampanye yang ingin kamu dukung</h2>
+            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Pilih satu kelas. Ubah satu cerita.</h2>
+            <p className="mt-2 text-sm text-muted-foreground max-w-xl">Setiap kampanye di bawah ini ditulis sendiri oleh guru yang mengenal nama setiap muridnya.</p>
           </div>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
