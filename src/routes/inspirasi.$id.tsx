@@ -491,10 +491,10 @@ function Article() {
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-foreground hover:text-primary underline-offset-4 hover:underline transition-colors inline-flex items-baseline gap-1"
+                  className="text-foreground hover:text-primary underline-offset-4 hover:underline transition-colors inline"
                 >
-                  <span className="font-semibold">{s.label}</span>
-                  <ExternalLink className="w-3 h-3 shrink-0 translate-y-0.5" />
+                  <span className="font-semibold break-words">{s.label}</span>
+                  <ExternalLink className="inline-block w-3 h-3 shrink-0 align-middle ml-1 translate-y-[-0.5px]" />
                 </a>
                 <span className="block text-xs text-muted-foreground mt-0.5 ml-1">
                   {s.org}
