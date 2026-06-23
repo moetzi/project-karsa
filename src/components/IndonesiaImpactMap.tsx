@@ -1,8 +1,6 @@
-import { useMemo, useState } from "react";
-import indonesiaMapAsset from "@/assets/indonesia-map.png.asset.json";
+import { useEffect, useMemo, useState } from "react";
 import { MapPin, Users } from "lucide-react";
-
-const indonesiaMap = indonesiaMapAsset.url;
+import "leaflet/dist/leaflet.css";
 
 type Province = {
   name: string;
@@ -13,19 +11,6 @@ type Province = {
   campaigns: number;
   since: string;
 };
-
-const BOUNDS = {
-  minLng: 95.0,
-  maxLng: 141.0,
-  maxLat: 6.0,
-  minLat: -11.0,
-};
-
-function project(lat: number, lng: number) {
-  const x = 5 + ((lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng)) * 90;
-  const y = 5 + ((BOUNDS.maxLat - lat) / (BOUNDS.maxLat - BOUNDS.minLat)) * 90;
-  return { x, y };
-}
 
 const PROVINCES: Province[] = [
   { name: "Aceh", capital: "Banda Aceh", lat: 5.548, lng: 95.3238, teachers: 4, campaigns: 3, since: "Mar 2024" },
@@ -68,6 +53,92 @@ const PROVINCES: Province[] = [
   { name: "Papua Barat Daya", capital: "Sorong", lat: -0.8839, lng: 131.2533, teachers: 1, campaigns: 1, since: "Jun 2024" },
 ];
 
+function LeafletMap({
+  selectedId,
+  onSelect,
+}: {
+  selectedId: string;
+  onSelect: (name: string) => void;
+}) {
+  const [Comp, setComp] = useState<null | {
+    MapContainer: typeof import("react-leaflet").MapContainer;
+    TileLayer: typeof import("react-leaflet").TileLayer;
+    CircleMarker: typeof import("react-leaflet").CircleMarker;
+    Tooltip: typeof import("react-leaflet").Tooltip;
+  }>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    import("react-leaflet").then((mod) => {
+      if (mounted) {
+        setComp({
+          MapContainer: mod.MapContainer,
+          TileLayer: mod.TileLayer,
+          CircleMarker: mod.CircleMarker,
+          Tooltip: mod.Tooltip,
+        });
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  if (!Comp) {
+    return (
+      <div className="absolute inset-0 grid place-items-center text-xs font-mono text-muted-foreground">
+        Memuat peta…
+      </div>
+    );
+  }
+
+  const { MapContainer, TileLayer, CircleMarker, Tooltip } = Comp;
+
+  return (
+    <MapContainer
+      center={[-2.5, 118]}
+      zoom={4}
+      minZoom={4}
+      maxZoom={8}
+      scrollWheelZoom={false}
+      style={{ height: "100%", width: "100%", background: "#021b1e" }}
+      worldCopyJump={false}
+    >
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      />
+      {PROVINCES.map((p) => {
+        const isActive = p.name === selectedId;
+        const radius = Math.min(14, 5 + Math.sqrt(p.teachers) * 1.6);
+        return (
+          <CircleMarker
+            key={p.name}
+            center={[p.lat, p.lng]}
+            radius={radius}
+            pathOptions={{
+              color: "#5eead4",
+              weight: isActive ? 3 : 1.5,
+              fillColor: "#5eead4",
+              fillOpacity: isActive ? 0.95 : 0.75,
+            }}
+            className={isActive ? "karsa-marker-active" : "karsa-marker"}
+            eventHandlers={{
+              click: () => onSelect(p.name),
+            }}
+          >
+            <Tooltip direction="top" offset={[0, -radius]} opacity={1}>
+              <span className="font-mono text-[10px] uppercase tracking-wider">
+                {p.name} · {p.teachers} guru
+              </span>
+            </Tooltip>
+          </CircleMarker>
+        );
+      })}
+    </MapContainer>
+  );
+}
+
 export function IndonesiaImpactMap() {
   const [selectedId, setSelectedId] = useState<string>("DKI Jakarta");
 
@@ -82,28 +153,12 @@ export function IndonesiaImpactMap() {
   return (
     <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-stretch">
       {/* Map */}
-      <div className="relative rounded-2xl border border-border/60 bg-surface overflow-hidden">
-        <div
-          aria-hidden
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at 50% 55%, rgba(13,115,119,0.18), transparent 70%)",
-          }}
-        />
+      <div className="relative rounded-2xl border border-border/60 bg-[#021b1e] overflow-hidden">
         <div className="relative aspect-[16/9]">
-          <img
-            src={indonesiaMap}
-            alt="Peta sebaran kampanye Karsa di Indonesia"
-            loading="lazy"
-            width={1536}
-            height={1024}
-            className="absolute inset-0 w-full h-full object-contain select-none pointer-events-none"
-            draggable={false}
-          />
+          <LeafletMap selectedId={selectedId} onSelect={setSelectedId} />
 
           {/* Legend overlay */}
-          <div className="absolute top-3 left-3 z-10 rounded-xl border border-border/60 bg-background/85 backdrop-blur px-3 py-2">
+          <div className="absolute top-3 left-3 z-[400] rounded-xl border border-border/60 bg-background/85 backdrop-blur px-3 py-2 pointer-events-none">
             <p className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">Legenda</p>
             <div className="mt-1.5 flex items-center gap-2">
               <span
@@ -112,66 +167,27 @@ export function IndonesiaImpactMap() {
               />
               <span className="text-[11px] font-semibold">Titik guru Karsa</span>
             </div>
-            <p className="mt-1 text-[10px] text-muted-foreground">Klik untuk detail provinsi</p>
+            <p className="mt-1 text-[10px] text-muted-foreground">Klik titik untuk detail provinsi</p>
           </div>
-
-          {/* Points */}
-          {PROVINCES.map((p) => {
-            const { x, y } = project(p.lat, p.lng);
-            const isActive = p.name === selected.name;
-            const size = Math.min(14, 6 + Math.sqrt(p.teachers) * 1.6);
-            return (
-              <button
-                key={p.name}
-                type="button"
-                onClick={() => setSelectedId(p.name)}
-                aria-label={`${p.name} — ${p.teachers} guru`}
-                aria-pressed={isActive}
-                className="group absolute -translate-x-1/2 -translate-y-1/2 z-20 focus:outline-none"
-                style={{ left: `${x}%`, top: `${y}%` }}
-              >
-                {isActive && (
-                  <span
-                    aria-hidden
-                    className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full"
-                    style={{
-                      width: size * 4,
-                      height: size * 4,
-                      background:
-                        "radial-gradient(circle, rgba(94,234,212,0.45), transparent 70%)",
-                      animation: "karsa-ring 1.8s ease-out infinite",
-                    }}
-                  />
-                )}
-                <span
-                  className="block rounded-full bg-[#5eead4] transition-transform group-hover:scale-125"
-                  style={{
-                    width: size,
-                    height: size,
-                    boxShadow: isActive
-                      ? "0 0 0 3px rgba(94,234,212,0.35), 0 0 18px 6px rgba(94,234,212,0.9), 0 0 36px 12px rgba(13,115,119,0.6)"
-                      : "0 0 0 2px rgba(94,234,212,0.25), 0 0 10px 3px rgba(94,234,212,0.6), 0 0 22px 7px rgba(13,115,119,0.45)",
-                    animation: "karsa-glow 2.4s ease-in-out infinite",
-                  }}
-                />
-                <span
-                  className="pointer-events-none absolute left-1/2 -translate-x-1/2 mt-1.5 whitespace-nowrap rounded-md bg-foreground text-background px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition"
-                >
-                  {p.name} · {p.teachers} guru
-                </span>
-              </button>
-            );
-          })}
         </div>
+
         <style>{`
-          @keyframes karsa-glow {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.3); opacity: 0.75; }
+          .leaflet-container { font-family: inherit; }
+          .leaflet-tile-pane { filter: hue-rotate(150deg) saturate(1.4) brightness(0.95); }
+          .karsa-marker path,
+          .karsa-marker-active path { filter: drop-shadow(0 0 6px rgba(94,234,212,0.9)) drop-shadow(0 0 14px rgba(13,115,119,0.7)); }
+          .karsa-marker-active { animation: karsa-pulse 1.8s ease-in-out infinite; }
+          @keyframes karsa-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
           }
-          @keyframes karsa-ring {
-            0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.9; }
-            100% { transform: translate(-50%, -50%) scale(1.6); opacity: 0; }
+          .leaflet-tooltip {
+            background: hsl(var(--foreground)) !important;
+            color: hsl(var(--background)) !important;
+            border: none !important;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
           }
+          .leaflet-tooltip-top:before { border-top-color: hsl(var(--foreground)) !important; }
         `}</style>
       </div>
 
