@@ -83,11 +83,18 @@ function Landing() {
               </a>
             </div>
             <dl className="mt-10 grid grid-cols-3 gap-6 max-w-md">
-              {[
-                { v: "12.4k", l: "Anak terbantu" },
-                { v: "284", l: "Guru aktif" },
-                { v: "98%", l: "Dana tersalur" },
-              ].map((s) => (
+              {(() => {
+                const recipients = campaigns.reduce((s, c) => s + c.recipients, 0);
+                const teachers = campaigns.length; // 1 guru per kampanye aktif
+                const raised = campaigns.reduce((s, c) => s + c.raised, 0);
+                const target = campaigns.reduce((s, c) => s + c.target, 0);
+                const dana = target > 0 ? Math.round((raised / target) * 100) : 0;
+                return [
+                  { v: recipients.toLocaleString("id-ID"), l: "Anak terbantu" },
+                  { v: String(teachers), l: "Guru aktif" },
+                  { v: `${dana}%`, l: "Dana tersalur" },
+                ];
+              })().map((s) => (
                 <div key={s.l}>
                   <dt className="text-2xl font-extrabold font-mono">{s.v}</dt>
                   <dd className="text-xs text-muted-foreground mt-1">{s.l}</dd>

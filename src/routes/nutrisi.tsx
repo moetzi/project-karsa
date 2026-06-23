@@ -240,9 +240,15 @@ export function getCountdown(deadline?: string) {
 }
 
 function Feed() {
+  const sorted = [...campaigns].sort((a, b) => {
+    const aDone = a.pct >= 100 ? 1 : 0;
+    const bDone = b.pct >= 100 ? 1 : 0;
+    if (aDone !== bDone) return aDone - bDone; // completed last
+    return b.boosts - a.boosts; // active sorted by boosts desc
+  });
   return (
     <div className="space-y-5">
-      {campaigns.map((c, i) => (
+      {sorted.map((c, i) => (
         <CampaignCard key={i} c={c} />
       ))}
     </div>
