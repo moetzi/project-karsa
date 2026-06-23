@@ -80,6 +80,15 @@ function HeroCard({ hero, t, lang }: { hero: (typeof campaigns)[number]; t: Retu
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
 
+        {/* Journal card */}
+        <div className="absolute bottom-16 left-3 right-3 rounded-2xl border border-white/40 bg-white/20 p-4 backdrop-blur-xl shadow-lg max-h-48 overflow-hidden">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-white/90 font-bold">
+            {t("Jurnal Guru", "Teacher's Journal")} · {hero.teacher}
+          </p>
+          <p className="mt-2 text-[13px] leading-relaxed text-white/95 line-clamp-5">
+            {hero.journal}
+          </p>
+        </div>
 
         {/* Arrows */}
         {hasPhotos && photos.length > 1 && (
