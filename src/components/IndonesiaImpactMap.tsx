@@ -54,10 +54,6 @@ const PROVINCES: Province[] = [
   { name: "Papua Barat Daya", capital: "Sorong", lat: -0.8839, lng: 131.2533, teachers: 1, campaigns: 1, since: "Jun 2024" },
 ];
 
-function LeafletMap({
-  selectedId,
-  onSelect,
-}: {
 // Module-level cache so the leaflet bundle + react-leaflet wrappers
 // are loaded once per browser session and reused across mounts.
 type LeafletMods = {
