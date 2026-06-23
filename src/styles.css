@@ -82,6 +82,34 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
   }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  a,
+  summary,
+  input[type="submit"],
+  input[type="button"],
+  label[for] {
+    transition: background-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out, transform 200ms ease-out;
+    cursor: pointer;
+  }
+
+  button:not(:disabled):hover,
+  [role="button"]:not(:disabled):hover,
+  a:hover,
+  summary:hover,
+  input[type="submit"]:hover,
+  input[type="button"]:hover,
+  label[for]:hover {
+    color: var(--color-primary);
+  }
+
+  button:not(:disabled):active,
+  [role="button"]:not(:disabled):active,
+  a:active,
+  summary:active {
+    transform: scale(0.98);
+  }
 }
 
 @layer utilities {
@@ -119,4 +147,21 @@
 
   .no-scrollbar::-webkit-scrollbar { display: none; }
   .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  .hover-fill {
+    transition: background-color 200ms ease-out, color 200ms ease-out, box-shadow 200ms ease-out;
+  }
+  .hover-fill:hover {
+    background-color: color-mix(in oklab, var(--color-primary) 92%, var(--color-background));
+    color: var(--color-primary-foreground);
+    box-shadow: 0 10px 24px -8px color-mix(in oklab, var(--color-primary) 30%, transparent);
+  }
+
+  .hover-lift {
+    transition: transform 200ms ease-out, box-shadow 200ms ease-out;
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px -10px color-mix(in oklab, var(--color-foreground) 18%, transparent);
+  }
 }
