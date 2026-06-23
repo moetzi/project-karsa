@@ -1,6 +1,82 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowLeft, Clock, BookOpen, Sprout } from "lucide-react";
+import { useEffect, useState } from "react";
 import { INSPIRASI } from "@/lib/inspirasi";
+
+function ReadingProgress() {
+  const [progress, setProgress] = useState(0);
+  useEffect(() => {
+    const update = () => {
+      const doc = document.documentElement;
+      const scrollTop = window.scrollY || doc.scrollTop;
+      const height = doc.scrollHeight - doc.clientHeight;
+      setProgress(height > 0 ? Math.min(100, (scrollTop / height) * 100) : 0);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+  return (
+    <div
+      className="fixed top-0 left-0 right-0 z-40 h-1 bg-transparent pointer-events-none"
+      role="progressbar"
+      aria-label="Reading progress"
+      aria-valuenow={Math.round(progress)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      <div
+        className="h-full progress-gradient transition-[width] duration-150 ease-out"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+  );
+}
+
+function HeroMedia({ background, emoji }: { background: string; emoji: string }) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setReady(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  return (
+    <div className="relative overflow-hidden">
+      {/* Skeleton */}
+      <div
+        aria-hidden
+        className={
+          "absolute inset-0 bg-muted animate-pulse transition-opacity duration-500 " +
+          (ready ? "opacity-0" : "opacity-100")
+        }
+      />
+      <div
+        className={
+          "relative transition-opacity duration-500 " + (ready ? "opacity-100" : "opacity-0")
+        }
+        style={{ background }}
+      >
+        <div
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(0,0,0,0.25) 0%, transparent 50%)",
+          }}
+        />
+        <div className="relative max-w-3xl mx-auto px-6 sm:px-8 pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pt-28 lg:pb-32 text-primary-foreground">
+          <div className="text-5xl sm:text-6xl mb-5 drop-shadow-lg" aria-hidden>
+            {emoji}
+          </div>
+          <slot />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 
 export const Route = createFileRoute("/inspirasi/$id")({
   head: () => ({
