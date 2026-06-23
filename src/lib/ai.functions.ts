@@ -64,6 +64,7 @@ const SlidesSchema = z.object({
 });
 
 export const generateMaterial = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => GenerateMaterialInput.parse(input))
   .handler(async ({ data }) => {
     const key = process.env.LOVABLE_API_KEY;
