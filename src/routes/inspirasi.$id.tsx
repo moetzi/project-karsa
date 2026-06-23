@@ -622,9 +622,16 @@ function Article() {
         </section>
       )}
 
-      <footer className="border-t border-border/60 py-10 text-center text-xs text-muted-foreground">
-        © 2026 Karsa · Untuk anak-anak Indonesia
-      </footer>
+      {!isAuthed && (
+        <footer className="border-t border-border/60 py-10 text-center text-xs text-muted-foreground">
+          © 2026 Karsa · Untuk anak-anak Indonesia
+        </footer>
+      )}
     </div>
   );
+
+  if (isAuthed) {
+    return <PhoneShell hideNav>{inner}</PhoneShell>;
+  }
+  return inner;
 }
