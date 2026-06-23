@@ -363,7 +363,7 @@ function Landing() {
         <div className="flex items-end justify-between gap-4 mb-8">
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-primary font-bold">{t("Pojok Inspirasi Guru", "Teachers' Inspiration Corner")}</p>
-            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">{t("Bacaan pilihan untuk donatur", "Curated reads for donors")}</h2>
+            <h2 className="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">{t("Bacaan pilihan", "Curated reads")}</h2>
             <p className="mt-2 text-sm text-muted-foreground max-w-xl">{t("Pahami konteks gizi anak Indonesia & dampak nyata dari donasi Anda.", "Understand the context of child nutrition in Indonesia & the real impact of your donation.")}</p>
           </div>
         </div>
