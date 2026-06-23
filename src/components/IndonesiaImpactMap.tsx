@@ -199,12 +199,12 @@ function LeafletMap({
       maxZoom={8}
       scrollWheelZoom={false}
       preferCanvas
-      style={{ height: "100%", width: "100%", background: "#021b1e" }}
+      style={{ height: "100%", width: "100%", background: "#FFF7ED" }}
       worldCopyJump={false}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-        url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+        url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         updateWhenIdle
         keepBuffer={4}
       />
@@ -228,7 +228,7 @@ export function IndonesiaImpactMap() {
   return (
     <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-stretch min-h-[460px]">
       {/* Map */}
-      <div className="relative rounded-2xl border border-border/60 bg-[#021b1e] overflow-hidden h-full min-h-[360px]">
+      <div className="relative rounded-2xl border border-border/60 bg-[#FFF7ED] overflow-hidden h-full min-h-[360px]">
         <div className="relative h-full w-full">
           <LeafletMap selectedId={selectedId} onSelect={setSelectedId} />
 
@@ -248,9 +248,13 @@ export function IndonesiaImpactMap() {
 
         <style>{`
           .leaflet-container { font-family: inherit; }
-          .leaflet-tile-pane { filter: hue-rotate(150deg) saturate(1.4) brightness(0.95); }
+          .leaflet-tile-pane { filter: sepia(0.25) saturate(1.7) hue-rotate(-12deg) brightness(1.02) contrast(1.02); }
           .karsa-marker path,
-          .karsa-marker-active path { filter: drop-shadow(0 0 6px rgba(94,234,212,0.9)) drop-shadow(0 0 14px rgba(13,115,119,0.7)); }
+          .karsa-marker-active path {
+            filter:
+              drop-shadow(0 0 4px rgba(255,255,255,0.95))
+              drop-shadow(0 0 10px rgba(13,148,136,0.55));
+          }
           .karsa-marker-active { animation: karsa-pulse 1.8s ease-in-out infinite; }
           @keyframes karsa-pulse {
             0%, 100% { opacity: 1; }
