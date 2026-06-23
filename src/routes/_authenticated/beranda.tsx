@@ -6,6 +6,8 @@ import { donors, ShareSheet, getCountdown, CampaignDetailSheet, campaigns } from
 import { JournalSheet } from "@/components/JournalSheet";
 import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations, formatRelative as fmtDonRel } from "@/lib/donationStore";
+import { useCampaignClosed } from "@/lib/campaignStatusStore";
+import { useJournals } from "@/lib/journalsStore";
 import { useT } from "@/lib/i18n";
 import { INSPIRASI } from "@/lib/inspirasi";
 
@@ -36,10 +38,10 @@ function Beranda() {
   const [donateOpen, setDonateOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const donations = useDonations(ACTIVE_CAMPAIGN.id);
+  const closed = useCampaignClosed(ACTIVE_CAMPAIGN.id);
+  const journals = useJournals(ACTIVE_CAMPAIGN.id);
 
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
-  // Constraint: 1 active campaign per teacher. Closing journal unlocks only when campaign is closed (target reached / period ended).
-  const isCampaignClosed = false;
   const allDonors = [
     ...donations.map((d) => ({ name: d.name, amount: d.amount, time: fmtDonRel(d.createdAt, "id"), timeEn: fmtDonRel(d.createdAt, "en") })),
     ...donors,
@@ -48,7 +50,11 @@ function Beranda() {
   const newRaised = donations.reduce((s, d) => s + d.amount, 0);
   const totalRaised = campaign.raised * 1_000_000 + newRaised;
   const targetRp = campaign.target * 1_000_000;
-  const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const rawPct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const pct = closed ? 100 : rawPct;
+  // Closing journal unlocks when campaign is closed OR target reached.
+  const isCampaignClosed = !!closed || rawPct >= 100;
+  const hasClosingJournal = journals.some((j) => j.kind === "closing");
   const fmtJt = (n: number) => (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
   return (
     <PhoneShell>
