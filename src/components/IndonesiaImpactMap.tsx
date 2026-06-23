@@ -267,10 +267,12 @@ export function IndonesiaImpactMap() {
             box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
           }
           .leaflet-tooltip-top:before { border-top-color: hsl(var(--foreground)) !important; }
-          .leaflet-control-zoom {
-            top: 0.75rem !important;
-            right: 0.75rem !important;
+          .leaflet-top.leaflet-left {
             left: auto !important;
+            right: 0.75rem !important;
+            top: 0.75rem !important;
+          }
+          .leaflet-control-zoom {
             border: none !important;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
           }
