@@ -134,7 +134,7 @@ function Profil() {
           </div>
         </section>
 
-        <SettingsSection />
+        <SettingsSection onOpenNotifications={() => setNotifOpen(true)} />
         <HelpSection />
 
         <button
