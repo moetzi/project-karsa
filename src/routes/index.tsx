@@ -184,7 +184,7 @@ function Landing() {
           }}
         />
         <div className="max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 grid md:grid-cols-2 gap-10 items-center">
-          <div>
+          <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full bg-primary-soft text-primary px-3 py-1 text-xs font-mono font-semibold uppercase tracking-widest">
               <ShieldCheck className="w-3.5 h-3.5" /> {t("Diverifikasi NUPTK & Dapodik", "Verified via NUPTK & Dapodik")}
             </span>
@@ -201,9 +201,9 @@ function Landing() {
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="#kampanye"
-                className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-95 transition shadow-lg shadow-primary/20"
+                className="group inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground border-2 border-foreground px-6 py-3.5 text-sm font-bold transition-all shadow-[4px_4px_0_0_var(--foreground)] hover:shadow-[6px_6px_0_0_var(--foreground)] hover:-translate-x-0.5 hover:-translate-y-0.5 active:shadow-[2px_2px_0_0_var(--foreground)] active:translate-x-0 active:translate-y-0"
               >
-                <Heart className="w-4 h-4" /> {t("Mulai Berdonasi", "Start Donating")}
+                <Heart className="w-4 h-4 transition-transform group-hover:scale-110" /> {t("Mulai Berdonasi", "Start Donating")}
               </a>
               <a
                 href="#cara"
@@ -221,10 +221,11 @@ function Landing() {
                 const completedTarget = completed.reduce((s, c) => s + c.target, 0);
                 const dana = completedTarget > 0 ? Math.min(100, Math.round((completedRaised / completedTarget) * 100)) : 0;
                 const locale = lang === "en" ? "en-US" : "id-ID";
+                const fmt = (n: number) => n.toLocaleString(locale);
                 return [
-                  { v: recipients.toLocaleString(locale), l: t("Anak terbantu", "Children helped") },
-                  { v: teachers.toLocaleString(locale), l: t("Guru aktif", "Active teachers") },
-                  { v: `${dana}%`, l: t("Dana tersalur", "Funds distributed") },
+                  { v: recipients, suffix: "", fmt, l: t("Anak terbantu", "Children helped") },
+                  { v: teachers, suffix: "", fmt, l: t("Guru aktif", "Active teachers") },
+                  { v: dana, suffix: "%", fmt: (n: number) => String(n), l: t("Dana tersalur", "Funds distributed") },
                 ];
               })().map((s) => (
                 <div key={s.l}>
