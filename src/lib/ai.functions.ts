@@ -83,9 +83,10 @@ Wajib sertakan:
         model,
         system,
         prompt,
-        experimental_output: Output.object({ schema }),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        experimental_output: Output.object({ schema: schema as any }),
       });
-      return { format: data.format, data: experimental_output };
+      return { format: data.format, data: experimental_output as unknown };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes("429")) throw new Error("Batas permintaan tercapai. Coba lagi sebentar.");
