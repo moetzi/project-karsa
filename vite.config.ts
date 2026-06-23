@@ -24,8 +24,15 @@ export default defineConfig({
         manifest: false, // we ship public/manifest.webmanifest manually
         workbox: {
           globPatterns: ["**/*.{js,css,html,svg,png,ico,webp,woff2}"],
-          navigateFallback: "/",
+          // TanStack Start chunks can exceed 2MB default — guru 3T need the full
+          // shell precached so the PWA opens offline. Raise the per-file cap.
+          maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
+          navigateFallback: "/offline.html",
           navigateFallbackDenylist: [/^\/api\//, /^\/~oauth/],
+          // Ensure key PWA routes resolve to the SPA shell when offline.
+          additionalManifestEntries: [
+            { url: "/offline.html", revision: "1" },
+          ],
           cleanupOutdatedCaches: true,
           clientsClaim: true,
           skipWaiting: true,
