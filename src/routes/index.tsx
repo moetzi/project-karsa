@@ -80,15 +80,6 @@ function HeroCard({ hero, t, lang }: { hero: (typeof campaigns)[number]; t: Retu
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
 
-        {/* Glassmorphism journal card */}
-        <div className="absolute left-4 right-4 top-4 rounded-2xl border border-white/30 bg-white/15 backdrop-blur-xl p-4 shadow-lg">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-white/90 font-bold">
-            {t("Jurnal Guru", "Teacher's Journal")} · {hero.teacher}
-          </p>
-          <p className="mt-2 text-[13px] leading-relaxed text-white line-clamp-5">
-            {hero.journal}
-          </p>
-        </div>
 
         {/* Arrows */}
         {hasPhotos && photos.length > 1 && (
@@ -125,6 +116,15 @@ function HeroCard({ hero, t, lang }: { hero: (typeof campaigns)[number]; t: Retu
         )}
       </div>
 
+      {/* Journal card below image */}
+      <div className="mt-4 rounded-2xl border border-border/60 bg-surface p-4 shadow-lg">
+        <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+          {t("Jurnal Guru", "Teacher's Journal")} · {hero.teacher}
+        </p>
+        <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground line-clamp-5">
+          {hero.journal}
+        </p>
+      </div>
     </div>
   );
 }
