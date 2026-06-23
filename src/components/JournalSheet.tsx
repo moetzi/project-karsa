@@ -32,12 +32,16 @@ const MOOD = [
 
 export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = false }: Props) {
   const t = useT();
-  const fileRef = useRef<HTMLInputElement | null>(null);
-  const [photos, setPhotos] = useState<LocalPhoto[]>([]);
-  const [menu, setMenu] = useState("");
+  const proofFileRef = useRef<HTMLInputElement | null>(null);
+  const foodFileRef = useRef<HTMLInputElement | null>(null);
+  const [proofType, setProofType] = useState<"receipt" | "meal">("receipt");
+  const [proofPhotos, setProofPhotos] = useState<LocalPhoto[]>([]);
+  const [foodPhotos, setFoodPhotos] = useState<LocalPhoto[]>([]);
+  const [allocation, setAllocation] = useState("");
   const [story, setStory] = useState("");
   const [mood, setMood] = useState<string | null>(null);
-  const [attendance, setAttendance] = useState("");
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
+  const [date, setDate] = useState(today);
   const [sent, setSent] = useState(false);
   const [draftLoaded, setDraftLoaded] = useState(false);
   const [hasDraft, setHasDraft] = useState(false);
@@ -51,10 +55,10 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
     let cancelled = false;
     getDraft(campaign.id).then((d) => {
       if (cancelled || !d) { setDraftLoaded(true); return; }
-      setMenu(d.menu);
+      setAllocation(d.menu);
       setStory(d.story);
       setMood(d.mood);
-      setAttendance(d.attendance);
+      if (d.attendance) setDate(d.attendance);
       setHasDraft(true);
       setDraftLoaded(true);
     });
@@ -64,17 +68,18 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
   // Auto-save text fields (debounced) once draft has been loaded.
   useEffect(() => {
     if (!draftLoaded) return;
-    const hasContent = menu.trim() || story.trim() || mood || attendance;
+    const hasContent = allocation.trim() || story.trim() || mood;
     if (!hasContent) return;
     const t = setTimeout(() => {
       saveDraft({
         campaign_id: campaign.id,
-        menu, story, mood, attendance,
+        menu: allocation, story, mood, attendance: date,
         savedAt: Date.now(),
       }).then(() => setHasDraft(true));
     }, 600);
     return () => clearTimeout(t);
-  }, [draftLoaded, menu, story, mood, attendance, campaign.id]);
+  }, [draftLoaded, allocation, story, mood, date, campaign.id]);
+
 
   const submitMutation = useMutation({
     mutationFn: async () => {
