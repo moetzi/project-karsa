@@ -1,6 +1,7 @@
 import articleStunting from "@/assets/article-stunting.jpg";
 import articleGiziLokal from "@/assets/article-gizi-lokal.jpg";
 import articleBumdes from "@/assets/article-bumdes.jpg";
+import articlePosyandu from "@/assets/article-posyandu.jpg";
 
 export type InspirasiArticle = {
   id: string;
