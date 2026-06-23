@@ -287,7 +287,7 @@ function HelpSection() {
               {t("FAQ / Tanya Jawab", "FAQ / Questions")}
             </p>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              {t("3 pertanyaan populer", "3 popular questions")}
+              {t("5 pertanyaan populer", "5 popular questions")}
             </p>
           </div>
           <ChevronDown className={"w-4 h-4 text-muted-foreground transition-transform " + (openFaq ? "rotate-180" : "")} />
