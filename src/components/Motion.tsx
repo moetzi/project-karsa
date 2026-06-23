@@ -45,8 +45,8 @@ export function Reveal({
     willChange: "opacity, transform",
   };
 
-  // @ts-expect-error dynamic tag
-  return <As ref={ref} className={className} style={style}>{children}</As>;
+  const Tag = As as "div";
+  return <Tag ref={ref} className={className} style={style}>{children}</Tag>;
 }
 
 export function CountUp({
