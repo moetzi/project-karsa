@@ -148,7 +148,6 @@ function Profil() {
           KARSA · v1.0.0
         </p>
       </div>
-      </div>
       {notifOpen && <NotificationsSheet onClose={() => setNotifOpen(false)} />}
     </PhoneShell>
   );
