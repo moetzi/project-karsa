@@ -442,7 +442,7 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
 
             <div>
               <label className="text-xs font-semibold text-foreground flex items-center justify-between mb-2">
-                <span>{t("Cerita Hari Ini", "Today's Story")} <span className="text-accent">*</span></span>
+                <span>{t("Kesan Anak yang Terbantu", "Children's Impressions")} <span className="text-accent">*</span></span>
                 <span className="font-mono text-[10px] text-muted-foreground">{story.length}/280</span>
               </label>
               <textarea
@@ -451,8 +451,8 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 disabled={submitting}
                 rows={4}
                 placeholder={t(
-                  "Tulis momen hangat hari ini — bagaimana anak-anak menikmati makanannya?",
-                  "Share today's warm moment — how did the children enjoy their meal?"
+                  "Ceritakan kesan anak-anak — ekspresi, semangat, atau momen hangat saat makan bersama.",
+                  "Describe the children's impressions — expressions, energy, or warm moments during the shared meal."
                 )}
                 className="w-full font-serif rounded-xl border border-border bg-surface px-3 py-2.5 text-sm leading-relaxed focus:outline-none focus:border-primary resize-none"
               />
@@ -460,8 +460,8 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 onClick={() =>
                   setStory(
                     t(
-                      "Hari ini anak-anak makan dengan lahap. Mereka sangat senang menikmati menu bergizi bersama teman-teman.",
-                      "The children ate heartily today, joyfully sharing a nutritious meal with their friends."
+                      "Anak-anak terlihat sangat antusias. Banyak yang tersenyum lebar saat menerima makanannya dan berterima kasih ke teman-teman donatur.",
+                      "The children looked thrilled — big smiles when receiving their meals and warm thanks to the donor friends."
                     )
                   )
                 }
@@ -471,6 +471,7 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
                 <Sparkles className="w-3 h-3" /> {t("Bantu tulis dengan AI", "Help me write with AI")}
               </button>
             </div>
+
 
             <button
               onClick={() => {
