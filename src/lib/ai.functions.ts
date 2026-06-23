@@ -111,12 +111,12 @@ const MealPlanSchema = z.object({
   estimasi_total_5hari: z.number(),
   menu: z.array(
     z.object({
-      hari: z.enum(["Senin", "Selasa", "Rabu", "Kamis", "Jumat"]),
+      hari: z.string(),
       menu: z.string(),
-      bahan_lokal: z.array(z.string()).min(2).max(6),
+      bahan_lokal: z.array(z.string()),
       kandungan_gizi: z.string(),
     }),
-  ).length(5),
+  ),
   tips: z.string(),
 });
 
