@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" fill="none">
+  <!-- Teal circular background -->
+  <circle cx="96" cy="96" r="78" fill="#188d8c"/>
+  
+  <!-- Seedling sprout icon -->
+  <g fill="#ffffff">
+    <!-- Left leaf -->
+    <path d="M83 88 C72 78 70 62 80 58 C92 54 100 70 96 82 C94 88 88 91 83 88 Z"/>
+    <!-- Right leaf -->
+    <path d="M109 88 C120 78 122 62 112 58 C100 54 92 70 96 82 C98 88 104 91 109 88 Z"/>
+  </g>
+  
+  <!-- Stem -->
+  <rect x="93" y="82" width="6" height="34" rx="3" fill="#ffffff"/>
+  
+  <!-- Soil line -->
+  <rect x="74" y="116" width="44" height="6" rx="3" fill="#ffffff"/>
+</svg>
