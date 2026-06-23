@@ -81,13 +81,15 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
   }, [draftLoaded, allocation, story, mood, date, campaign.id]);
 
 
+  const allPhotos = useMemo(() => [...proofPhotos, ...foodPhotos], [proofPhotos, foodPhotos]);
+
   const submitMutation = useMutation({
     mutationFn: async () => {
-      let urls: string[] = [];
+      const urls: string[] = [];
+      const storyWithDate = `[${date}] ${story.trim()}`;
 
       if (localOnly) {
-        // Static-demo campaigns: store photos as data URLs in localStorage.
-        for (const p of photos) {
+        for (const p of allPhotos) {
           urls.push(await fileToDataUrl(p.file));
         }
       } else {
@@ -95,7 +97,7 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
         if (userErr || !userRes.user) throw new Error("Not signed in");
         const userId = userRes.user.id;
 
-        for (const p of photos) {
+        for (const p of allPhotos) {
           const ext = p.file.name.split(".").pop()?.toLowerCase() || "jpg";
           const path = `${userId}/${campaign.id}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
           const { error: upErr } = await supabase.storage
@@ -112,22 +114,21 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
         await createJournalFn({
           data: {
             campaign_id: campaign.id,
-            menu: menu.trim(),
-            story: story.trim(),
+            menu: allocation.trim(),
+            story: storyWithDate,
             mood,
-            attendance: attendance ? Number(attendance) : null,
+            attendance: null,
             photos: urls,
           },
         });
       }
 
-      // Mirror to local store → public web sees it in real-time.
       addJournal({
         campaignId: campaign.id,
-        menu: menu.trim(),
-        story: story.trim(),
+        menu: allocation.trim(),
+        story: storyWithDate,
         mood,
-        attendance: attendance ? Number(attendance) : null,
+        attendance: null,
         photos: urls,
         kind,
       });
@@ -146,24 +147,38 @@ export function JournalSheet({ campaign, onClose, kind = "daily", localOnly = fa
     },
   });
 
-  const handleFiles = (files: FileList | null) => {
+  const addToList = (
+    files: FileList | null,
+    list: LocalPhoto[],
+    setList: (updater: (p: LocalPhoto[]) => LocalPhoto[]) => void,
+    max: number,
+  ) => {
     if (!files) return;
     const next = Array.from(files)
-      .slice(0, 4 - photos.length)
+      .slice(0, max - list.length)
       .map((file) => ({ file, previewUrl: URL.createObjectURL(file) }));
-    setPhotos((p) => [...p, ...next].slice(0, 4));
+    setList((p) => [...p, ...next].slice(0, max));
   };
 
-  const removePhoto = (idx: number) => {
-    setPhotos((p) => {
+  const removeFromList = (
+    idx: number,
+    setList: (updater: (p: LocalPhoto[]) => LocalPhoto[]) => void,
+  ) => {
+    setList((p) => {
       const removed = p[idx];
       if (removed) URL.revokeObjectURL(removed.previewUrl);
       return p.filter((_, i) => i !== idx);
     });
   };
 
-  const valid = photos.length > 0 && story.trim().length >= 10 && menu.trim().length > 0;
+  const valid =
+    proofPhotos.length > 0 &&
+    foodPhotos.length > 0 &&
+    story.trim().length >= 10 &&
+    allocation.trim().length > 0 &&
+    !!date;
   const submitting = submitMutation.isPending;
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 backdrop-blur-sm" onClick={onClose}>
