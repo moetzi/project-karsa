@@ -86,7 +86,7 @@ Wajib sertakan:
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         experimental_output: Output.object({ schema: schema as any }),
       });
-      return { format: data.format, data: experimental_output as unknown };
+      return { format: data.format, data: experimental_output as Record<string, unknown> };
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       if (msg.includes("429")) throw new Error("Batas permintaan tercapai. Coba lagi sebentar.");
