@@ -665,13 +665,19 @@ const REGIONS = [
 const DAYS_ID = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"];
 const DAYS_EN = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
 
-const AI_MENU_SAMPLE: Record<string, string> = {
-  Senin: "Nasi Jagung, Ikan Tongkol Bumbu Kuning, Tumis Kangkung",
-  Selasa: "Bubur Kacang Hijau, Telur Rebus, Pisang",
-  Rabu: "Nasi Merah, Ayam Suwir Kemangi, Sup Bayam",
-  Kamis: "Nasi Putih, Tempe Orek, Sayur Asem, Pepaya",
-  Jumat: "Nasi Uduk, Perkedel Tahu, Tumis Buncis Wortel",
+type MealPlanResult = {
+  ringkasan: string;
+  estimasi_per_porsi: number;
+  estimasi_total_5hari: number;
+  menu: Array<{
+    hari: "Senin" | "Selasa" | "Rabu" | "Kamis" | "Jumat";
+    menu: string;
+    bahan_lokal: string[];
+    kandungan_gizi: string;
+  }>;
+  tips: string;
 };
+
 
 function BuatKampanye() {
   const t = useT();
