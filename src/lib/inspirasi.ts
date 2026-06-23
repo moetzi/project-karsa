@@ -37,4 +37,12 @@ export const INSPIRASI: InspirasiArticle[] = [
     hero: "linear-gradient(135deg, #6b4423 0%, #c9614a 100%)",
     image: articleBumdes,
   },
+  {
+    id: "4",
+    tag: { id: "Komunitas", en: "Community" },
+    title: { id: "Kader Posyandu & PMT Lokal: Pemberdayaan Perempuan Cegah Stunting", en: "Posyandu Cadres & Local Supplementary Feeding: Women's Empowerment Prevents Stunting" },
+    read: { id: "7 menit", en: "7 min" },
+    hero: "linear-gradient(135deg, #2d7d46 0%, #8B4513 100%)",
+    image: articlePosyandu,
+  },
 ];
