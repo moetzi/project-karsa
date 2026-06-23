@@ -101,6 +101,7 @@ function Beranda() {
     }
   }, [isCampaignClosed, navigate]);
 
+  return (
     <PhoneShell>
       <div className="px-6 pt-4 pb-6 space-y-6">
         <header>
