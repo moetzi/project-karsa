@@ -102,7 +102,9 @@ export function JournalSheet({ campaign, onClose }: Props) {
         },
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await deleteDraft(campaign.id);
+      setHasDraft(false);
       qc.invalidateQueries({ queryKey: ["journals", campaign.id] });
       setSent(true);
       setTimeout(onClose, 1400);
