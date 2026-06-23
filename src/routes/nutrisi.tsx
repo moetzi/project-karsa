@@ -591,7 +591,7 @@ export function CampaignDetailSheet({
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold flex items-center gap-1.5">
-                      <Sparkles className="w-3 h-3" /> {t("Rencana Menu Sen–Jumat", "Meal Plan Mon–Fri")}
+                      <Sparkles className="w-3 h-3" /> {mp.menu.length === 1 ? t(`Rencana Menu ${mp.menu[0].hari}`, `Meal Plan ${mp.menu[0].hari}`) : t("Rencana Menu Sen–Jumat", "Meal Plan Mon–Fri")}
                     </p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">
                       {t("Disusun bersama", "Co-planned with")} {c.tmp || c.supplier}
