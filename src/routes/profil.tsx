@@ -79,10 +79,27 @@ function Profil() {
     navigate({ to: "/auth" });
   }
 
+  const [notifOpen, setNotifOpen] = useState(false);
+  const unread = useUnreadCount();
+
   return (
     <PhoneShell>
       <div className="px-6 pt-4 pb-6 space-y-6">
-        <h1 className="text-[28px] font-extrabold text-foreground">{t("Profil", "Profile")}</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-[28px] font-extrabold text-foreground">{t("Profil", "Profile")}</h1>
+          <button
+            onClick={() => setNotifOpen(true)}
+            aria-label={t("Notifikasi", "Notifications")}
+            className="relative w-11 h-11 rounded-full bg-surface border border-border/60 grid place-items-center hover:bg-muted/40 transition"
+          >
+            <Bell className="w-5 h-5 text-foreground" />
+            {unread > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-accent text-accent-foreground text-[10px] font-bold grid place-items-center border-2 border-surface">
+                {unread > 9 ? "9+" : unread}
+              </span>
+            )}
+          </button>
+        </div>
 
         {/* Identity */}
         <section className="bg-surface rounded-2xl p-5 border border-border/60">
