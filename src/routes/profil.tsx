@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { PhoneShell } from "@/components/PhoneShell";
 import { useEffect, useState } from "react";
 import { useLang, useT } from "@/lib/i18n";
-import { Settings, Languages, ShieldCheck, HelpCircle, ChevronRight, ChevronDown, Lock, LogOut, Award, MessageCircle, Mail, X, Send, Phone, ExternalLink, CheckCircle2, LifeBuoy, Bell, PartyPopper, NotebookPen } from "lucide-react";
+import { Settings, Languages, ShieldCheck, HelpCircle, ChevronRight, ChevronDown, Lock, LogOut, Award, MessageCircle, Mail, X, Send, Phone, ExternalLink, CheckCircle2, LifeBuoy, Bell, PartyPopper, NotebookPen, Info } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNotifications, useUnreadCount, markAllRead, markRead, clearNotifications, type AppNotification } from "@/lib/notificationsStore";
 import { Link } from "@tanstack/react-router";

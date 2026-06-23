@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TentangRouteImport } from './routes/tentang'
 import { Route as ProfilRouteImport } from './routes/profil'
 import { Route as NutrisiRouteImport } from './routes/nutrisi'
 import { Route as CopilotRouteImport } from './routes/copilot'
@@ -20,6 +21,11 @@ import { Route as InspirasiIdRouteImport } from './routes/inspirasi.$id'
 import { Route as FlashcardIdRouteImport } from './routes/flashcard.$id'
 import { Route as AuthenticatedBerandaRouteImport } from './routes/_authenticated/beranda'
 
+const TentangRoute = TentangRouteImport.update({
+  id: '/tentang',
+  path: '/tentang',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfilRoute = ProfilRouteImport.update({
   id: '/profil',
   path: '/profil',
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
+  '/tentang': typeof TentangRoute
   '/beranda': typeof AuthenticatedBerandaRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
+  '/tentang': typeof TentangRoute
   '/beranda': typeof AuthenticatedBerandaRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/copilot': typeof CopilotRoute
   '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
+  '/tentang': typeof TentangRoute
   '/_authenticated/beranda': typeof AuthenticatedBerandaRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/copilot'
     | '/nutrisi'
     | '/profil'
+    | '/tentang'
     | '/beranda'
     | '/flashcard/$id'
     | '/inspirasi/$id'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
     | '/copilot'
     | '/nutrisi'
     | '/profil'
+    | '/tentang'
     | '/beranda'
     | '/flashcard/$id'
     | '/inspirasi/$id'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/copilot'
     | '/nutrisi'
     | '/profil'
+    | '/tentang'
     | '/_authenticated/beranda'
     | '/flashcard/$id'
     | '/inspirasi/$id'
@@ -149,6 +161,7 @@ export interface RootRouteChildren {
   CopilotRoute: typeof CopilotRoute
   NutrisiRoute: typeof NutrisiRoute
   ProfilRoute: typeof ProfilRoute
+  TentangRoute: typeof TentangRoute
   FlashcardIdRoute: typeof FlashcardIdRoute
   InspirasiIdRoute: typeof InspirasiIdRoute
   KIdRoute: typeof KIdRoute
@@ -156,6 +169,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/tentang': {
+      id: '/tentang'
+      path: '/tentang'
+      fullPath: '/tentang'
+      preLoaderRoute: typeof TentangRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profil': {
       id: '/profil'
       path: '/profil'
@@ -247,6 +267,7 @@ const rootRouteChildren: RootRouteChildren = {
   CopilotRoute: CopilotRoute,
   NutrisiRoute: NutrisiRoute,
   ProfilRoute: ProfilRoute,
+  TentangRoute: TentangRoute,
   FlashcardIdRoute: FlashcardIdRoute,
   InspirasiIdRoute: InspirasiIdRoute,
   KIdRoute: KIdRoute,
