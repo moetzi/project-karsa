@@ -226,10 +226,10 @@ export function IndonesiaImpactMap() {
   const selected = PROVINCES.find((p) => p.name === selectedId) ?? PROVINCES[0];
 
   return (
-    <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-stretch">
+    <div className="grid lg:grid-cols-[1fr_300px] gap-6 items-stretch min-h-[460px]">
       {/* Map */}
-      <div className="relative rounded-2xl border border-border/60 bg-[#021b1e] overflow-hidden">
-        <div className="relative aspect-[16/9]">
+      <div className="relative rounded-2xl border border-border/60 bg-[#021b1e] overflow-hidden h-full min-h-[360px]">
+        <div className="relative h-full w-full">
           <LeafletMap selectedId={selectedId} onSelect={setSelectedId} />
 
           {/* Legend overlay */}
