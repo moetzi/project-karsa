@@ -85,10 +85,11 @@ function Landing() {
             <dl className="mt-10 grid grid-cols-3 gap-6 max-w-md">
               {(() => {
                 const recipients = campaigns.reduce((s, c) => s + c.recipients, 0);
-                const teachers = campaigns.length; // 1 guru per kampanye aktif
-                const raised = campaigns.reduce((s, c) => s + c.raised, 0);
-                const target = campaigns.reduce((s, c) => s + c.target, 0);
-                const dana = target > 0 ? Math.round((raised / target) * 100) : 0;
+                const teachers = campaigns.length; // 1 guru per kampanye
+                const completed = campaigns.filter((c) => c.pct >= 100);
+                const completedRaised = completed.reduce((s, c) => s + c.raised, 0);
+                const completedTarget = completed.reduce((s, c) => s + c.target, 0);
+                const dana = completedTarget > 0 ? Math.min(100, Math.round((completedRaised / completedTarget) * 100)) : 0;
                 return [
                   { v: recipients.toLocaleString("id-ID"), l: "Anak terbantu" },
                   { v: String(teachers), l: "Guru aktif" },
