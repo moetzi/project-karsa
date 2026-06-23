@@ -84,15 +84,17 @@ function Landing() {
             </div>
             <dl className="mt-10 grid grid-cols-3 gap-6 max-w-md">
               {(() => {
-                const recipients = campaigns.reduce((s, c) => s + c.recipients, 0);
-                const teachers = campaigns.length; // 1 guru per kampanye
+                // Anak terbantu = total penerima dari kampanye yang sudah selesai (jurnal penutup terbit)
                 const completed = campaigns.filter((c) => c.pct >= 100);
+                const recipients = completed.reduce((s, c) => s + c.recipients, 0);
+                // Guru aktif = semua guru yang berhasil login di PWA (data statistik provinsi)
+                const teachers = 142;
                 const completedRaised = completed.reduce((s, c) => s + c.raised, 0);
                 const completedTarget = completed.reduce((s, c) => s + c.target, 0);
                 const dana = completedTarget > 0 ? Math.min(100, Math.round((completedRaised / completedTarget) * 100)) : 0;
                 return [
                   { v: recipients.toLocaleString("id-ID"), l: "Anak terbantu" },
-                  { v: String(teachers), l: "Guru aktif" },
+                  { v: teachers.toLocaleString("id-ID"), l: "Guru aktif" },
                   { v: `${dana}%`, l: "Dana tersalur" },
                 ];
               })().map((s) => (
