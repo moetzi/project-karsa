@@ -446,8 +446,8 @@ function HelpSection() {
     {
       q: t("Data apa saja yang perlu atau bisa diunggah ke jurnal?", "What data can or should be uploaded to a journal?"),
       a: t(
-        "Cukup unggah foto bukti belanja (struk atau nota) dan foto makanan yang dibuat. Lalu isi nominal pengeluaran, tanggal, serta jumlah anak yang terbantu.",
-        "Just upload photos of your shopping proof (receipt) and the prepared meal. Then fill in the amount spent, date, and number of children helped.",
+        "Cukup unggah foto bukti belanja (struk atau nota) atau bukti makan bersama dan foto makanan yang dibuat. Lalu isi jurnal cukup dengan mendeskripsikan alokasi pengeluaran, tanggal, serta kesan anak yang terbantu.",
+        "Just upload photos of your shopping proof (receipt) or proof of eating together and the prepared meal. Then fill in the journal by describing expenditure allocation, date, and the impressions of the children helped.",
       ),
     },
   ];
