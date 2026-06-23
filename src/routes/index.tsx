@@ -34,7 +34,7 @@ function Landing() {
           <nav className="hidden md:flex items-center gap-7 text-sm text-muted-foreground">
             <a href="#dampak" className="hover:text-foreground">Dampak</a>
             <a href="#cara" className="hover:text-foreground">Cara Kerja</a>
-            <Link to="/nutrisi" className="hover:text-foreground">Kampanye</Link>
+            <a href="#kampanye" className="hover:text-foreground">Kampanye</a>
           </nav>
           <button
             onClick={() => setPortalOpen(true)}
