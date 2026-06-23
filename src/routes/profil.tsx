@@ -827,8 +827,8 @@ function PrivacySheet({ onClose }: { onClose: () => void }) {
     {
       h: t("Bagaimana Data Digunakan", "How Data Is Used"),
       p: t(
-        "Untuk verifikasi kampanye, menyalurkan donasi ke pemasok lokal terverifikasi, dan menampilkan laporan transparansi kepada donatur.",
-        "To verify campaigns, route donations to verified local suppliers, and display transparency reports to donors.",
+        "Untuk verifikasi kampanye, menyalurkan donasi secara terverifikasi, dan menampilkan laporan transparansi kepada donatur.",
+        "To verify campaigns, route donations verifiably, and display transparency reports to donors.",
       ),
     },
     {
