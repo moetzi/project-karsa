@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { createCampaign, getMyActiveCampaign, closeMyActiveCampaign, updateMyCampaign } from "@/lib/campaigns.functions";
 import { listJournals, deleteJournal } from "@/lib/journals.functions";
+import { generateMealPlan } from "@/lib/ai.functions";
 import { JournalSheet } from "@/components/JournalSheet";
 
 
@@ -696,6 +697,8 @@ function BuatKampanye() {
 
   const [menu, setMenu] = useState<Record<string, string>>({});
   const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+  const [mealPlan, setMealPlan] = useState<MealPlanResult | null>(null);
   const [journalCommit, setJournalCommit] = useState(false);
 
   const handlePhotos = (files: FileList | null) => {
@@ -704,12 +707,37 @@ function BuatKampanye() {
     setPhotos((p) => [...p, ...urls].slice(0, 4));
   };
 
-  const autoGenerateMenu = () => {
+  const generatePlanFn = useServerFn(generateMealPlan);
+  const autoGenerateMenu = async () => {
+    setAiError(null);
+    if (!region || !recipients || !target) {
+      setAiError(t(
+        "Isi Provinsi, Jumlah Penerima, dan Target Dana dulu sebelum generate.",
+        "Fill Province, Recipients, and Target before generating.",
+      ));
+      return;
+    }
     setAiLoading(true);
-    setTimeout(() => {
-      setMenu({ ...AI_MENU_SAMPLE });
+    try {
+      const res = await generatePlanFn({
+        data: {
+          region,
+          recipients: Number(recipients),
+          target_amount: Number(target),
+          supplier: supplierName || tmpGroup || "",
+          catatan: desc.slice(0, 400),
+        },
+      });
+      const parsed = JSON.parse(res.json) as MealPlanResult;
+      setMealPlan(parsed);
+      const next: Record<string, string> = {};
+      parsed.menu.forEach((m) => { next[m.hari] = m.menu; });
+      setMenu(next);
+    } catch (err) {
+      setAiError(err instanceof Error ? err.message : String(err));
+    } finally {
       setAiLoading(false);
-    }, 700);
+    }
   };
 
   const groupLabels: Record<string, string> = {
