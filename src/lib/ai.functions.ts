@@ -180,6 +180,7 @@ const MealPlanSchema = z.object({
 });
 
 export const generateMealPlan = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => MealPlanInput.parse(input))
   .handler(async ({ data }) => {
     const key = process.env.LOVABLE_API_KEY;
