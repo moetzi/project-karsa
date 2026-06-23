@@ -8,10 +8,16 @@ import { createJournal } from "@/lib/journals.functions";
 import { toast } from "sonner";
 import { getDraft, saveDraft, deleteDraft } from "@/lib/draftStore";
 import { useConnectionStatus } from "@/lib/useConnectionStatus";
+import { addJournal, fileToDataUrl } from "@/lib/journalsStore";
+import { closeCampaignLocal } from "@/lib/campaignStatusStore";
 
 type Props = {
   campaign: { id: string; title: string; titleEn: string; school: string };
   onClose: () => void;
+  /** "closing" marks this as the campaign's closing journal (auto-closes campaign). */
+  kind?: "daily" | "closing";
+  /** When true, skip Supabase (use for static-demo campaigns whose id isn't a DB UUID). */
+  localOnly?: boolean;
 };
 
 type LocalPhoto = { file: File; previewUrl: string };
