@@ -6,6 +6,7 @@ import { INSPIRASI } from "@/lib/inspirasi";
 import { IndonesiaImpactMap } from "@/components/IndonesiaImpactMap";
 import { useClosedMap } from "@/lib/campaignStatusStore";
 import { useLang, useT } from "@/lib/i18n";
+import { Reveal, CountUp, Marquee } from "@/components/Motion";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -46,8 +47,15 @@ function HeroCard({ hero, t, lang }: { hero: (typeof campaigns)[number]; t: Retu
 
   return (
     <div className="relative">
+      {/* Neubrutalist sticker badges */}
+      <div className="pointer-events-none absolute -top-4 -right-3 z-20 rotate-[8deg] rounded-xl border-2 border-foreground bg-accent px-3 py-1.5 text-[11px] font-mono font-bold uppercase tracking-wider text-accent-foreground shadow-[4px_4px_0_0_var(--foreground)] animate-fade-in">
+        100% sampai
+      </div>
+      <div className="pointer-events-none absolute -bottom-3 -left-3 z-20 -rotate-[6deg] rounded-xl border-2 border-foreground bg-primary px-3 py-1.5 text-[11px] font-mono font-bold uppercase tracking-wider text-primary-foreground shadow-[4px_4px_0_0_var(--foreground)] animate-fade-in">
+        Jurnal terbuka
+      </div>
       <div
-        className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-border/60 relative select-none"
+        className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-2 border-foreground relative select-none transition-transform duration-300 hover:-translate-y-0.5"
         onTouchStart={(e) => { startX.current = e.changedTouches[0]?.clientX ?? null; }}
         onTouchEnd={(e) => {
           const endX = e.changedTouches[0]?.clientX ?? null;
@@ -176,7 +184,7 @@ function Landing() {
           }}
         />
         <div className="max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28 grid md:grid-cols-2 gap-10 items-center">
-          <div>
+          <Reveal>
             <span className="inline-flex items-center gap-2 rounded-full bg-primary-soft text-primary px-3 py-1 text-xs font-mono font-semibold uppercase tracking-widest">
               <ShieldCheck className="w-3.5 h-3.5" /> {t("Diverifikasi NUPTK & Dapodik", "Verified via NUPTK & Dapodik")}
             </span>
@@ -193,9 +201,9 @@ function Landing() {
             <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="#kampanye"
-                className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-6 py-3.5 text-sm font-bold hover:opacity-95 transition shadow-lg shadow-primary/20"
+                className="group inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground border-2 border-foreground px-6 py-3.5 text-sm font-bold transition-all shadow-[4px_4px_0_0_var(--foreground)] hover:shadow-[6px_6px_0_0_var(--foreground)] hover:-translate-x-0.5 hover:-translate-y-0.5 active:shadow-[2px_2px_0_0_var(--foreground)] active:translate-x-0 active:translate-y-0"
               >
-                <Heart className="w-4 h-4" /> {t("Mulai Berdonasi", "Start Donating")}
+                <Heart className="w-4 h-4 transition-transform group-hover:scale-110" /> {t("Mulai Berdonasi", "Start Donating")}
               </a>
               <a
                 href="#cara"
@@ -213,24 +221,48 @@ function Landing() {
                 const completedTarget = completed.reduce((s, c) => s + c.target, 0);
                 const dana = completedTarget > 0 ? Math.min(100, Math.round((completedRaised / completedTarget) * 100)) : 0;
                 const locale = lang === "en" ? "en-US" : "id-ID";
+                const fmt = (n: number) => n.toLocaleString(locale);
                 return [
-                  { v: recipients.toLocaleString(locale), l: t("Anak terbantu", "Children helped") },
-                  { v: teachers.toLocaleString(locale), l: t("Guru aktif", "Active teachers") },
-                  { v: `${dana}%`, l: t("Dana tersalur", "Funds distributed") },
+                  { v: recipients, suffix: "", fmt, l: t("Anak terbantu", "Children helped") },
+                  { v: teachers, suffix: "", fmt, l: t("Guru aktif", "Active teachers") },
+                  { v: dana, suffix: "%", fmt: (n: number) => String(n), l: t("Dana tersalur", "Funds distributed") },
                 ];
               })().map((s) => (
                 <div key={s.l}>
-                  <dt className="text-2xl font-extrabold font-mono">{s.v}</dt>
+                  <dt className="text-2xl font-extrabold font-mono">
+                    <CountUp to={s.v} suffix={s.suffix} format={s.fmt} />
+                  </dt>
                   <dd className="text-xs text-muted-foreground mt-1">{s.l}</dd>
                 </div>
               ))}
             </dl>
-          </div>
+          </Reveal>
 
           <HeroCard hero={campaigns[0]!} t={t} lang={lang} />
 
         </div>
       </section>
+
+      {/* Neubrutalist transparency ticker */}
+      <div className="border-y-2 border-foreground bg-accent text-accent-foreground py-3">
+        <Marquee speed={45}>
+          {[
+            t("100% donasi sampai ke kelas", "100% of donations reach the classroom"),
+            t("Tanpa potongan platform", "No platform fees"),
+            t("Jurnal guru terbuka untuk semua", "Teacher journals open to all"),
+            t("Diverifikasi NUPTK & NPSN", "Verified via NUPTK & NPSN"),
+            t("Dibuat untuk daerah 3T", "Built for Indonesia's 3T regions"),
+            t("Foto bukti belanja & makan bersama", "Photo proof of shopping & shared meals"),
+          ].map((s, i) => (
+            <span key={i} className="inline-flex items-center gap-3 font-mono text-xs font-bold uppercase tracking-widest">
+              <Sprout className="w-3.5 h-3.5" />
+              {s}
+              <span className="opacity-50">★</span>
+            </span>
+          ))}
+        </Marquee>
+      </div>
+
 
       {/* Dampak */}
       <section id="dampak" className="max-w-6xl mx-auto px-6 py-20 border-t border-border/60">
@@ -279,7 +311,7 @@ function Landing() {
               { icon: ShieldCheck, color: "primary", t: t("Identitas Terverifikasi", "Verified Identity"), d: t("Setiap guru divalidasi lewat NUPTK/PegID + NPSN. Tidak ada akun anonim, tidak ada kampanye fiktif.", "Every teacher is validated via NUPTK/PegID + NPSN. No anonymous accounts, no fictitious campaigns.") },
               { icon: WifiOff, color: "accent", t: t("Dibuat untuk Sinyal Tipis", "Built for Weak Signal"), d: t("Hemat data, bisa dipasang di layar utama, dan tetap bisa diakses meski koneksi datang dan pergi.", "Data-light, installable on the home screen, and still accessible when the connection comes and goes.") },
             ].map((card) => (
-              <div key={card.t} className="bg-surface rounded-2xl border border-border/60 p-5">
+              <div key={card.t} className="group bg-surface rounded-2xl border-2 border-foreground p-5 transition-all duration-300 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--foreground)]">
                 <div className={`w-10 h-10 rounded-xl ${card.color === "primary" ? "bg-primary-soft text-primary" : "bg-accent-soft text-accent"} grid place-items-center`}>
                   <card.icon className="w-5 h-5" />
                 </div>
@@ -316,7 +348,7 @@ function Landing() {
             { icon: Receipt, t: t("4. Guru belanja", "4. Teacher shops"), d: t("Guru membeli bahan makanan ke pemasok lokal terdekat dan menyimpan bukti belanja atau bukti makan bersama.", "The teacher buys food from the nearest local supplier and keeps the shopping receipt or proof of the shared meal.") },
             { icon: Camera, t: t("5. Jurnal terbuka", "5. Open journal"), d: t("Foto, deskripsi alokasi, dan kesan anak-anak diunggah ke jurnal dan dipublikasikan otomatis untuk semua orang.", "Photos, allocation notes, and the children's impressions are uploaded to the journal and published automatically for everyone.") },
           ].map((s) => (
-            <div key={s.t} className="bg-surface rounded-2xl border border-border/60 p-5">
+            <div key={s.t} className="group bg-surface rounded-2xl border-2 border-foreground p-5 transition-all duration-300 hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0_0_var(--foreground)]">
               <div className="w-10 h-10 rounded-xl bg-primary-soft text-primary grid place-items-center">
                 <s.icon className="w-5 h-5" />
               </div>
