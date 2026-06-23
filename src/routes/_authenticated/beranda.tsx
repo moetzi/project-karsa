@@ -176,7 +176,7 @@ function Beranda() {
                 {t("Kampanye Aktif", "Active Campaign")}
               </p>
               <span className="text-[10px] font-semibold text-primary bg-primary-soft px-2 py-0.5 rounded-full">
-                {t("56% terkumpul", "56% raised")}
+                {t(`${pct}% terkumpul`, `${pct}% raised`)}
               </span>
             </div>
             <h3 className="text-lg font-bold text-foreground">
@@ -187,15 +187,17 @@ function Beranda() {
             </p>
 
             <div className="mt-4 h-2 rounded-full bg-muted overflow-hidden">
-              <div className="h-full rounded-full" style={{ width: "56%", background: "#F47B20" }} />
+              <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: "#F47B20" }} />
             </div>
             <div className="mt-2 flex justify-between text-xs">
-              <span className="font-mono font-semibold text-foreground">Rp 8.4jt</span>
-              <span className="font-mono text-muted-foreground">{t("dari Rp 15.0jt", "of Rp 15.0M")}</span>
+              <span className="font-mono font-semibold text-foreground">{fmt(totalRaised)}</span>
+              <span className="font-mono text-muted-foreground">{t(`dari ${fmt(targetRp)}`, `of ${fmt(targetRp)}`)}</span>
             </div>
             <div className="flex items-center justify-between mt-1.5 text-[11px]">
-              <p className="text-muted-foreground">{t("56% terkumpul", "56% raised")}</p>
-              {(() => {
+              <p className="text-muted-foreground">
+                {t(`${pct}% terkumpul · ${journals.length} jurnal terbit`, `${pct}% raised · ${journals.length} journal entries`)}
+              </p>
+              {!isCampaignClosed && (() => {
                 const cd = getCountdown(ACTIVE_CAMPAIGN.deadline);
                 if (!cd) return null;
                 return (
