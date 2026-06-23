@@ -4,6 +4,7 @@ import { Heart, GraduationCap, ShieldCheck, X, Sprout, Users, TrendingUp, Clock,
 import { campaigns, CampaignCard } from "@/routes/nutrisi";
 import { INSPIRASI } from "@/lib/inspirasi";
 import { IndonesiaImpactMap } from "@/components/IndonesiaImpactMap";
+import { useClosedMap } from "@/lib/campaignStatusStore";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -19,6 +20,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const [portalOpen, setPortalOpen] = useState(false);
+  const closedMap = useClosedMap();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -84,12 +86,12 @@ function Landing() {
             </div>
             <dl className="mt-10 grid grid-cols-3 gap-6 max-w-md">
               {(() => {
-                // Anak terbantu = total penerima dari kampanye yang sudah selesai (jurnal penutup terbit)
-                const completed = campaigns.filter((c) => c.pct >= 100);
+                // Anak terbantu = total penerima dari kampanye yang selesai (pct≥100 atau ditutup guru via jurnal penutup).
+                const completed = campaigns.filter((c) => c.pct >= 100 || closedMap[c.id]);
                 const recipients = completed.reduce((s, c) => s + c.recipients, 0);
                 // Guru aktif = semua guru yang berhasil login di PWA (data statistik provinsi)
                 const teachers = 142;
-                const completedRaised = completed.reduce((s, c) => s + c.raised, 0);
+                const completedRaised = completed.reduce((s, c) => s + (closedMap[c.id] ? c.target : c.raised), 0);
                 const completedTarget = completed.reduce((s, c) => s + c.target, 0);
                 const dana = completedTarget > 0 ? Math.min(100, Math.round((completedRaised / completedTarget) * 100)) : 0;
                 return [

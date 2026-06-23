@@ -6,6 +6,8 @@ import { donors, ShareSheet, getCountdown, CampaignDetailSheet, campaigns } from
 import { JournalSheet } from "@/components/JournalSheet";
 import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations, formatRelative as fmtDonRel } from "@/lib/donationStore";
+import { useCampaignClosed } from "@/lib/campaignStatusStore";
+import { useJournals } from "@/lib/journalsStore";
 import { useT } from "@/lib/i18n";
 import { INSPIRASI } from "@/lib/inspirasi";
 
@@ -36,10 +38,10 @@ function Beranda() {
   const [donateOpen, setDonateOpen] = useState(false);
   const [detailOpen, setDetailOpen] = useState(false);
   const donations = useDonations(ACTIVE_CAMPAIGN.id);
+  const closed = useCampaignClosed(ACTIVE_CAMPAIGN.id);
+  const journals = useJournals(ACTIVE_CAMPAIGN.id);
 
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
-  // Constraint: 1 active campaign per teacher. Closing journal unlocks only when campaign is closed (target reached / period ended).
-  const isCampaignClosed = false;
   const allDonors = [
     ...donations.map((d) => ({ name: d.name, amount: d.amount, time: fmtDonRel(d.createdAt, "id"), timeEn: fmtDonRel(d.createdAt, "en") })),
     ...donors,
@@ -48,7 +50,11 @@ function Beranda() {
   const newRaised = donations.reduce((s, d) => s + d.amount, 0);
   const totalRaised = campaign.raised * 1_000_000 + newRaised;
   const targetRp = campaign.target * 1_000_000;
-  const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const rawPct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const pct = closed ? 100 : rawPct;
+  // Closing journal unlocks when campaign is closed OR target reached.
+  const isCampaignClosed = !!closed || rawPct >= 100;
+  const hasClosingJournal = journals.some((j) => j.kind === "closing");
   const fmtJt = (n: number) => (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
   return (
     <PhoneShell>
@@ -84,11 +90,13 @@ function Beranda() {
                   {t("Aksi Hari Ini", "Today's Action")}
                 </p>
                 <h2 className="mt-1 text-[15px] font-bold text-foreground leading-snug">
-                  {t("🎉 Kampanye Selesai!", "🎉 Campaign Closed!")}
+                  {hasClosingJournal ? t("🎉 Jurnal Penutup Terbit", "🎉 Closing Journal Published") : t("🎉 Kampanye Selesai!", "🎉 Campaign Closed!")}
                 </h2>
                 <p className="mt-1 text-[13px] text-foreground/80 leading-relaxed">
-                  {t("Tulis jurnal penutup dengan foto bukti untuk ", "Write the closing journal with proof photos for ")}
-                  <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>.
+                  {hasClosingJournal
+                    ? t("Donatur sudah bisa melihat bukti penutup di halaman kampanye publik.", "Donors can now see the closing proof on the public campaign page.")
+                    : t("Tulis jurnal penutup dengan foto bukti untuk ", "Write the closing journal with proof photos for ")}
+                  {!hasClosingJournal && <span className="font-semibold">{t("Desa Kolaka", "Kolaka Village")}</span>}
                 </p>
               </div>
             </div>
@@ -168,7 +176,7 @@ function Beranda() {
                 {t("Kampanye Aktif", "Active Campaign")}
               </p>
               <span className="text-[10px] font-semibold text-primary bg-primary-soft px-2 py-0.5 rounded-full">
-                {t("56% terkumpul", "56% raised")}
+                {t(`${pct}% terkumpul`, `${pct}% raised`)}
               </span>
             </div>
             <h3 className="text-lg font-bold text-foreground">
@@ -179,15 +187,17 @@ function Beranda() {
             </p>
 
             <div className="mt-4 h-2 rounded-full bg-muted overflow-hidden">
-              <div className="h-full rounded-full" style={{ width: "56%", background: "#F47B20" }} />
+              <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: "#F47B20" }} />
             </div>
             <div className="mt-2 flex justify-between text-xs">
-              <span className="font-mono font-semibold text-foreground">Rp 8.4jt</span>
-              <span className="font-mono text-muted-foreground">{t("dari Rp 15.0jt", "of Rp 15.0M")}</span>
+              <span className="font-mono font-semibold text-foreground">{fmt(totalRaised)}</span>
+              <span className="font-mono text-muted-foreground">{t(`dari ${fmt(targetRp)}`, `of ${fmt(targetRp)}`)}</span>
             </div>
             <div className="flex items-center justify-between mt-1.5 text-[11px]">
-              <p className="text-muted-foreground">{t("56% terkumpul", "56% raised")}</p>
-              {(() => {
+              <p className="text-muted-foreground">
+                {t(`${pct}% terkumpul · ${journals.length} jurnal terbit`, `${pct}% raised · ${journals.length} journal entries`)}
+              </p>
+              {!isCampaignClosed && (() => {
                 const cd = getCountdown(ACTIVE_CAMPAIGN.deadline);
                 if (!cd) return null;
                 return (
@@ -250,23 +260,31 @@ function Beranda() {
             </div>
           </button>
 
-          <div className="px-5 pb-5 mt-4 flex gap-2">
+          <div className="px-5 pb-5 mt-4 grid grid-cols-2 gap-2">
             <button
               onClick={() => setDonateOpen(true)}
-              className="flex-1 bg-primary text-primary-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 transition"
+              className="bg-primary text-primary-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:opacity-95 transition"
             >
               <Heart className="w-4 h-4" /> {t("Donasi", "Donate")}
             </button>
             <button
               onClick={() => setShareOpen(true)}
-              className="flex-1 bg-muted text-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-muted/80 transition border border-border"
+              className="bg-muted text-foreground rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-muted/80 transition border border-border"
             >
               <Share2 className="w-4 h-4" /> {t("Bagikan", "Share")}
             </button>
+            {!isCampaignClosed && (
+              <button
+                onClick={() => setJournalOpen(true)}
+                className="col-span-2 border border-primary/40 bg-primary-soft/40 text-primary rounded-xl py-3 font-semibold text-sm flex items-center justify-center gap-2 hover:bg-primary-soft/60 transition"
+              >
+                <NotebookPen className="w-4 h-4" /> {t("Buat Jurnal Harian", "Create Daily Journal")}
+              </button>
+            )}
           </div>
 
           {shareOpen && (
-            <ShareSheet title={t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")} onClose={() => setShareOpen(false)} />
+            <ShareSheet campaignId={ACTIVE_CAMPAIGN.id} title={t("Gizi Sehat Desa Kolaka", "Healthy Nutrition for Kolaka Village")} school={ACTIVE_CAMPAIGN.school} onClose={() => setShareOpen(false)} />
           )}
           {donateOpen && (
             <DonateSheet
@@ -287,7 +305,14 @@ function Beranda() {
           )}
         </section>
 
-        {journalOpen && <JournalSheet campaign={ACTIVE_CAMPAIGN} onClose={() => setJournalOpen(false)} />}
+        {journalOpen && (
+          <JournalSheet
+            campaign={ACTIVE_CAMPAIGN}
+            kind={isCampaignClosed && !hasClosingJournal ? "closing" : "daily"}
+            localOnly
+            onClose={() => setJournalOpen(false)}
+          />
+        )}
       </div>
     </PhoneShell>
   );

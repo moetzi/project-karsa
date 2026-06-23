@@ -30,6 +30,8 @@ import { JournalSheet } from "@/components/JournalSheet";
 import { ConnectionBadge } from "@/components/ConnectionBadge";
 import { withSync } from "@/lib/useConnectionStatus";
 import { useReach, trackView, trackShare, toggleBoost } from "@/lib/reachStore";
+import { useCampaignClosed } from "@/lib/campaignStatusStore";
+import { useJournals } from "@/lib/journalsStore";
 
 
 export const Route = createFileRoute("/nutrisi")({
@@ -374,9 +376,12 @@ export function CampaignCard({ c }: { c: typeof campaigns[number] }) {
 
   // Live totals — baseline (in juta) + new donations
   const newRaised = donations.reduce((s, d) => s + d.amount, 0);
+  const closed = useCampaignClosed(c.id);
+  void useJournals(c.id); // subscribe so card re-renders when journals stream in
   const totalRaised = c.raised * 1_000_000 + newRaised;
   const targetRp = c.target * 1_000_000;
-  const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const rawPct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const pct = closed ? 100 : rawPct;
   const fmtJt = (n: number) => (n / 1_000_000 >= 10 ? (n / 1_000_000).toFixed(1) : (n / 1_000_000).toFixed(2)) + "jt";
 
   const onBoostClick = () => {

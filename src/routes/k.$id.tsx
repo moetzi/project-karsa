@@ -1,10 +1,12 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { ShieldCheck, MapPin, Truck, ChevronRight, ArrowLeft, Share2, Sprout, Clock, Heart } from "lucide-react";
+import { ShieldCheck, MapPin, Truck, ChevronRight, ArrowLeft, Share2, Sprout, Clock, Heart, NotebookPen, Users } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { campaigns, getCountdown } from "@/routes/nutrisi";
 import { DonateSheet } from "@/components/DonateSheet";
 import { useDonations } from "@/lib/donationStore";
+import { useJournals } from "@/lib/journalsStore";
+import { useCampaignClosed } from "@/lib/campaignStatusStore";
 
 const ORIGIN = "https://project-karsa.lovable.app";
 
@@ -94,13 +96,20 @@ function CampaignPublicPage() {
   const { c } = Route.useLoaderData();
   const [donateOpen, setDonateOpen] = useState(false);
   const donations = useDonations(c.id);
+  const journals = useJournals(c.id);
+  const closed = useCampaignClosed(c.id);
+  const closingJournal = journals.find((j) => j.kind === "closing");
+  const dailyJournals = journals.filter((j) => j.kind === "daily");
 
   const newRaised = donations.reduce((s, d) => s + d.amount, 0);
   const totalRaised = c.raised * 1_000_000 + newRaised;
   const targetRp = c.target * 1_000_000;
-  const pct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const rawPct = Math.min(100, Math.round((totalRaised / targetRp) * 100));
+  const pct = closed ? 100 : rawPct;
   const fmt = (n: number) => "Rp " + n.toLocaleString("id-ID");
-  const disbursedAt = ("disbursedAt" in c ? (c as { disbursedAt?: string }).disbursedAt : undefined);
+  const disbursedAt = closed?.closedAt
+    ? new Date(closed.closedAt).toISOString()
+    : ("disbursedAt" in c ? (c as { disbursedAt?: string }).disbursedAt : undefined);
 
   const shareUrl = `${ORIGIN}/k/${c.id}`;
   const onShare = async () => {
@@ -202,12 +211,65 @@ function CampaignPublicPage() {
           <p className="flex items-center gap-2"><MapPin className="w-3.5 h-3.5 text-primary shrink-0" /><span className="text-foreground">{c.region}</span></p>
         </section>
 
-        {pct >= 100 && c.journal && (
+        {(pct >= 100 || closingJournal) && (
           <section className="mt-7 bg-primary-soft/40 rounded-2xl p-4">
             <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
               {t("Jurnal Penutup", "Closing Journal")} — {c.teacher.toUpperCase()}
             </p>
-            <p className="font-serif italic text-[14px] text-foreground mt-2 leading-relaxed">"{c.journal}"</p>
+            <p className="font-serif italic text-[14px] text-foreground mt-2 leading-relaxed">
+              "{closingJournal?.story || c.journal}"
+            </p>
+            {closingJournal && closingJournal.photos.length > 0 && (
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                {closingJournal.photos.slice(0, 4).map((src, i) => (
+                  <img key={i} src={src} alt="" className="aspect-square w-full object-cover rounded-lg border border-border/60" />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {dailyJournals.length > 0 && (
+          <section className="mt-7">
+            <div className="flex items-end justify-between mb-3">
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">
+                  {t("Jurnal Lapangan", "Field Journals")}
+                </p>
+                <h2 className="text-[18px] font-extrabold text-foreground mt-0.5">
+                  {t("Bukti dari guru", "Proof from the teacher")}
+                </h2>
+              </div>
+              <span className="text-[11px] text-muted-foreground font-mono">
+                {dailyJournals.length} {t("entri", "entries")}
+              </span>
+            </div>
+            <ul className="space-y-3">
+              {dailyJournals.map((j) => (
+                <li key={j.id} className="bg-surface rounded-2xl border border-border/60 overflow-hidden">
+                  {j.photos.length > 0 && (
+                    <div className={"grid gap-0.5 " + (j.photos.length === 1 ? "grid-cols-1" : "grid-cols-2")}>
+                      {j.photos.slice(0, 4).map((src, i) => (
+                        <img key={i} src={src} alt="" className="aspect-square w-full object-cover" />
+                      ))}
+                    </div>
+                  )}
+                  <div className="p-3.5 space-y-1.5">
+                    <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground flex items-center gap-1.5">
+                      <NotebookPen className="w-3 h-3" /> {new Date(j.createdAt).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })}
+                    </p>
+                    <p className="text-xs font-semibold text-foreground">🍽 {j.menu}</p>
+                    <p className="text-[13px] font-serif text-foreground/85 leading-relaxed">"{j.story}"</p>
+                    {(j.attendance || j.mood) && (
+                      <p className="text-[11px] text-muted-foreground inline-flex items-center gap-2 pt-1">
+                        {j.attendance != null && (<span className="inline-flex items-center gap-1"><Users className="w-3 h-3" /> {j.attendance} {t("anak", "kids")}</span>)}
+                        {j.mood && <span>· {j.mood}</span>}
+                      </p>
+                    )}
+                  </div>
+                </li>
+              ))}
+            </ul>
           </section>
         )}
 
