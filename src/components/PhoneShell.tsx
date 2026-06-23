@@ -1,7 +1,29 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, BookOpen, Leaf, User } from "lucide-react";
-import type { ReactNode } from "react";
+import { Home, BookOpen, Leaf, User, WifiOff } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 import { useT } from "@/lib/i18n";
+
+function OfflineBanner() {
+  const t = useT();
+  const [online, setOnline] = useState(typeof navigator !== "undefined" ? navigator.onLine : true);
+  useEffect(() => {
+    const on = () => setOnline(true);
+    const off = () => setOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => {
+      window.removeEventListener("online", on);
+      window.removeEventListener("offline", off);
+    };
+  }, []);
+  if (online) return null;
+  return (
+    <div className="bg-accent/15 text-accent flex items-center gap-2 px-4 py-1.5 text-[11px] font-semibold border-b border-accent/20">
+      <WifiOff className="w-3 h-3" />
+      {t("Mode offline — materi tersimpan tetap bisa diakses", "Offline mode — saved materials still accessible")}
+    </div>
+  );
+}
 
 function StatusBar() {
   return (
@@ -69,6 +91,7 @@ export function PhoneShell({ children, hideNav = false }: { children: ReactNode;
     <div className="min-h-screen w-full flex items-center justify-center p-4 sm:p-8" style={{ background: "#2d2d35" }}>
       <div className="phone-shell flex flex-col">
         <StatusBar />
+        <OfflineBanner />
         <div className={"flex-1 overflow-y-auto " + (hideNav ? "pb-4" : "pb-28")}>
           {children}
         </div>
