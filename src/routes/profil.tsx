@@ -243,7 +243,7 @@ function HelpSection() {
     {
       q: t("Bagaimana cara kerja Karsa saat offline?", "How does Karsa work offline?"),
       a: t(
-        "Setelah login pertama kali, Karsa menyimpan data penting di perangkat Anda. Materi yang sudah diunduh dari Edu Co-pilot, daftar kampanye, dan jurnal tersimpan tetap bisa dibaca tanpa internet. Saat Anda menulis jurnal baru tanpa sinyal, Karsa akan menampungnya secara lokal dan otomatis menyinkronkan begawai perangkat kembali online.",
+        "Setelah login pertama kali, Karsa menyimpan data penting di perangkat Anda. Materi yang sudah diunduh dari Edu Co-pilot, daftar kampanye, dan jurnal tersimpan tetap bisa dibaca tanpa internet. Saat Anda menulis jurnal baru tanpa sinyal, Karsa akan menampungnya secara lokal dan otomatis menyinkronkan begitu perangkat kembali online.",
         "After your first login, Karsa stores essential data on your device. Downloaded Edu Co-pilot materials, campaign lists, and saved journals remain readable without internet. When you write a new journal while offline, Karsa queues it locally and automatically syncs once the device is back online.",
       ),
     },
