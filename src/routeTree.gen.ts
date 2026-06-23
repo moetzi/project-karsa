@@ -11,14 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TentangRouteImport } from './routes/tentang'
 import { Route as ProfilRouteImport } from './routes/profil'
-import { Route as NutrisiRouteImport } from './routes/nutrisi'
-import { Route as CopilotRouteImport } from './routes/copilot'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as KIdRouteImport } from './routes/k.$id'
 import { Route as InspirasiIdRouteImport } from './routes/inspirasi.$id'
 import { Route as FlashcardIdRouteImport } from './routes/flashcard.$id'
+import { Route as AuthenticatedNutrisiRouteImport } from './routes/_authenticated/nutrisi'
+import { Route as AuthenticatedCopilotRouteImport } from './routes/_authenticated/copilot'
 import { Route as AuthenticatedBerandaRouteImport } from './routes/_authenticated/beranda'
 
 const TentangRoute = TentangRouteImport.update({
@@ -29,16 +29,6 @@ const TentangRoute = TentangRouteImport.update({
 const ProfilRoute = ProfilRouteImport.update({
   id: '/profil',
   path: '/profil',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NutrisiRoute = NutrisiRouteImport.update({
-  id: '/nutrisi',
-  path: '/nutrisi',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CopilotRoute = CopilotRouteImport.update({
-  id: '/copilot',
-  path: '/copilot',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -70,6 +60,16 @@ const FlashcardIdRoute = FlashcardIdRouteImport.update({
   path: '/flashcard/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedNutrisiRoute = AuthenticatedNutrisiRouteImport.update({
+  id: '/nutrisi',
+  path: '/nutrisi',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedCopilotRoute = AuthenticatedCopilotRouteImport.update({
+  id: '/copilot',
+  path: '/copilot',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedBerandaRoute = AuthenticatedBerandaRouteImport.update({
   id: '/beranda',
   path: '/beranda',
@@ -79,11 +79,11 @@ const AuthenticatedBerandaRoute = AuthenticatedBerandaRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/copilot': typeof CopilotRoute
-  '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
   '/tentang': typeof TentangRoute
   '/beranda': typeof AuthenticatedBerandaRoute
+  '/copilot': typeof AuthenticatedCopilotRoute
+  '/nutrisi': typeof AuthenticatedNutrisiRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
   '/k/$id': typeof KIdRoute
@@ -91,11 +91,11 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/copilot': typeof CopilotRoute
-  '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
   '/tentang': typeof TentangRoute
   '/beranda': typeof AuthenticatedBerandaRoute
+  '/copilot': typeof AuthenticatedCopilotRoute
+  '/nutrisi': typeof AuthenticatedNutrisiRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
   '/k/$id': typeof KIdRoute
@@ -105,11 +105,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/copilot': typeof CopilotRoute
-  '/nutrisi': typeof NutrisiRoute
   '/profil': typeof ProfilRoute
   '/tentang': typeof TentangRoute
   '/_authenticated/beranda': typeof AuthenticatedBerandaRoute
+  '/_authenticated/copilot': typeof AuthenticatedCopilotRoute
+  '/_authenticated/nutrisi': typeof AuthenticatedNutrisiRoute
   '/flashcard/$id': typeof FlashcardIdRoute
   '/inspirasi/$id': typeof InspirasiIdRoute
   '/k/$id': typeof KIdRoute
@@ -119,11 +119,11 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/copilot'
-    | '/nutrisi'
     | '/profil'
     | '/tentang'
     | '/beranda'
+    | '/copilot'
+    | '/nutrisi'
     | '/flashcard/$id'
     | '/inspirasi/$id'
     | '/k/$id'
@@ -131,11 +131,11 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/copilot'
-    | '/nutrisi'
     | '/profil'
     | '/tentang'
     | '/beranda'
+    | '/copilot'
+    | '/nutrisi'
     | '/flashcard/$id'
     | '/inspirasi/$id'
     | '/k/$id'
@@ -144,11 +144,11 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
-    | '/copilot'
-    | '/nutrisi'
     | '/profil'
     | '/tentang'
     | '/_authenticated/beranda'
+    | '/_authenticated/copilot'
+    | '/_authenticated/nutrisi'
     | '/flashcard/$id'
     | '/inspirasi/$id'
     | '/k/$id'
@@ -158,8 +158,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  CopilotRoute: typeof CopilotRoute
-  NutrisiRoute: typeof NutrisiRoute
   ProfilRoute: typeof ProfilRoute
   TentangRoute: typeof TentangRoute
   FlashcardIdRoute: typeof FlashcardIdRoute
@@ -181,20 +179,6 @@ declare module '@tanstack/react-router' {
       path: '/profil'
       fullPath: '/profil'
       preLoaderRoute: typeof ProfilRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nutrisi': {
-      id: '/nutrisi'
-      path: '/nutrisi'
-      fullPath: '/nutrisi'
-      preLoaderRoute: typeof NutrisiRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/copilot': {
-      id: '/copilot'
-      path: '/copilot'
-      fullPath: '/copilot'
-      preLoaderRoute: typeof CopilotRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -239,6 +223,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FlashcardIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/nutrisi': {
+      id: '/_authenticated/nutrisi'
+      path: '/nutrisi'
+      fullPath: '/nutrisi'
+      preLoaderRoute: typeof AuthenticatedNutrisiRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/copilot': {
+      id: '/_authenticated/copilot'
+      path: '/copilot'
+      fullPath: '/copilot'
+      preLoaderRoute: typeof AuthenticatedCopilotRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/beranda': {
       id: '/_authenticated/beranda'
       path: '/beranda'
@@ -251,10 +249,14 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedBerandaRoute: typeof AuthenticatedBerandaRoute
+  AuthenticatedCopilotRoute: typeof AuthenticatedCopilotRoute
+  AuthenticatedNutrisiRoute: typeof AuthenticatedNutrisiRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBerandaRoute: AuthenticatedBerandaRoute,
+  AuthenticatedCopilotRoute: AuthenticatedCopilotRoute,
+  AuthenticatedNutrisiRoute: AuthenticatedNutrisiRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -264,8 +266,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  CopilotRoute: CopilotRoute,
-  NutrisiRoute: NutrisiRoute,
   ProfilRoute: ProfilRoute,
   TentangRoute: TentangRoute,
   FlashcardIdRoute: FlashcardIdRoute,

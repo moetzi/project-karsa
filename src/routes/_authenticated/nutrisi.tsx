@@ -34,7 +34,7 @@ import { useCampaignClosed } from "@/lib/campaignStatusStore";
 import { useJournals } from "@/lib/journalsStore";
 
 
-export const Route = createFileRoute("/nutrisi")({
+export const Route = createFileRoute("/_authenticated/nutrisi")({
   head: () => ({
     meta: [
       { title: "Gizi & Kampanye — Karsa" },

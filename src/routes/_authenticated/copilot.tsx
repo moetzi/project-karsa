@@ -9,7 +9,7 @@ import { listMateri, saveMateri, deleteMateri, type StoredMateri, type MateriFor
 import { ConnectionBadge } from "@/components/ConnectionBadge";
 import { withSync } from "@/lib/useConnectionStatus";
 
-export const Route = createFileRoute("/copilot")({
+export const Route = createFileRoute("/_authenticated/copilot")({
   ssr: false,
   head: () => ({
     meta: [
