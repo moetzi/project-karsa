@@ -11,7 +11,7 @@ export const Route = createFileRoute("/copilot")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "AI Copilot — Karsa" },
+      { title: "Edu Copilot — Karsa" },
       { name: "description", content: "Generator RPP & materi interaktif siap offline." },
     ],
   }),
@@ -47,7 +47,7 @@ function Copilot() {
       <div className="px-6 pt-4 pb-6">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-[28px] font-extrabold text-foreground">{t("AI Copilot", "AI Copilot")}</h1>
+            <h1 className="text-[28px] font-extrabold text-foreground">{t("Edu Copilot", "Edu Copilot")}</h1>
             <p className="text-sm text-muted-foreground mt-1">
               {t("Buat RPP & materi interaktif siap offline.", "Build lesson plans & interactive materials, offline-ready.")}
             </p>

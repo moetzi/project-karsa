@@ -76,7 +76,7 @@ export const generateMaterial = createServerFn({ method: "POST" })
       data.format === "quiz" ? QuizSchema :
       data.format === "flashcard" ? FlashcardSchema : SlidesSchema;
 
-    const system = `Anda adalah AI Copilot untuk guru honorer di daerah 3T (Terdepan, Terluar, Tertinggal) Indonesia.
+    const system = `Anda adalah Edu Copilot untuk guru honorer di daerah 3T (Terdepan, Terluar, Tertinggal) Indonesia.
 Buat materi pembelajaran yang:
 - Sesuai kurikulum SD Indonesia
 - Menggunakan konteks lokal (pertanian, nelayan, alam sekitar)
