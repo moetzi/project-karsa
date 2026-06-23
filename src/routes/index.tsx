@@ -172,9 +172,15 @@ function Landing() {
           </Link>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {campaigns.map((c) => (
-            <CampaignCard key={c.id} c={c} />
-          ))}
+          {(() => {
+            const sorted = [...campaigns].sort((a, b) => {
+              const aDone = a.pct >= 100 ? 1 : 0;
+              const bDone = b.pct >= 100 ? 1 : 0;
+              if (aDone !== bDone) return aDone - bDone;
+              return b.boosts - a.boosts;
+            });
+            return sorted.map((c) => <CampaignCard key={c.id} c={c} />);
+          })()}
         </div>
         <div className="mt-8 text-center md:hidden">
           <Link to="/nutrisi" className="inline-flex items-center gap-1 text-sm font-semibold text-primary">
