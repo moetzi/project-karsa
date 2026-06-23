@@ -34,6 +34,109 @@ function LanguageToggle() {
   );
 }
 
+function HeroCard({ hero, t, lang }: { hero: (typeof campaigns)[number]; t: ReturnType<typeof useT>; lang: "id" | "en" }) {
+  const photos = hero.journalPhotos ?? [];
+  const hasPhotos = photos.length > 0;
+  const [idx, setIdx] = useState(0);
+  const startX = useRef<number | null>(null);
+
+  const safeIdx = hasPhotos ? ((idx % photos.length) + photos.length) % photos.length : 0;
+  const next = () => setIdx((i) => (i + 1) % photos.length);
+  const prev = () => setIdx((i) => (i - 1 + photos.length) % photos.length);
+
+  return (
+    <div className="relative">
+      <div
+        className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-border/60 relative select-none"
+        onTouchStart={(e) => { startX.current = e.changedTouches[0]?.clientX ?? null; }}
+        onTouchEnd={(e) => {
+          const endX = e.changedTouches[0]?.clientX ?? null;
+          if (startX.current != null && endX != null) {
+            const dx = endX - startX.current;
+            if (Math.abs(dx) > 40) {
+              if (dx < 0) next();
+              else prev();
+            }
+          }
+          startX.current = null;
+        }}
+      >
+        {hasPhotos && (
+          <div
+            className="flex h-full w-full transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${safeIdx * 100}%)` }}
+          >
+            {photos.map((photo, i) => (
+              <div key={i} className="min-w-full h-full relative">
+                <img
+                  src={photo}
+                  alt={t(`Jurnal Pak Budi — foto ${i + 1}`, `Pak Budi's journal — photo ${i + 1}`)}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  draggable={false}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none" />
+
+        {/* Glassmorphism journal card */}
+        <div className="absolute left-4 right-4 top-4 rounded-2xl border border-white/30 bg-white/15 backdrop-blur-xl p-4 shadow-lg">
+          <p className="font-mono text-[10px] uppercase tracking-widest text-white/90 font-bold">
+            {t("Jurnal Guru", "Teacher's Journal")} · {hero.teacher}
+          </p>
+          <p className="mt-2 text-[13px] leading-relaxed text-white line-clamp-5">
+            {hero.journal}
+          </p>
+        </div>
+
+        {/* Arrows */}
+        {hasPhotos && photos.length > 1 && (
+          <>
+            <button
+              onClick={prev}
+              className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 hover:bg-black/50 text-white p-2 backdrop-blur-sm transition"
+              aria-label={t("Foto sebelumnya", "Previous photo")}
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={next}
+              className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 hover:bg-black/50 text-white p-2 backdrop-blur-sm transition"
+              aria-label={t("Foto berikutnya", "Next photo")}
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </>
+        )}
+
+        {/* Dots */}
+        {hasPhotos && photos.length > 1 && (
+          <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
+            {photos.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setIdx(i)}
+                className={`w-2 h-2 rounded-full transition ${i === safeIdx ? "bg-white" : "bg-white/40 hover:bg-white/70"}`}
+                aria-label={t(`Lihat foto ${i + 1}`, `View photo ${i + 1}`)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="absolute -bottom-6 -left-6 bg-surface rounded-2xl border border-border/60 shadow-lg p-4 max-w-[220px]">
+        <p className="font-mono text-[10px] uppercase tracking-widest text-primary font-bold">{t("Kampanye Aktif", "Active Campaign")}</p>
+        <p className="mt-1 text-sm font-bold leading-snug">{t("Gizi Sehat Desa Kolaka", "Healthy Meals, Kolaka Village")}</p>
+        <div className="mt-2 h-1.5 rounded-full bg-muted overflow-hidden">
+          <div className="h-full bg-accent" style={{ width: "56%" }} />
+        </div>
+        <p className="mt-1 text-[10px] font-mono text-muted-foreground">{t("56% dari Rp 15jt", "56% of Rp 15M")}</p>
+      </div>
+    </div>
+  );
+}
+
 function Landing() {
   const [portalOpen, setPortalOpen] = useState(false);
   const closedMap = useClosedMap();
