@@ -18,10 +18,10 @@ const QuizSchema = z.object({
   soal: z.array(
     z.object({
       pertanyaan: z.string(),
-      pilihan: z.array(z.string()).length(4),
-      jawaban_index: z.number().int().min(0).max(3),
+      pilihan: z.array(z.string()),
+      jawaban_index: z.number().int(),
     }),
-  ).min(5).max(10),
+  ),
 });
 
 const FlashcardSchema = z.object({
@@ -31,7 +31,7 @@ const FlashcardSchema = z.object({
   selipan_gizi: z.string(),
   kartu: z.array(
     z.object({ depan: z.string(), belakang: z.string() }),
-  ).min(6).max(15),
+  ),
 });
 
 const SlidesSchema = z.object({
@@ -40,8 +40,8 @@ const SlidesSchema = z.object({
   cerita_literasi: z.string(),
   selipan_gizi: z.string(),
   slide: z.array(
-    z.object({ judul: z.string(), poin: z.array(z.string()).min(2).max(5) }),
-  ).min(5).max(10),
+    z.object({ judul: z.string(), poin: z.array(z.string()) }),
+  ),
 });
 
 export const generateMaterial = createServerFn({ method: "POST" })
@@ -111,12 +111,12 @@ const MealPlanSchema = z.object({
   estimasi_total_5hari: z.number(),
   menu: z.array(
     z.object({
-      hari: z.enum(["Senin", "Selasa", "Rabu", "Kamis", "Jumat"]),
+      hari: z.string(),
       menu: z.string(),
-      bahan_lokal: z.array(z.string()).min(2).max(6),
+      bahan_lokal: z.array(z.string()),
       kandungan_gizi: z.string(),
     }),
-  ).length(5),
+  ),
   tips: z.string(),
 });
 
