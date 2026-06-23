@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import indonesiaMapAsset from "@/assets/indonesia-map.png.asset.json";
-import { MapPin, Users, X } from "lucide-react";
+import { MapPin, Users } from "lucide-react";
 
 const indonesiaMap = indonesiaMapAsset.url;
 
